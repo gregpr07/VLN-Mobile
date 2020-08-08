@@ -1,4 +1,3 @@
-import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
@@ -8,6 +7,7 @@ import {
   Image,
   Dimensions,
   Button,
+  TouchableOpacity,
 } from "react-native";
 
 // functions
@@ -16,18 +16,9 @@ import { YoutubeTime } from "../functions/functions/";
 // expo
 import Constants from "expo-constants";
 import { Video } from "expo-av";
-import { AppLoading } from "expo";
 
 // dimensions
 const { width, height } = Dimensions.get("window");
-
-// fonts
-import {
-  useFonts,
-  Inter_500Medium,
-  Inter_600SemiBold,
-  Inter_300Light,
-} from "@expo-google-fonts/inter";
 
 var videoRef;
 
@@ -38,7 +29,7 @@ export default function VideoScreen({ route, navigation }) {
     videoRef = component;
   };
 
-  // HANDLE FULLSCREEN ON ROTATION
+  /*   // HANDLE FULLSCREEN ON ROTATION
   const isPortrait = () => {
     const dim = Dimensions.get("screen");
     return dim.height >= dim.width;
@@ -58,24 +49,11 @@ export default function VideoScreen({ route, navigation }) {
       }
     }
   }, [orientation]);
-  // /
+  // / */
 
-  const stopVideo = () => {
-    videoRef.pauseAsync();
-  };
   const handleTimestamp = (timestamp) => {
     videoRef.setPositionAsync(timestamp);
   };
-
-  // fonts
-  let [fontsLoaded] = useFonts({
-    Inter_500Medium,
-    Inter_600SemiBold,
-    Inter_300Light,
-  });
-  if (!fontsLoaded) {
-    return <AppLoading />;
-  }
 
   const video_stats = {
     title: "How Machine Learning has Finally Solved Wanamaker’s Dilemma",
@@ -112,7 +90,7 @@ export default function VideoScreen({ route, navigation }) {
     },
     {
       title: "This page - How Machine ",
-      views: 12784,
+      views: 127123,
       author: "Oliver Downs",
       date: "2016",
       image: "http://hydro.ijs.si/v013/d2/2ley3qjmm7a3v7g6lnq5duermqrzbq7f.jpg",
@@ -171,7 +149,6 @@ export default function VideoScreen({ route, navigation }) {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.h1}>Videolectures.net</Text>
       {/* Video */}
       <View>
         <Text style={styles.video_title}>{video_stats.title}</Text>
@@ -184,7 +161,7 @@ export default function VideoScreen({ route, navigation }) {
           }}
           resizeMode={Video.RESIZE_MODE_COVER}
           usePoster={true}
-          shouldPlay={false}
+          shouldPlay={true}
           //isLooping={false}
           style={styles.video}
           useNativeControls={true}
@@ -202,7 +179,17 @@ export default function VideoScreen({ route, navigation }) {
 
         <View style={{ marginTop: 8, marginBottom: 50 }}>
           {recommendations.map((recc) => (
-            <View key={recc.title} style={styles.recommendation}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.push("Video", {
+                  videoID: recc.views,
+                  title: recc.title,
+                });
+                videoRef.stopAsync();
+              }}
+              key={recc.title}
+              style={styles.recommendation}
+            >
               <Image
                 source={{ uri: recc.image }}
                 style={{
@@ -224,11 +211,10 @@ export default function VideoScreen({ route, navigation }) {
                   </Text>
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
       </View>
-      <StatusBar style="auto" />
     </ScrollView>
   );
 }
@@ -237,10 +223,8 @@ const padding = 24;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: Constants.statusBarHeight,
+    paddingTop: Constants.statusBarHeight,
     padding: padding,
-    //paddingTop: 16,
-    //backgroundColor: "white",
   },
   h1: {
     fontSize: 36,

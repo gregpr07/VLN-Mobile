@@ -1,51 +1,133 @@
 import * as React from "react";
-import { Text, View, Button } from "react-native";
+import { Text, View, Button, TouchableOpacity } from "react-native";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
+import { StatusBar } from "expo-status-bar";
+
 import Ionicons from "react-native-vector-icons/Ionicons";
 import VideoScreen from "./pages/video";
+import SearchScreen from "./pages/search";
 
-function HomeScreen({ navigation }) {
+import { AppLoading } from "expo";
+
+import {
+  useFonts,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_300Light,
+} from "@expo-google-fonts/inter";
+
+function HomeScreen() {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Text>Home!</Text>
+    </View>
+  );
+}
+function ProfileScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>Profile!</Text>
+    </View>
+  );
+}
+
+function VideosScreen({ navigation }) {
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>Video!</Text>
       <Button
-        title="Go to Video 81"
-        onPress={() => {
-          /* 1. Navigate to the Details route with params */
-          navigation.navigate("Watch", {
-            videoId: 81,
-          });
-        }}
+        onPress={() =>
+          navigation.push("Video", {
+            videoID: 10,
+            title:
+              "How Machine Learning has Finally Solved Wanamaker’s Dilemma",
+          })
+        }
+        title="Go to video"
       />
     </View>
   );
 }
 
-function SettingsScreen() {
+const Tabs = createBottomTabNavigator();
+const HomeStack = createStackNavigator();
+const VideoStack = createStackNavigator();
+const ProfileStack = createStackNavigator();
+
+const HomeStackScreen = () => (
+  <HomeStack.Navigator>
+    <HomeStack.Screen name="home" component={HomeScreen} />
+  </HomeStack.Navigator>
+);
+
+const ProfileStackScreen = () => (
+  <ProfileStack.Navigator>
+    <ProfileStack.Screen name="profile" component={ProfileScreen} />
+  </ProfileStack.Navigator>
+);
+
+const VideoStackScreen = () => {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Settings!</Text>
-    </View>
+    <VideoStack.Navigator>
+      <VideoStack.Screen
+        name="Videos"
+        component={VideosScreen}
+        options={({ navigation, route }) => ({
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => navigation.push("Search")}
+              style={{ paddingRight: 15 }}
+            >
+              <Ionicons name="ios-search" size={20} />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+      <VideoStack.Screen
+        name="Video"
+        component={VideoScreen}
+        options={({ navigation, route }) => ({
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => navigation.push("Search")}
+              style={{ paddingRight: 15 }}
+            >
+              <Ionicons name="ios-search" size={20} />
+            </TouchableOpacity>
+          ),
+          title: route.params.title,
+        })}
+      />
+      <VideoStack.Screen name="Search" component={SearchScreen} />
+    </VideoStack.Navigator>
   );
-}
+};
 
-const Tab = createBottomTabNavigator();
-
-export default function App() {
+export default () => {
+  // fonts
+  let [fontsLoaded] = useFonts({
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_300Light,
+  });
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
   return (
-    <NavigationContainer theme={DefaultTheme}>
-      <Tab.Navigator
+    <NavigationContainer>
+      <Tabs.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
 
             if (route.name === "Home") {
-              iconName = focused ? "ios-grid" : "ios-grid";
-            } else if (route.name === "Settings") {
-              iconName = focused ? "ios-options" : "ios-options";
-            } else if (route.name === "Watch") {
+              iconName = focused ? "ios-home" : "ios-home";
+            } else if (route.name === "Video") {
               iconName = focused ? "ios-videocam" : "ios-videocam";
+            } else if (route.name === "Profile") {
+              iconName = focused ? "ios-person" : "ios-person";
             }
 
             // You can return any component that you like here!
@@ -68,14 +150,11 @@ export default function App() {
           },
         }}
       >
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen
-          name="Watch"
-          component={VideoScreen}
-          initialParams={{ videoId: 0 }}
-        />
-        <Tab.Screen name="Settings" component={SettingsScreen} />
-      </Tab.Navigator>
+        <Tabs.Screen name="Home" component={HomeStackScreen} />
+        <Tabs.Screen name="Video" component={VideoStackScreen} />
+        <Tabs.Screen name="Profile" component={ProfileStackScreen} />
+      </Tabs.Navigator>
+      <StatusBar style="auto" />
     </NavigationContainer>
   );
-}
+};
