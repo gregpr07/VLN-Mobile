@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import {
   TextInput,
   SafeAreaView,
@@ -13,22 +13,44 @@ import {
   YoutubeTime,
   isoFormatDMY,
   parseISOString,
+  shorterText,
 } from "../functions/functions/";
 
 export default SearchScreen = ({ navigation }) => {
   const site_api = "https://platform.x5gon.org/api/v2/";
 
-  const [data, setData] = React.useState([]);
+  const [data, setData] = useState([]);
 
-  const [inputValue, onChangeText] = React.useState("");
-  const handleSubmit = () => {
+  const [inputValue, onChangeText] = useState("");
+  const [previousInputValue, setPreviousValue] = useState("");
+  const [nextPage, setNextPage] = useState("");
+
+  const getData = (append_array) => {
     console.log(inputValue);
-    fetch(site_api + "search?text=" + inputValue + "&types=video")
+    setPreviousValue(inputValue);
+    const search_link = site_api + "search?text=" + inputValue + "&types=video";
+    fetch(append_array ? (nextPage ? nextPage : search_link) : search_link)
       .then((res) => res.json())
       .then((json) => {
-        setData(json.rec_materials);
-        console.log("data set");
+        console.log("data returned");
+        const new_arr = append_array
+          ? data.concat(json.rec_materials)
+          : json.rec_materials;
+        console.log(new_arr.length);
+        setData(new_arr);
+        setNextPage(json.metadata.next_page);
       });
+  };
+
+  const handleSubmit = () => {
+    if (previousInputValue !== inputValue) {
+      getData(false);
+    }
+  };
+
+  const loadMoreData = () => {
+    console.log(nextPage);
+    getData(true, nextPage);
   };
 
   const Separator = () => (
@@ -66,8 +88,10 @@ export default SearchScreen = ({ navigation }) => {
             resizeMode: "cover",
           }}
         />
-        <View style={{ flex: 4, padding: 10, justifyContent: "center" }}>
-          <Text style={styles.h5}>{item.title}</Text>
+        <View
+          style={{ flex: 4, paddingHorizontal: 10, justifyContent: "center" }}
+        >
+          <Text style={styles.h5}>{shorterText(item.title, 75)}</Text>
           <View style={styles.description}>
             <Text style={[styles.h5, { color: "#828282" }]}>
               {item.material_id}
@@ -85,17 +109,20 @@ export default SearchScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <TextInput
-        style={{ height: 40, borderColor: "gray", borderWidth: 1 }}
+        style={styles.SearchBar}
         onChangeText={(text) => onChangeText(text)}
         value={inputValue}
         autoFocus={true}
         onSubmitEditing={handleSubmit}
+        clearButtonMode={"while-editing"}
       />
       <SafeAreaView>
         <FlatList
           data={data}
           renderItem={renderItem}
-          keyExtractor={(item) => item.title + item.material_id}
+          keyExtractor={(item) => item.material_id + item.url}
+          onEndReached={loadMoreData}
+          //getNativeScrollRef={(ref) => (flatlistRef = ref)}
         />
       </SafeAreaView>
     </View>
@@ -107,6 +134,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: padding,
+    backgroundColor: "white",
   },
   h1: {
     fontSize: 36,
@@ -126,40 +154,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Inter_500Medium",
   },
-
   gray: {
     color: "#828282",
   },
-  video_title: {
-    fontSize: 22,
-    paddingBottom: 16,
-    paddingTop: 16,
-    fontFamily: "Inter_500Medium",
-    paddingRight: 32,
-  },
-  description: {
-    paddingVertical: 8,
-  },
   recommendation: {
-    paddingVertical: 8,
+    marginVertical: 12,
     flexDirection: "row",
   },
-  your_notes: {
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    //height: 100,
-    marginVertical: 16,
-    backgroundColor: "#EB575725",
-  },
-  single_note: {
-    paddingVertical: 6,
-    /* borderBottomColor: "#4F4F4F25",
-    borderBottomWidth: 1, */
-  },
-  note_text: {
-    fontFamily: "Inter_300Light",
-    fontSize: 16,
-    color: "#4F4F4F",
+  SearchBar: {
+    height: 50,
+    borderColor: "#E8E8E8",
+    borderWidth: 1,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 100,
+    paddingHorizontal: 20,
+    fontSize: 20,
+    fontFamily: "Inter_500Medium",
+    marginBottom: 20,
+    color: "#BDBDBD",
   },
 });

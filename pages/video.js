@@ -8,13 +8,17 @@ import {
   Dimensions,
   Button,
   TouchableOpacity,
+  FlatList,
+  SafeAreaView,
+  Modal,
+  TouchableHighlight,
+  TextInput,
 } from "react-native";
 
 // functions
 import { YoutubeTime } from "../functions/functions/";
 
 // expo
-import Constants from "expo-constants";
 import { Video } from "expo-av";
 
 // dimensions
@@ -24,7 +28,7 @@ var videoRef;
 
 export default function VideoScreen({ route, navigation }) {
   const { videoId } = route.params;
-  console.log(videoId);
+  //console.log(videoId);
   const _handleVideoRef = (component) => {
     videoRef = component;
   };
@@ -64,21 +68,6 @@ export default function VideoScreen({ route, navigation }) {
     published: "Sept. 5, 2016",
   };
 
-  const notes = [
-    {
-      text: "is this really what he meant?",
-      timestamp: 12312,
-    },
-    {
-      text: "This is how we do it?",
-      timestamp: 26312,
-    },
-    {
-      text: "Why does it matter?",
-      timestamp: 626312,
-    },
-  ];
-
   const recommendations = [
     {
       title:
@@ -95,33 +84,101 @@ export default function VideoScreen({ route, navigation }) {
       date: "2016",
       image: "http://hydro.ijs.si/v013/d2/2ley3qjmm7a3v7g6lnq5duermqrzbq7f.jpg",
     },
-    /*     {
-      title: "",
-      views: 1,
-      author: "",
-      date: "",
-      image: "",
-    }, */
   ];
 
-  const Notes = () => (
-    <View>
-      <Text style={styles.h3}>Your notes</Text>
-      <View style={styles.your_notes}>
-        {notes.map((note) => (
-          <View key={note.text} style={styles.single_note}>
-            <Button
-              onPress={() => handleTimestamp(note.timestamp)}
-              title={YoutubeTime(note.timestamp)}
-            />
-            {/* <Image source={timestamp} style={{ height: 20, width: 20 }} /> */}
+  const Notes = () => {
+    const notes = [
+      /*       {
+        text:
+          "Screens support is built into react-navigation starting from version 2.14.0 for all the different navigator types (stack, tab, drawer, etc). We plan on adding it to other navigators shortly. To configure react-navigation to use screens instead of plain RN Views for rendering screen views, follow the steps below:",
+        timestamp: 12312,
+      },
+      {
+        text: "This is how we do it?",
+        timestamp: 26312,
+      },
+      {
+        text: "Why does it matter?",
+        timestamp: 626312,
+      }, */
+    ];
 
-            <Text style={styles.note_text}>{note.text}</Text>
-          </View>
-        ))}
+    const ITEM_SIZE = 200;
+    const SEPARATOR_SIZE = 10;
+    const RenderNote = ({ item, index }) => {
+      return (
+        <View
+          style={{
+            paddingVertical: 6,
+            width: ITEM_SIZE,
+          }}
+        >
+          <Button
+            onPress={() => handleTimestamp(item.timestamp)}
+            title={YoutubeTime(item.timestamp)}
+          />
+
+          <Text style={styles.note_text}>{item.text}</Text>
+        </View>
+      );
+    };
+
+    const Separator = () => (
+      <View
+        style={{
+          marginHorizontal: SEPARATOR_SIZE,
+          borderColor: "#E8E8E8",
+          borderWidth: 0.5,
+        }}
+      ></View>
+    );
+    const NoteHeader = () => null;
+    const EmptyComponent = () => (
+      <View
+        style={{
+          paddingVertical: 12,
+        }}
+      >
+        <Text style={[styles.h4, { color: "gray", marginVertical: 20 }]}>
+          Swipe left to create a note
+        </Text>
       </View>
-    </View>
-  );
+    );
+
+    const handleAddMore = (props) => {
+      const offset = 50;
+      const currentX = props.nativeEvent.contentOffset.x;
+      // || currentX > ITEM_SIZE + SEPARATOR_SIZE
+      // ALSO NEED TO IMPLEMENT RIGHT SIDE
+      if (currentX < -offset) {
+        navigation.navigate("NewNote");
+        console.log(currentX);
+      }
+    };
+
+    return (
+      <View>
+        <Text style={styles.h3}>Your notes</Text>
+
+        <SafeAreaView style={styles.your_notes}>
+          <FlatList
+            data={notes}
+            renderItem={RenderNote}
+            keyExtractor={(item) => item.text}
+            horizontal
+            ItemSeparatorComponent={Separator}
+            ListHeaderComponent={NoteHeader}
+            ListEmptyComponent={EmptyComponent}
+            snapToInterval={ITEM_SIZE + 2 * SEPARATOR_SIZE}
+            showsHorizontalScrollIndicator={false}
+            decelerationRate={0}
+            onScroll={handleAddMore}
+          />
+        </SafeAreaView>
+      </View>
+    );
+  };
+
   const Description = () => (
     <View style={styles.description}>
       <Text style={styles.h4}>
@@ -148,7 +205,7 @@ export default function VideoScreen({ route, navigation }) {
   );
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Video */}
       <View>
         <Text style={styles.video_title}>{video_stats.title}</Text>
@@ -161,7 +218,7 @@ export default function VideoScreen({ route, navigation }) {
           }}
           resizeMode={Video.RESIZE_MODE_COVER}
           usePoster={true}
-          shouldPlay={true}
+          shouldPlay={false}
           //isLooping={false}
           style={styles.video}
           useNativeControls={true}
@@ -223,8 +280,8 @@ const padding = 24;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: Constants.statusBarHeight,
     padding: padding,
+    paddingTop: 0,
   },
   h1: {
     fontSize: 36,
@@ -270,19 +327,21 @@ const styles = StyleSheet.create({
   your_notes: {
     borderRadius: 16,
     paddingHorizontal: 16,
-    paddingVertical: 8,
     //height: 100,
-    marginVertical: 16,
-    backgroundColor: "#EB575725",
-  },
-  single_note: {
-    paddingVertical: 6,
-    /* borderBottomColor: "#4F4F4F25",
-    borderBottomWidth: 1, */
+    marginVertical: 8,
+    backgroundColor: "white",
   },
   note_text: {
     fontFamily: "Inter_300Light",
     fontSize: 16,
     color: "#4F4F4F",
+  },
+  button_default: {
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    borderRadius: 20,
+    backgroundColor: "#5DB075",
+    fontSize: 20,
+    fontFamily: "Inter_500Medium",
   },
 });

@@ -8,6 +8,8 @@ import { StatusBar } from "expo-status-bar";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import VideoScreen from "./pages/video";
 import SearchScreen from "./pages/search";
+import ModalScreen from "./pages/video_new_note";
+import HomeScreen from "./pages/homescreen";
 
 import { AppLoading } from "expo";
 
@@ -18,13 +20,6 @@ import {
   Inter_300Light,
 } from "@expo-google-fonts/inter";
 
-function HomeScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Home!</Text>
-    </View>
-  );
-}
 function ProfileScreen() {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -56,8 +51,14 @@ const HomeStack = createStackNavigator();
 const VideoStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
 
+const VideoModal = createStackNavigator();
+
 const HomeStackScreen = () => (
-  <HomeStack.Navigator>
+  <HomeStack.Navigator
+    screenOptions={{
+      headerShown: false,
+    }}
+  >
     <HomeStack.Screen name="home" component={HomeScreen} />
   </HomeStack.Navigator>
 );
@@ -102,6 +103,21 @@ const VideoStackScreen = () => {
       />
       <VideoStack.Screen name="Search" component={SearchScreen} />
     </VideoStack.Navigator>
+  );
+};
+
+const VideoStackRoot = () => {
+  return (
+    <VideoModal.Navigator
+      mode="modal"
+      headerMode="none"
+      screenOptions={{
+        cardStyle: { backgroundColor: "transparent" },
+      }}
+    >
+      <VideoModal.Screen name="Main" component={VideoStackScreen} />
+      <VideoModal.Screen name="NewNote" component={ModalScreen} />
+    </VideoModal.Navigator>
   );
 };
 
@@ -151,7 +167,7 @@ export default () => {
         }}
       >
         <Tabs.Screen name="Home" component={HomeStackScreen} />
-        <Tabs.Screen name="Video" component={VideoStackScreen} />
+        <Tabs.Screen name="Video" component={VideoStackRoot} />
         <Tabs.Screen name="Profile" component={ProfileStackScreen} />
       </Tabs.Navigator>
       <StatusBar style="auto" />
