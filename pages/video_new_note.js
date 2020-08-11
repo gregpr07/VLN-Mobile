@@ -7,9 +7,14 @@ import {
   StyleSheet,
 } from "react-native";
 
-export default function ModalScreen({ navigation }) {
-  const [addNoteVisible, setAddNoteVisible] = useState(false);
+export default function ModalScreen({ navigation, route }) {
+  //const [addNoteVisible, setAddNoteVisible] = useState(false);
   const [noteText, setNoteText] = useState("");
+  const output_obj = {
+    text: noteText,
+    timestamp: route.params.timestamp,
+  };
+
   return (
     <View style={modal_styles.centeredView}>
       <View style={modal_styles.modalView}>
@@ -28,7 +33,10 @@ export default function ModalScreen({ navigation }) {
         <TouchableHighlight
           style={modal_styles.button_default}
           onPress={() => {
-            console.log(noteText);
+            if (noteText) {
+              route.params.setNotes([...route.params.notes, output_obj]);
+            }
+            console.log(output_obj);
             navigation.goBack();
           }}
         >
@@ -49,7 +57,7 @@ const modal_styles = StyleSheet.create({
   },
   modalView: {
     margin: 40,
-    backgroundColor: "white",
+    backgroundColor: "#ffffff",
     borderRadius: 20,
     padding: 25,
     alignItems: "center",

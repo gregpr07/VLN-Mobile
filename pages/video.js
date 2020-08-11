@@ -33,7 +33,15 @@ export default function VideoScreen({ route, navigation }) {
     videoRef = component;
   };
 
-  /*   // HANDLE FULLSCREEN ON ROTATION
+  async function get_vid_status(ret_obj) {
+    if (videoRef) {
+      const AVPlaybackStatus = await videoRef.getStatusAsync();
+      //setVideoStatus(AVPlaybackStatus);
+      return AVPlaybackStatus[ret_obj];
+    }
+  }
+
+  // HANDLE FULLSCREEN ON ROTATION
   const isPortrait = () => {
     const dim = Dimensions.get("screen");
     return dim.height >= dim.width;
@@ -53,7 +61,7 @@ export default function VideoScreen({ route, navigation }) {
       }
     }
   }, [orientation]);
-  // / */
+  // /
 
   const handleTimestamp = (timestamp) => {
     videoRef.setPositionAsync(timestamp);
@@ -87,8 +95,8 @@ export default function VideoScreen({ route, navigation }) {
   ];
 
   const Notes = () => {
-    const notes = [
-      /*       {
+    const [notes, setNotes] = useState([
+      {
         text:
           "Screens support is built into react-navigation starting from version 2.14.0 for all the different navigator types (stack, tab, drawer, etc). We plan on adding it to other navigators shortly. To configure react-navigation to use screens instead of plain RN Views for rendering screen views, follow the steps below:",
         timestamp: 12312,
@@ -100,11 +108,12 @@ export default function VideoScreen({ route, navigation }) {
       {
         text: "Why does it matter?",
         timestamp: 626312,
-      }, */
-    ];
+      },
+    ]);
 
     const ITEM_SIZE = 200;
     const SEPARATOR_SIZE = 10;
+
     const RenderNote = ({ item, index }) => {
       return (
         <View
@@ -151,10 +160,18 @@ export default function VideoScreen({ route, navigation }) {
       // || currentX > ITEM_SIZE + SEPARATOR_SIZE
       // ALSO NEED TO IMPLEMENT RIGHT SIDE
       if (currentX < -offset) {
-        navigation.navigate("NewNote");
-        console.log(currentX);
+        //console.log(videoStatus);
+        get_vid_status("positionMillis").then((timestamp) => {
+          navigation.navigate("NewNote", {
+            notes,
+            setNotes,
+            timestamp: timestamp,
+          });
+        });
       }
     };
+
+    //videoRef
 
     return (
       <View>
@@ -218,7 +235,7 @@ export default function VideoScreen({ route, navigation }) {
           }}
           resizeMode={Video.RESIZE_MODE_COVER}
           usePoster={true}
-          shouldPlay={false}
+          shouldPlay={true}
           //isLooping={false}
           style={styles.video}
           useNativeControls={true}

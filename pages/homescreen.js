@@ -18,16 +18,20 @@ export default function HomeScreen() {
   const events = [
     {
       id: "1",
+      image:
+        "https://www.tp-lj.si/imagine_cache/news_figure/uploads/open-data_600x315.jpg",
     },
     {
       id: "2",
+      image: "http://hydro.ijs.si/v00a/5e/lyuqcgce6wrwiu3c2mxu3ont3jtte6fe.jpg",
     },
     {
       id: "3",
+      image: "http://hydro.ijs.si/v00a/c3/ynn57ohwub3ifoj6heyav2akwjxy5m27.jpg",
     },
   ];
 
-  const EventCard = () => (
+  const EventCard = ({ item, index }) => (
     <View
       style={{
         shadowOffset: {
@@ -42,8 +46,7 @@ export default function HomeScreen() {
     >
       <Image
         source={{
-          uri:
-            "https://www.tp-lj.si/imagine_cache/news_figure/uploads/open-data_600x315.jpg",
+          uri: item.image,
         }}
         style={{
           height: ((width - 2 * padding) / 16) * 9,
@@ -54,28 +57,120 @@ export default function HomeScreen() {
       />
     </View>
   );
-  return (
-    <View>
+
+  const Header = () => (
+    <View
+      style={{
+        paddingTop: Constants.statusBarHeight,
+        backgroundColor: "#5DB075",
+        paddingBottom: 10,
+      }}
+    >
+      <Text style={styles.h1}>Events</Text>
+      <SafeAreaView>
+        <FlatList
+          data={events}
+          renderItem={EventCard}
+          keyExtractor={(item) => item.id}
+          horizontal
+          snapToInterval={width}
+          showsHorizontalScrollIndicator={false}
+          decelerationRate={0}
+        />
+      </SafeAreaView>
+    </View>
+  );
+
+  const Authors = () => {
+    const authors = [
+      {
+        name: "Walter Lewin",
+        views: 3813440,
+        image:
+          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2F4a0FbQdH3dY%2Fmaxresdefault.jpg&f=1&nofb=1",
+      },
+      {
+        name: "Gilbert Strang",
+        views: 1020442,
+        image:
+          "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.maths.unsw.edu.au%2Fsites%2Fdefault%2Ffiles%2Fgilbert_strang.jpg&f=1&nofb=1",
+      },
+      {
+        name: "Erik Novak",
+        views: 12314155,
+        image: "",
+      },
+    ];
+
+    const AUTHOR_WIDTH = 120;
+    const SEPARATOR_WIDTH = 20;
+    const RenderAuthor = ({ item, index }) => (
       <View
         style={{
-          paddingTop: Constants.statusBarHeight,
-          backgroundColor: "#5DB075",
-          paddingBottom: 10,
+          paddingVertical: 6,
+          width: AUTHOR_WIDTH,
+          marginVertical: 10,
         }}
       >
-        <Text style={styles.h1}>Events</Text>
+        <Image
+          source={
+            item.image
+              ? {
+                  uri: item.image,
+                }
+              : require(`../assets/icons/profile_image.png`)
+          }
+          style={{
+            height: AUTHOR_WIDTH,
+            borderRadius: 12,
+            resizeMode: item.image ? "cover" : "center",
+            marginBottom: 5,
+          }}
+        />
+        <Text style={styles.h5}>{item.name}</Text>
+        <Text>
+          <Text
+            style={{
+              fontFamily: "Inter_500Medium",
+            }}
+          >
+            {item.views}
+          </Text>{" "}
+          views
+        </Text>
+      </View>
+    );
+
+    const AuthorSeparator = () => (
+      <View style={{ paddingRight: SEPARATOR_WIDTH }} />
+    );
+    return (
+      <View
+        style={{
+          paddingVertical: 25,
+          paddingHorizontal: padding,
+        }}
+      >
+        <Text style={styles.h3}>Top authors</Text>
         <SafeAreaView>
           <FlatList
-            data={events}
-            renderItem={EventCard}
-            keyExtractor={(item) => item.id}
+            data={authors}
+            renderItem={RenderAuthor}
+            keyExtractor={(item) => item.name}
+            ItemSeparatorComponent={AuthorSeparator}
             horizontal
-            snapToInterval={width}
+            snapToInterval={AUTHOR_WIDTH + SEPARATOR_WIDTH}
             showsHorizontalScrollIndicator={false}
             decelerationRate={0}
           />
         </SafeAreaView>
       </View>
+    );
+  };
+  return (
+    <View style={{ backgroundColor: "white" }}>
+      <Header />
+      <Authors />
     </View>
   );
 }
