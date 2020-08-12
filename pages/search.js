@@ -15,6 +15,7 @@ import {
   parseISOString,
   shorterText,
 } from "../functions/functions/";
+import Constants from "expo-constants";
 
 export default SearchScreen = ({ navigation }) => {
   const site_api = "https://platform.x5gon.org/api/v2/";
@@ -67,9 +68,12 @@ export default SearchScreen = ({ navigation }) => {
     <View>
       <TouchableOpacity
         onPress={() => {
-          navigation.push("Video", {
-            videoID: item.views,
-            title: item.title,
+          navigation.navigate("Video", {
+            screen: "Video",
+            params: {
+              videoID: item.views,
+              title: item.title,
+            },
           });
           //videoRef.stopAsync();
         }}
@@ -135,6 +139,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: padding,
     backgroundColor: "white",
+    paddingTop: padding + Constants.statusBarHeight,
   },
   h1: {
     fontSize: 36,

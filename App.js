@@ -8,8 +8,10 @@ import { StatusBar } from "expo-status-bar";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import VideoScreen from "./pages/video";
 import SearchScreen from "./pages/search";
-import ModalScreen from "./pages/video_new_note";
+//import ModalScreen from "./pages/video_new_note_deprecated";
 import HomeScreen from "./pages/homescreen";
+
+import DevOnlyComp from "./pages/devcomponents";
 
 import { AppLoading } from "expo";
 
@@ -75,7 +77,7 @@ const VideoStackScreen = () => {
       <VideoStack.Screen
         name="Videos"
         component={VideosScreen}
-        options={({ navigation, route }) => ({
+        /* options={({ navigation, route }) => ({
           headerRight: () => (
             <TouchableOpacity
               onPress={() => navigation.push("Search")}
@@ -84,29 +86,20 @@ const VideoStackScreen = () => {
               <Ionicons name="ios-search" size={20} />
             </TouchableOpacity>
           ),
-        })}
+        })} */
       />
       <VideoStack.Screen
         name="Video"
         component={VideoScreen}
-        options={({ navigation, route }) => ({
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => navigation.push("Search")}
-              style={{ paddingRight: 15 }}
-            >
-              <Ionicons name="ios-search" size={20} />
-            </TouchableOpacity>
-          ),
-          title: route.params.title,
-        })}
+        /*         options={({ navigation, route }) => ({
+          title: "Video", //route.params.title,
+        })} */
       />
-      <VideoStack.Screen name="Search" component={SearchScreen} />
     </VideoStack.Navigator>
   );
 };
 
-const VideoStackRoot = () => {
+/* const VideoStackRoot = () => {
   return (
     <VideoModal.Navigator
       mode="modal"
@@ -119,7 +112,7 @@ const VideoStackRoot = () => {
       <VideoModal.Screen name="NewNote" component={ModalScreen} />
     </VideoModal.Navigator>
   );
-};
+}; */
 
 export default () => {
   // fonts
@@ -144,6 +137,10 @@ export default () => {
               iconName = focused ? "ios-videocam" : "ios-videocam";
             } else if (route.name === "Profile") {
               iconName = focused ? "ios-person" : "ios-person";
+            } else if (route.name == "Search") {
+              iconName = "ios-search";
+            } else if (route.name == "DEV") {
+              iconName = "ios-bug";
             }
 
             // You can return any component that you like here!
@@ -167,8 +164,10 @@ export default () => {
         }}
       >
         <Tabs.Screen name="Home" component={HomeStackScreen} />
-        <Tabs.Screen name="Video" component={VideoStackRoot} />
+        <Tabs.Screen name="Video" component={VideoStackScreen} />
+        <Tabs.Screen name="Search" component={SearchScreen} />
         <Tabs.Screen name="Profile" component={ProfileStackScreen} />
+        <Tabs.Screen name="DEV" component={DevOnlyComp} />
       </Tabs.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>
