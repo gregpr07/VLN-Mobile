@@ -3,6 +3,7 @@ import { Text, View, Button, TouchableOpacity } from "react-native";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
+
 import { StatusBar } from "expo-status-bar";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -10,6 +11,8 @@ import VideoScreen from "./pages/video";
 import SearchScreen from "./pages/search";
 //import ModalScreen from "./pages/video_new_note_deprecated";
 import HomeScreen from "./pages/homescreen";
+import ProfileScreen from "./pages/profile";
+import VideosScreen from "./pages/videoscreen";
 
 import DevOnlyComp from "./pages/devcomponents";
 
@@ -21,32 +24,6 @@ import {
   Inter_600SemiBold,
   Inter_300Light,
 } from "@expo-google-fonts/inter";
-
-function ProfileScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Profile!</Text>
-    </View>
-  );
-}
-
-function VideosScreen({ navigation }) {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Video!</Text>
-      <Button
-        onPress={() =>
-          navigation.push("Video", {
-            videoID: 10,
-            title:
-              "How Machine Learning has Finally Solved Wanamaker’s Dilemma",
-          })
-        }
-        title="Go to video"
-      />
-    </View>
-  );
-}
 
 const Tabs = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -66,7 +43,11 @@ const HomeStackScreen = () => (
 );
 
 const ProfileStackScreen = () => (
-  <ProfileStack.Navigator>
+  <ProfileStack.Navigator
+    screenOptions={{
+      headerShown: false,
+    }}
+  >
     <ProfileStack.Screen name="profile" component={ProfileScreen} />
   </ProfileStack.Navigator>
 );

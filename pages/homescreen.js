@@ -12,6 +12,7 @@ import {
 } from "react-native";
 const { width, height } = Dimensions.get("window");
 import Constants from "expo-constants";
+import { StatusBar } from "expo-status-bar";
 
 const padding = 24;
 export default function HomeScreen() {
@@ -50,6 +51,7 @@ export default function HomeScreen() {
         }}
         style={{
           height: ((width - 2 * padding) / 16) * 9,
+          maxHeight: 400,
           borderRadius: 12,
           resizeMode: "cover",
           marginVertical: 24,
@@ -171,6 +173,7 @@ export default function HomeScreen() {
     <View style={{ backgroundColor: "white" }}>
       <Header />
       <Authors />
+      <StatusBar style="light" />
     </View>
   );
 }

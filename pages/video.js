@@ -190,7 +190,7 @@ export default function VideoScreen({ route, navigation }) {
               value={noteText}
               autoFocus={true}
               //onSubmitEditing={handleSubmit}
-              clearButtonMode={"while-editing"}
+              clearButtonMode={"always"}
               multiline
               placeholder={"Add new note here"}
               placeholderTextColor="#BDBDBD"
@@ -243,8 +243,8 @@ export default function VideoScreen({ route, navigation }) {
         /* 
         }); */
         setShowNotes(false);
-        fadeIn();
         SpringIn();
+        FadeIn();
       }
     };
 
@@ -336,72 +336,113 @@ export default function VideoScreen({ route, navigation }) {
     );
   };
 
+  const MainSeparatorWidth = 100;
+  const MainSeparator = () => (
+    <View
+      style={{
+        marginHorizontal: MainSeparatorWidth,
+      }}
+    ></View>
+  );
+
   // ANIMATIONS
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const SpingAnim = useRef(new Animated.Value(0)).current;
-  const fadeIn = () => {
-    // Will change fadeAnim value to 1 in 5 seconds
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 250,
-      useNativeDriver: true,
-    }).start();
-  };
+
+  const [titleHeight, setTitlteHeight] = useState(0);
+
+  const SpringAnim = useRef(new Animated.Value(0)).current;
+  const OpacityAnim = useRef(new Animated.Value(1)).current;
+
+  const SPRING_VAL = titleHeight;
   const SpringIn = () => {
     // Will change fadeAnim value to 0 in 5 seconds
-    Animated.spring(SpingAnim, {
-      toValue: 50,
-      duration: 100,
+    SpringAnim.setValue(-SPRING_VAL);
+    Animated.spring(SpringAnim, {
+      toValue: 0,
+      duration: 500,
       useNativeDriver: true,
     }).start();
   };
+
   const SpringOut = () => {
     // Will change fadeAnim value to 0 in 5 seconds
-    Animated.spring(SpingAnim, {
+    SpringAnim.setValue(SPRING_VAL);
+    Animated.spring(SpringAnim, {
       toValue: 0,
-      duration: 100,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const FadeIn = () => {
+    OpacityAnim.setValue(0);
+    Animated.spring(OpacityAnim, {
+      toValue: 1,
+      duration: 400,
       useNativeDriver: true,
     }).start();
   };
 
   return (
     <View style={styles.container} showsVerticalScrollIndicator={false}>
-      {/* Video */}
       {showNotes ? null : (
         <Animated.View
+          onLayout={(event) => {
+            setTitlteHeight(event.nativeEvent.layout.height);
+          }}
           style={{
-            opacity: fadeAnim, // Bind opacity to animated value
+            opacity: OpacityAnim,
           }}
         >
           <Text style={styles.video_title}>{video_stats.title}</Text>
         </Animated.View>
       )}
-
-      <Animated.View style={{ transform: [{ translateY: SpingAnim }] }}>
-        <Video
-          source={{
-            uri: video_stats.url,
-          }}
-          posterSource={{
-            uri: video_stats.poster,
-          }}
-          resizeMode={Video.RESIZE_MODE_COVER}
-          usePoster={true}
-          shouldPlay={false}
-          //isLooping={false}
-          style={styles.video}
-          useNativeControls={true}
-          ref={_handleVideoRef}
-        />
+      {/* VideoAudio */}
+      <Animated.View
+        style={{
+          transform: [{ translateY: SpringAnim }],
+        }}
+      >
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          snapToInterval={width + 2 * MainSeparatorWidth}
+          decelerationRate={0}
+        >
+          <Video
+            source={{
+              uri: video_stats.url,
+            }}
+            posterSource={{
+              uri: video_stats.poster,
+            }}
+            resizeMode={Video.RESIZE_MODE_COVER}
+            usePoster={true}
+            shouldPlay={true}
+            //isLooping={false}
+            style={styles.video}
+            useNativeControls={true}
+            ref={_handleVideoRef}
+          />
+          <MainSeparator />
+          <Image
+            source={{
+              uri: video_stats.poster,
+            }}
+            style={styles.video}
+            blurRadius={10}
+          ></Image>
+        </ScrollView>
       </Animated.View>
 
       {showNotes ? (
         <Notes />
       ) : (
         <>
-          <Description />
+          <Animated.View>
+            <Description />
 
-          <SwitchToNotes />
+            <SwitchToNotes />
+          </Animated.View>
 
           {/* recommendations */}
 
@@ -424,6 +465,7 @@ export default function VideoScreen({ route, navigation }) {
                     source={{ uri: recc.image }}
                     style={{
                       height: 80,
+                      maxWidth: (80 / 9) * 16,
                       flex: 2,
                       borderRadius: 12,
                       resizeMode: "cover",
@@ -463,6 +505,8 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: padding,
     paddingTop: padding,
+    backgroundColor: "white",
+    paddingBottom: 0,
   },
   h1: {
     fontSize: 36,

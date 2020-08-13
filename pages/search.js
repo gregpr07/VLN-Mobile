@@ -16,6 +16,7 @@ import {
   shorterText,
 } from "../functions/functions/";
 import Constants from "expo-constants";
+import { StatusBar } from "expo-status-bar";
 
 export default SearchScreen = ({ navigation }) => {
   const site_api = "https://platform.x5gon.org/api/v2/";
@@ -87,6 +88,7 @@ export default SearchScreen = ({ navigation }) => {
           }}
           style={{
             height: 90,
+            maxWidth: (90 / 9) * 16,
             flex: 3,
             borderRadius: 12,
             resizeMode: "cover",
@@ -129,6 +131,7 @@ export default SearchScreen = ({ navigation }) => {
           //getNativeScrollRef={(ref) => (flatlistRef = ref)}
         />
       </SafeAreaView>
+      <StatusBar style="dark" />
     </View>
   );
 };

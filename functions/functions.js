@@ -39,10 +39,10 @@ const months = [
 
 export function isoFormatDMY(d) {
   return (
-    d.getUTCDate() +
+    /* d.getUTCDate() +
     " " +
     months[parseInt(d.getUTCMonth() + 1)] +
-    ", " +
+    ", " + */
     d.getUTCFullYear()
   );
 }
