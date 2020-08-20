@@ -12,6 +12,7 @@ import {
 const { width, height } = Dimensions.get("window");
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
+
 import {
   TouchableHighlight,
   TouchableOpacity,

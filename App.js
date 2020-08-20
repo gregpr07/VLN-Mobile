@@ -58,6 +58,7 @@ const VideoStackScreen = () => {
       <VideoStack.Screen
         name="Videos"
         component={VideosScreen}
+        //initialParams={{ videoComp: currentVideo }}
         /* options={({ navigation, route }) => ({
           headerRight: () => (
             <TouchableOpacity
@@ -72,6 +73,7 @@ const VideoStackScreen = () => {
       <VideoStack.Screen
         name="Video"
         component={VideoScreen}
+
         /*         options={({ navigation, route }) => ({
           title: "Video", //route.params.title,
         })} */
@@ -105,6 +107,7 @@ export default () => {
   if (!fontsLoaded) {
     return <AppLoading />;
   }
+
   return (
     <NavigationContainer>
       <Tabs.Navigator

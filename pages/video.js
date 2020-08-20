@@ -23,20 +23,37 @@ import { YoutubeTime, shorterText } from "../functions/functions/";
 
 // expo
 import { Video } from "expo-av";
+import ViewPager from "@react-native-community/viewpager";
 
 // dimensions
 const { width, height } = Dimensions.get("window");
 
-var videoRef;
-
 export default function VideoScreen({ route, navigation }) {
-  const { videoId, title } = route.params;
+  var videoRef;
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <Button
+          onPress={() => {
+            videoRef.unloadAsync();
+            navigation.navigate("Videos");
+          }}
+          title="Videos"
+        />
+      ),
+    });
+  }, [navigation]);
 
-  //console.log(route);
+  //const [stateVideoRef, setStateVideoRef] = useState();
+  const { videoId, title } = route.params;
 
   //console.log(videoId);
   const _handleVideoRef = (component) => {
-    videoRef = component;
+    if (!videoRef) {
+      videoRef = component;
+      //setStateVideoRef(component);
+      //console.log(component);
+    }
   };
 
   async function get_vid_status(ret_obj) {
@@ -47,7 +64,7 @@ export default function VideoScreen({ route, navigation }) {
     }
   }
 
-  // HANDLE FULLSCREEN ON ROTATION
+  /* // HANDLE FULLSCREEN ON ROTATION
   const isPortrait = () => {
     const dim = Dimensions.get("screen");
     return dim.height >= dim.width;
@@ -66,16 +83,21 @@ export default function VideoScreen({ route, navigation }) {
         videoRef.presentFullscreenPlayer();
       }
     }
-  }, [orientation]);
+  }, [orientation]); */
   // /
+  /*   useEffect(() => {
+    navigation.addListener("willFocus", async () => {
+      videoRef.stopAsync();
+    });
+  }, [navigation]); */
 
   const handleTimestamp = (timestamp) => {
     videoRef.setPositionAsync(timestamp);
   };
 
   const video_stats = {
-    title: "How Machine Learning has Finally Solved Wanamaker’s Dilemma",
-    url: "http://hydro.ijs.si/v013/b6/wylr5jibhu2qtvpio2mdflqcby7oym6r.mp4",
+    title: title,
+    url: "http://hydro.ijs.si/v00e/0c/bqsbpqtnh52xm5nnm2iidqmf5vccd4l2.mp4",
     poster: "http://hydro.ijs.si/v013/2a/fil6y2o3eazawewmlpi4gg4osoodvfbz.jpg",
     views: 1498,
     author: "Oliver Downs",
@@ -336,14 +358,14 @@ export default function VideoScreen({ route, navigation }) {
     );
   };
 
-  const MainSeparatorWidth = 100;
-  const MainSeparator = () => (
-    <View
-      style={{
-        marginHorizontal: MainSeparatorWidth,
-      }}
-    ></View>
-  );
+  const handleAcceptRecc = (recc) => {
+    //console.log(videoRef);
+    //videoRef.stopAsync();
+    navigation.setParams({
+      videoID: recc.views,
+      title: recc.title,
+    });
+  };
 
   // ANIMATIONS
 
@@ -402,36 +424,40 @@ export default function VideoScreen({ route, navigation }) {
           transform: [{ translateY: SpringAnim }],
         }}
       >
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          snapToInterval={width + 2 * MainSeparatorWidth}
-          decelerationRate={0}
+        <ViewPager
+          initialPage={0}
+          style={{
+            height: ((width - 2 * padding) / 16) * 9,
+          }}
+          pageMargin={100}
+          //transitionStyle="curl"
         >
-          <Video
-            source={{
-              uri: video_stats.url,
-            }}
-            posterSource={{
-              uri: video_stats.poster,
-            }}
-            resizeMode={Video.RESIZE_MODE_COVER}
-            usePoster={true}
-            shouldPlay={true}
-            //isLooping={false}
-            style={styles.video}
-            useNativeControls={true}
-            ref={_handleVideoRef}
-          />
-          <MainSeparator />
+          <View key="1">
+            <Video
+              ref={(component) => _handleVideoRef(component)}
+              source={{
+                uri: video_stats.url,
+              }}
+              posterSource={{
+                uri: video_stats.poster,
+              }}
+              resizeMode={Video.RESIZE_MODE_COVER}
+              usePoster={true}
+              shouldPlay={true}
+              //isLooping={false}
+              style={styles.video}
+              useNativeControls={true}
+            />
+          </View>
           <Image
+            key="2"
             source={{
               uri: video_stats.poster,
             }}
             style={styles.video}
             blurRadius={10}
           ></Image>
-        </ScrollView>
+        </ViewPager>
       </Animated.View>
 
       {showNotes ? (
@@ -451,13 +477,7 @@ export default function VideoScreen({ route, navigation }) {
               <Text style={styles.h4}>Recommended videos {videoId}</Text>
               {recommendations.map((recc) => (
                 <TouchableOpacity
-                  onPress={() => {
-                    navigation.push("Video", {
-                      videoID: recc.views,
-                      title: recc.title,
-                    });
-                    videoRef.stopAsync();
-                  }}
+                  onPress={() => handleAcceptRecc(recc)}
                   key={recc.title}
                   style={styles.recommendation}
                 >

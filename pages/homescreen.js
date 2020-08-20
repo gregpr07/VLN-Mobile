@@ -11,8 +11,11 @@ import {
   FlatList,
 } from "react-native";
 const { width, height } = Dimensions.get("window");
+
+// expo
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
+import ViewPager from "@react-native-community/viewpager";
 
 const padding = 24;
 export default function HomeScreen() {
@@ -32,7 +35,7 @@ export default function HomeScreen() {
     },
   ];
 
-  const EventCard = ({ item, index }) => (
+  const EventCard = (item, index) => (
     <View
       style={{
         shadowOffset: {
@@ -44,6 +47,7 @@ export default function HomeScreen() {
         width: width,
         paddingHorizontal: padding,
       }}
+      key={index}
     >
       <Image
         source={{
@@ -70,15 +74,16 @@ export default function HomeScreen() {
     >
       <Text style={styles.h1}>Events</Text>
       <SafeAreaView>
-        <FlatList
-          data={events}
-          renderItem={EventCard}
-          keyExtractor={(item) => item.id}
-          horizontal
-          snapToInterval={width}
-          showsHorizontalScrollIndicator={false}
-          decelerationRate={0}
-        />
+        <ViewPager
+          initialPage={0}
+          style={{
+            height: (width / 16) * 9.5,
+          }}
+          pageMargin={100}
+          //transitionStyle="curl"
+        >
+          {events.map((event, index) => EventCard(event, index))}
+        </ViewPager>
       </SafeAreaView>
     </View>
   );
