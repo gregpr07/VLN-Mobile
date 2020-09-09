@@ -18,9 +18,9 @@ const padding = 24;
 export default function ProfileScreen() {
   const profileStats = {
     profileImage:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Official_portrait_of_Barack_Obama.jpg/1200px-Official_portrait_of_Barack_Obama.jpg",
+      "https://blogs.bmj.com/ebn/files/2015/11/Professor-Brendan-McCormack-low-res-2-683x1024.jpg",
     name: "Stanko Novaković",
-    title: "M.I.T Professor of Slovenian language",
+    title: "M.I.T Professor",
   };
 
   const Header = () => {
