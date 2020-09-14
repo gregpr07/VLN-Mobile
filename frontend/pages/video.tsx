@@ -19,7 +19,7 @@ import {
 } from "react-native";
 
 // functions
-import { YoutubeTime, shorterText } from "../functions/functions/";
+import { YoutubeTime, shorterText } from "../services/functions";
 
 // expo
 import { Video } from "expo-av";
@@ -28,8 +28,8 @@ import ViewPager from "@react-native-community/viewpager";
 // dimensions
 const { width, height } = Dimensions.get("window");
 
-export default function VideoScreen({ route, navigation }) {
-  var videoRef;
+export default function VideoScreen({ route, navigation }: any) {
+  var videoRef: any;
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
@@ -45,18 +45,19 @@ export default function VideoScreen({ route, navigation }) {
   }, [navigation]);
 
   //const [stateVideoRef, setStateVideoRef] = useState();
-  const { videoId, title } = route.params;
+  const { videoId, title, url } = route.params;
 
   //console.log(videoId);
-  const _handleVideoRef = (component) => {
+  const _handleVideoRef = (component: any) => {
     if (!videoRef) {
       videoRef = component;
       //setStateVideoRef(component);
       //console.log(component);
+      //videoreference = component;
     }
   };
 
-  async function get_vid_status(ret_obj) {
+  async function get_vid_status(ret_obj: any) {
     if (videoRef) {
       const AVPlaybackStatus = await videoRef.getStatusAsync();
       //setVideoStatus(AVPlaybackStatus);
@@ -91,8 +92,9 @@ export default function VideoScreen({ route, navigation }) {
     });
   }, [navigation]); */
 
-  const handleTimestamp = (timestamp) => {
+  const handleTimestamp = (timestamp: number) => {
     videoRef.setPositionAsync(timestamp);
+    console.log(videoRef);
   };
 
   const video_stats = {
@@ -144,13 +146,17 @@ export default function VideoScreen({ route, navigation }) {
       text: "Why does it matter?",
       timestamp: 626312,
     },
+    {
+      text: "Why does it matterrrr?",
+      timestamp: 6626312,
+    },
   ]);
 
   const Notes = () => {
     const ITEM_SIZE = 200;
     const SEPARATOR_SIZE = 10;
 
-    const RenderNote = ({ item, index }) => {
+    const RenderNote = ({ item, index }: any) => {
       return (
         <View
           style={{
@@ -184,7 +190,7 @@ export default function VideoScreen({ route, navigation }) {
         text: noteText,
         timestamp: timestamp,
       };
-      const handleChangeText = (text) => {
+      const handleChangeText = (text: string) => {
         setNoteText(text);
         if (text.length === 1) {
           get_vid_status("positionMillis").then((timestamp) => {
@@ -202,7 +208,7 @@ export default function VideoScreen({ route, navigation }) {
         console.log(output_obj);
       };
       return (
-        <View style={{}} keyboardShouldPersistTaps="handled">
+        <View style={{}} /* keyboardShouldPersistTaps="handled" */>
           <View style={{}}>
             <TextInput
               style={{
@@ -255,7 +261,7 @@ export default function VideoScreen({ route, navigation }) {
       </View>
     );
 
-    const handleQuit = (props) => {
+    const handleQuit = (props: any) => {
       const offset = 100;
       const currentY = props.nativeEvent.contentOffset.y;
       // || currentX > ITEM_SIZE + SEPARATOR_SIZE
@@ -287,7 +293,7 @@ export default function VideoScreen({ route, navigation }) {
             ItemSeparatorComponent={Separator}
             ListHeaderComponent={NoteHeader}
             ListEmptyComponent={EmptyComponent}
-            snapToInterval
+            //snapToInterval
             snapToAlignment="start"
             decelerationRate={0}
             showsVerticalScrollIndicator={false}
@@ -358,7 +364,7 @@ export default function VideoScreen({ route, navigation }) {
     );
   };
 
-  const handleAcceptRecc = (recc) => {
+  const handleAcceptRecc = (recc: { views: number; title: string }) => {
     //console.log(videoRef);
     //videoRef.stopAsync();
     navigation.setParams({
@@ -380,7 +386,7 @@ export default function VideoScreen({ route, navigation }) {
     SpringAnim.setValue(-SPRING_VAL);
     Animated.spring(SpringAnim, {
       toValue: 0,
-      duration: 500,
+      //duration: 500,
       useNativeDriver: true,
     }).start();
   };
@@ -390,7 +396,7 @@ export default function VideoScreen({ route, navigation }) {
     SpringAnim.setValue(SPRING_VAL);
     Animated.spring(SpringAnim, {
       toValue: 0,
-      duration: 500,
+      //duration: 500,
       useNativeDriver: true,
     }).start();
   };
@@ -399,13 +405,13 @@ export default function VideoScreen({ route, navigation }) {
     OpacityAnim.setValue(0);
     Animated.spring(OpacityAnim, {
       toValue: 1,
-      duration: 400,
+      //duration: 400,
       useNativeDriver: true,
     }).start();
   };
 
   return (
-    <View style={styles.container} showsVerticalScrollIndicator={false}>
+    <View style={styles.container} /* showsVerticalScrollIndicator={false} */>
       {showNotes ? null : (
         <Animated.View
           onLayout={(event) => {

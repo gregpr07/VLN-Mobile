@@ -14,7 +14,7 @@ import {
   isoFormatDMY,
   parseISOString,
   shorterText,
-} from "../functions/functions/";
+} from "../services/functions";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 

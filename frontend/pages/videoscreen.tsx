@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
@@ -19,7 +19,18 @@ import {
 } from "react-native-gesture-handler";
 
 const padding = 24;
-export default function VideosScreen({ navigation }) {
+export default function VideosScreen({ navigation }: any) {
+  /*   React.useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      if (videoreference) {
+        console.log("not found");
+      } else {
+        console.log("found");
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation]); */
   const Authors = () => {
     const recommendations = [
       {

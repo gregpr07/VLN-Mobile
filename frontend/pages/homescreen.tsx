@@ -19,7 +19,8 @@ import ViewPager from "@react-native-community/viewpager";
 
 const padding = 24;
 export default function HomeScreen() {
-  const events = [
+  type events = Array<{ id: string; image: string }>;
+  const events: events = [
     {
       id: "1",
       image:

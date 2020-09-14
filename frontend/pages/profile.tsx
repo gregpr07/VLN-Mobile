@@ -16,7 +16,12 @@ import { StatusBar } from "expo-status-bar";
 
 const padding = 24;
 export default function ProfileScreen() {
-  const profileStats = {
+  interface profileStats {
+    profileImage: string;
+    name: string;
+    title: string;
+  }
+  const profileStats: profileStats = {
     profileImage:
       "https://blogs.bmj.com/ebn/files/2015/11/Professor-Brendan-McCormack-low-res-2-683x1024.jpg",
     name: "Stanko Novaković",

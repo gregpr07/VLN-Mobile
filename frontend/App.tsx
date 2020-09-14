@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Text, View, Button, TouchableOpacity } from "react-native";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -6,7 +6,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import { StatusBar } from "expo-status-bar";
 
-import Ionicons from "react-native-vector-icons/Ionicons";
+import { Ionicons } from "@expo/vector-icons";
 import VideoScreen from "./pages/video";
 import SearchScreen from "./pages/search";
 //import ModalScreen from "./pages/video_new_note_deprecated";
@@ -82,21 +82,6 @@ const VideoStackScreen = () => {
   );
 };
 
-/* const VideoStackRoot = () => {
-  return (
-    <VideoModal.Navigator
-      mode="modal"
-      headerMode="none"
-      screenOptions={{
-        cardStyle: { backgroundColor: "transparent" },
-      }}
-    >
-      <VideoModal.Screen name="Main" component={VideoStackScreen} />
-      <VideoModal.Screen name="NewNote" component={ModalScreen} />
-    </VideoModal.Navigator>
-  );
-}; */
-
 export default () => {
   // fonts
   let [fontsLoaded] = useFonts({
@@ -113,7 +98,7 @@ export default () => {
       <Tabs.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
-            let iconName;
+            let iconName: string = "";
 
             if (route.name === "Home") {
               iconName = focused ? "ios-home" : "ios-home";
