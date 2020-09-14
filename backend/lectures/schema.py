@@ -3,30 +3,31 @@ import graphene
 from .models import Lecture, Notes, Note
 
 
-class NotesQL(DjangoObjectType):
+class NotesType(DjangoObjectType):
     class Meta:
         model = Notes
 
 
-class NoteQL(DjangoObjectType):
+class NoteType(DjangoObjectType):
     class Meta:
         model = Note
 
 
-class LectureQL(DjangoObjectType):
+class LectureType(DjangoObjectType):
     class Meta:
         model = Lecture
 
-
-class Query(graphene.ObjectType):
-    lectures = graphene.List(LectureQL)
-    notes = graphene.List(NotesQL)
-
-    def resolve_lectures(self, info):
-        return Lecture.objects.all()
+    allnotes = graphene.List(NoteType)
 
     def resolve_notes(self, info):
-        Notes.objects.filter(lecture__id=graphene.String(required=True))
+        return self.notes.all()
+
+
+class Query(graphene.ObjectType):
+    lecture = graphene.Field(LectureType, id=graphene.String(required=True))
+
+    def resolve_lecture(self, info, id):
+        return Lecture.objects.get(id=1)
 
 
 schema = graphene.Schema(query=Query)
