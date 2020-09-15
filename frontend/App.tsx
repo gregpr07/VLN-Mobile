@@ -13,6 +13,7 @@ import SearchScreen from "./pages/search";
 import HomeScreen from "./pages/homescreen";
 import ProfileScreen from "./pages/profile";
 import VideosScreen from "./pages/videoscreen";
+import Event from "./pages/event";
 
 import DevOnlyComp from "./pages/devcomponents";
 
@@ -34,11 +35,16 @@ const VideoModal = createStackNavigator();
 
 const HomeStackScreen = () => (
   <HomeStack.Navigator
-    screenOptions={{
+  /*     screenOptions={{
       headerShown: false,
-    }}
+    }} */
   >
-    <HomeStack.Screen name="home" component={HomeScreen} />
+    <HomeStack.Screen
+      name="home"
+      options={{ headerShown: false }}
+      component={HomeScreen}
+    />
+    <HomeStack.Screen name="event" component={Event} />
   </HomeStack.Navigator>
 );
 

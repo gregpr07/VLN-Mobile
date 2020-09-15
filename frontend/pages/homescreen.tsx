@@ -3,6 +3,7 @@ import {
   Text,
   View,
   TouchableHighlight,
+  TouchableOpacity,
   TextInput,
   StyleSheet,
   Dimensions,
@@ -18,7 +19,7 @@ import { StatusBar } from "expo-status-bar";
 import ViewPager from "@react-native-community/viewpager";
 
 const padding = 24;
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }: any) {
   type events = Array<{ id: string; image: string }>;
   const events: events = [
     {
@@ -50,18 +51,28 @@ export default function HomeScreen() {
       }}
       key={index}
     >
-      <Image
-        source={{
-          uri: item.image,
-        }}
-        style={{
-          height: ((width - 2 * padding) / 16) * 9,
-          maxHeight: 400,
-          borderRadius: 12,
-          resizeMode: "cover",
-          marginVertical: 24,
-        }}
-      />
+      <TouchableOpacity
+        onPress={() =>
+          navigation.push("event", {
+            videoID: 10,
+            title:
+              "How Machine Learning has Finally Solved Wanamaker’s Dilemma",
+          })
+        }
+      >
+        <Image
+          source={{
+            uri: item.image,
+          }}
+          style={{
+            height: ((width - 2 * padding) / 16) * 9,
+            maxHeight: 400,
+            borderRadius: 12,
+            resizeMode: "cover",
+            marginVertical: 24,
+          }}
+        />
+      </TouchableOpacity>
     </View>
   );
 

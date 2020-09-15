@@ -23,14 +23,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'graphene_django',
-    'users',
-    'lectures'
+    'api',
 ]
 
-""" GRAPHENE = {
-    'SCHEMA': 'backend.schema.schema'  # Where your Graphene schema lives
-} """
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
