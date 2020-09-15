@@ -65,10 +65,13 @@ export default function VideosScreen({ navigation }: any) {
     const RenderAuthor = ({ item, index }) => (
       <TouchableOpacity
         onPress={() =>
-          navigation.push("Video", {
-            videoID: 10,
-            title:
-              "How Machine Learning has Finally Solved Wanamaker’s Dilemma",
+          navigation.navigate("Player", {
+            screen: "Video",
+            params: {
+              videoID: 10,
+              title:
+                "How Machine Learning has Finally Solved Wanamaker’s Dilemma",
+            },
           })
         }
       >

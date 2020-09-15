@@ -69,11 +69,14 @@ export default SearchScreen = ({ navigation }) => {
     <View>
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate("Video", {
+          navigation.navigate("Player", {
             screen: "Video",
             params: {
               videoID: item.views,
               title: item.title,
+              url: {
+                uri: item.url,
+              },
             },
           });
           //videoRef.stopAsync();

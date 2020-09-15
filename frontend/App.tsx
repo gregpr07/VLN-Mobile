@@ -30,8 +30,9 @@ const Tabs = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
 const VideoStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
+const PlayerStack = createStackNavigator();
 
-const VideoModal = createStackNavigator();
+//const VideoModal = createStackNavigator();
 
 const HomeStackScreen = () => (
   <HomeStack.Navigator
@@ -61,30 +62,36 @@ const ProfileStackScreen = () => (
 const VideoStackScreen = () => {
   return (
     <VideoStack.Navigator>
-      <VideoStack.Screen
-        name="Videos"
-        component={VideosScreen}
-        //initialParams={{ videoComp: currentVideo }}
-        /* options={({ navigation, route }) => ({
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => navigation.push("Search")}
-              style={{ paddingRight: 15 }}
-            >
-              <Ionicons name="ios-search" size={20} />
-            </TouchableOpacity>
-          ),
-        })} */
-      />
-      <VideoStack.Screen
+      <VideoStack.Screen name="Videos" component={VideosScreen} />
+      {/*       <VideoStack.Screen
         name="Video"
         component={VideoScreen}
 
-        /*         options={({ navigation, route }) => ({
-          title: "Video", //route.params.title,
-        })} */
-      />
+      /> */}
     </VideoStack.Navigator>
+  );
+};
+
+const PlayerStackScreen = () => {
+  return (
+    <PlayerStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <PlayerStack.Screen
+        name="Video"
+        component={VideoScreen}
+        initialParams={{
+          videoID: 1,
+          title: 1,
+          url: {
+            uri:
+              "http://hydro.ijs.si/v00e/0c/bqsbpqtnh52xm5nnm2iidqmf5vccd4l2.mp4",
+          },
+        }}
+      />
+    </PlayerStack.Navigator>
   );
 };
 
@@ -116,6 +123,8 @@ export default () => {
               iconName = "ios-search";
             } else if (route.name == "DEV") {
               iconName = "ios-bug";
+            } else if (route.name == "Player") {
+              iconName = "ios-play";
             }
 
             // You can return any component that you like here!
@@ -140,9 +149,10 @@ export default () => {
       >
         <Tabs.Screen name="Home" component={HomeStackScreen} />
         <Tabs.Screen name="Video" component={VideoStackScreen} />
+        <Tabs.Screen name="Player" component={PlayerStackScreen} />
         <Tabs.Screen name="Search" component={SearchScreen} />
         <Tabs.Screen name="Profile" component={ProfileStackScreen} />
-        <Tabs.Screen name="DEV" component={DevOnlyComp} />
+        {/* <Tabs.Screen name="DEV" component={DevOnlyComp} /> */}
       </Tabs.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>

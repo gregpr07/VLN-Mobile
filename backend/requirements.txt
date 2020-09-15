@@ -2,8 +2,6 @@ aniso8601==7.0.0
 asgiref==3.2.10
 certifi==2020.6.20
 Django==3.1.1
-graphql-core==2.3.2
-graphql-relay==2.0.1
 promise==2.3
 psycopg2-binary==2.8.6
 python-dotenv==0.14.0

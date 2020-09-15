@@ -18,19 +18,22 @@ import {
   Animated,
 } from "react-native";
 
+import Constants from "expo-constants";
+
 // functions
 import { YoutubeTime, shorterText } from "../services/functions";
 
 // expo
 import { Video } from "expo-av";
 import ViewPager from "@react-native-community/viewpager";
+import { constants } from "buffer";
 
 // dimensions
 const { width, height } = Dimensions.get("window");
 
 export default function VideoScreen({ route, navigation }: any) {
   var videoRef: any;
-  React.useLayoutEffect(() => {
+  /* React.useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
         <Button
@@ -43,9 +46,23 @@ export default function VideoScreen({ route, navigation }: any) {
       ),
     });
   }, [navigation]);
-
+ */
   //const [stateVideoRef, setStateVideoRef] = useState();
   const { videoId, title, url } = route.params;
+
+  useEffect(() => {
+    let shouldUpdate = true;
+    navigation.addListener("state", async () => {
+      if (videoRef && shouldUpdate) {
+        shouldUpdate = false;
+        videoRef
+          .loadAsync(url, (initialStatus = { shouldPlay: true }))
+          .then((shouldUpdate = true));
+        //videoRef.playAsync();
+        //console.log("bla");
+      }
+    });
+  }, [route.params]);
 
   //console.log(videoId);
   const _handleVideoRef = (component: any) => {
@@ -65,7 +82,7 @@ export default function VideoScreen({ route, navigation }: any) {
     }
   }
 
-  /* // HANDLE FULLSCREEN ON ROTATION
+  // HANDLE FULLSCREEN ON ROTATION
   const isPortrait = () => {
     const dim = Dimensions.get("screen");
     return dim.height >= dim.width;
@@ -84,7 +101,8 @@ export default function VideoScreen({ route, navigation }: any) {
         videoRef.presentFullscreenPlayer();
       }
     }
-  }, [orientation]); */
+  }, [orientation]);
+
   // /
   /*   useEffect(() => {
     navigation.addListener("willFocus", async () => {
@@ -441,15 +459,15 @@ export default function VideoScreen({ route, navigation }: any) {
           <View key="1">
             <Video
               ref={(component) => _handleVideoRef(component)}
-              source={{
+              /*               source={{
                 uri: video_stats.url,
-              }}
+              }} */
               posterSource={{
                 uri: video_stats.poster,
               }}
               resizeMode={Video.RESIZE_MODE_COVER}
               usePoster={true}
-              shouldPlay={true}
+              //shouldPlay={true}
               //isLooping={false}
               style={styles.video}
               useNativeControls={true}
@@ -530,7 +548,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: padding,
-    paddingTop: padding,
+    paddingTop: padding + Constants.statusBarHeight,
     backgroundColor: "white",
     paddingBottom: 0,
   },
