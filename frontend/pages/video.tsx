@@ -20,67 +20,95 @@ import {
 
 import Constants from "expo-constants";
 
+// @ts-ignore
+import Slideshow from "react-native-image-slider-show";
+
 // functions
-import { YoutubeTime, shorterText } from "../services/functions";
+import { YoutubeTime, shorterText, compare } from "../services/functions";
 
 // expo
-import { Video } from "expo-av";
+import { Video, Audio } from "expo-av";
 import ViewPager from "@react-native-community/viewpager";
-import { constants } from "buffer";
 
 // dimensions
 const { width, height } = Dimensions.get("window");
 
 export default function VideoScreen({ route, navigation }: any) {
+  //* constants
+  const initPager = 0;
+  let currentPager = initPager;
+
+  //* VIDEO AND AUDIO REFERENCES
   var videoRef: any;
-  /* React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => (
-        <Button
-          onPress={() => {
-            videoRef.unloadAsync();
-            navigation.navigate("Videos");
-          }}
-          title="Videos"
-        />
-      ),
-    });
-  }, [navigation]);
- */
+  const audioRef = new Audio.Sound();
+
   //const [stateVideoRef, setStateVideoRef] = useState();
-  const { videoId, title, url } = route.params;
+  const { videoId, title, video_url } = route.params;
+
+  //? using let because we don't want the screen to re-render because of video
+  let currentPositionMillis: number;
+  let videoIsLoaded: boolean;
 
   useEffect(() => {
     let shouldUpdate = true;
     navigation.addListener("state", async () => {
       if (videoRef && shouldUpdate) {
         shouldUpdate = false;
-        videoRef
-          .loadAsync(url, (initialStatus = { shouldPlay: true }))
-          .then((shouldUpdate = true));
-        //videoRef.playAsync();
-        //console.log("bla");
+        //! THIS IS WHERE TO IMPLEMENT MEMORY OF CURRENT TIME
+        currentPositionMillis = 0;
+        playVideoORAudio(initPager).then(() => (shouldUpdate = true));
       }
     });
   }, [route.params]);
+
+  // currently 0 is video 1 is audio but this might change
+  async function playVideoORAudio(page: number) {
+    currentPager = page;
+    const initStatus = {
+      shouldPlay: true,
+      positionMillis: currentPositionMillis,
+    };
+    videoRef.unloadAsync();
+    audioRef.unloadAsync();
+    if (page === 0) {
+      const load = await videoRef.loadAsync(
+        video_url,
+        (initialStatus = initStatus)
+      );
+
+      return load;
+    }
+    if (page === 1) {
+      const loadAudio = audioRef.loadAsync(
+        {
+          uri:
+            "https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_5MG.mp3",
+        },
+        (initialStatus = initStatus)
+      );
+      return loadAudio;
+    }
+  }
+
+  // this is set when dealing with video
+  const onPlaybackStatusUpdate = (status: any) => {
+    //console.log(status.positionMillis);
+    currentPositionMillis = status.positionMillis;
+    videoIsLoaded = status.isLoaded;
+    console.log(currentPositionMillis);
+
+    //! change timestamp
+    //handleSlideChange();
+  };
 
   //console.log(videoId);
   const _handleVideoRef = (component: any) => {
     if (!videoRef) {
       videoRef = component;
-      //setStateVideoRef(component);
-      //console.log(component);
-      //videoreference = component;
+      videoRef.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
+      audioRef.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
     }
   };
-
-  async function get_vid_status(ret_obj: any) {
-    if (videoRef) {
-      const AVPlaybackStatus = await videoRef.getStatusAsync();
-      //setVideoStatus(AVPlaybackStatus);
-      return AVPlaybackStatus[ret_obj];
-    }
-  }
 
   // HANDLE FULLSCREEN ON ROTATION
   const isPortrait = () => {
@@ -94,7 +122,9 @@ export default function VideoScreen({ route, navigation }: any) {
     }
   });
   useEffect(() => {
-    if (videoRef) {
+    console.log("orientation changed to " + isPortrait());
+    console.log(videoIsLoaded);
+    if (videoIsLoaded) {
       if (isPortrait()) {
         videoRef.dismissFullscreenPlayer();
       } else {
@@ -103,16 +133,14 @@ export default function VideoScreen({ route, navigation }: any) {
     }
   }, [orientation]);
 
-  // /
-  /*   useEffect(() => {
-    navigation.addListener("willFocus", async () => {
-      videoRef.stopAsync();
-    });
-  }, [navigation]); */
-
   const handleTimestamp = (timestamp: number) => {
-    videoRef.setPositionAsync(timestamp);
-    console.log(videoRef);
+    if (currentPager === 0) {
+      videoRef.setPositionAsync(timestamp);
+    }
+    if (currentPager === 1) {
+      audioRef.setPositionAsync(timestamp);
+    }
+    //console.log(videoRef);
   };
 
   const video_stats = {
@@ -122,6 +150,57 @@ export default function VideoScreen({ route, navigation }: any) {
     views: 1498,
     author: "Oliver Downs",
     published: "Sept. 5, 2016",
+  };
+
+  const AudioSlides = () => {
+    const slides = [
+      {
+        timestamp: 1000,
+        url: "http://hydro.ijs.si/v017/d0/2d4vgnj6yhkmc4lizj7dwj3frapczcj7.jpg",
+      },
+      {
+        timestamp: 3000,
+        url: "http://hydro.ijs.si/v017/4c/jq3hmgmb256bmcflmegdx4lrev4ynn7l.jpg",
+      },
+      {
+        timestamp: 10000,
+        url: "http://hydro.ijs.si/v017/c4/yrtcai7uxrpz6bglzu5qepi3regifjwf.jpg",
+      },
+    ];
+    //const slidesarray = slides.map((slide) => slide.url);
+
+    const getCurrentSlide = () => {
+      const newslides = slides
+        .sort(compare)
+        .filter((slide) => slide.timestamp < currentPositionMillis);
+      return newslides.length;
+    };
+    const [slidePosition, setSlidePosition] = useState(getCurrentSlide());
+
+    //! this is very slow - must fix it!!!
+    const handleSlideChange = () => {
+      setSlidePosition(getCurrentSlide());
+      //console.log(newslides.length);
+    };
+
+    let intervalid = setInterval(handleSlideChange, 1000);
+
+    return (
+      /*       <Image
+        source={{
+          uri: slidesarray[slidePosition],
+        }}
+        style={styles.video}
+        blurRadius={10}
+      /> */
+      <Slideshow
+        dataSource={slides}
+        position={slidePosition}
+        style={styles.video}
+        scrollEnabled={false}
+        arrowSize={0}
+      />
+    );
   };
 
   const recommendations = [
@@ -210,16 +289,15 @@ export default function VideoScreen({ route, navigation }: any) {
       };
       const handleChangeText = (text: string) => {
         setNoteText(text);
-        if (text.length === 1) {
-          get_vid_status("positionMillis").then((timestamp) => {
-            setTimestamp(timestamp);
-            console.log(timestamp);
-          });
+        if (text.length === 1 && currentPositionMillis) {
+          setTimestamp(currentPositionMillis);
+          console.log(currentPositionMillis);
         }
       };
       const handleNoteSubmit = () => {
         if (noteText) {
-          setNotes([...notes, output_obj]);
+          let newnotes = [...notes, output_obj].sort(compare);
+          setNotes(newnotes);
         }
         Keyboard.dismiss();
         setNoteText("");
@@ -449,14 +527,16 @@ export default function VideoScreen({ route, navigation }: any) {
         }}
       >
         <ViewPager
-          initialPage={0}
+          initialPage={initPager}
           style={{
             height: ((width - 2 * padding) / 16) * 9,
           }}
           pageMargin={100}
+          onPageSelected={(e) => playVideoORAudio(e.nativeEvent.position)}
           //transitionStyle="curl"
+          //showPageIndicator={true}
         >
-          <View key="1">
+          <View key="0">
             <Video
               ref={(component) => _handleVideoRef(component)}
               /*               source={{
@@ -473,14 +553,7 @@ export default function VideoScreen({ route, navigation }: any) {
               useNativeControls={true}
             />
           </View>
-          <Image
-            key="2"
-            source={{
-              uri: video_stats.poster,
-            }}
-            style={styles.video}
-            blurRadius={10}
-          ></Image>
+          <AudioSlides key="1" />
         </ViewPager>
       </Animated.View>
 

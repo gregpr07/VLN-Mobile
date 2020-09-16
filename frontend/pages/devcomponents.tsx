@@ -1,6 +1,8 @@
 import React from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, Button } from "react-native";
 import ViewPager from "@react-native-community/viewpager";
+
+import { Updates } from "expo";
 
 const MyPager = ({ navigation }) => {
   /*   React.useEffect(() => {
@@ -25,13 +27,14 @@ const MyPager = ({ navigation }) => {
           <Text>Third page</Text>
         </View>
       </ViewPager>
+      <Button onPress={() => Updates.reload()} title="reload app" />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   viewPager: {
-    flex: 1,
+    flex: 0.5,
   },
   page: {
     justifyContent: "center",

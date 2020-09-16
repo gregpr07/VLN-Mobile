@@ -1,3 +1,5 @@
+import { timeStamp } from "console";
+
 export function YoutubeTime(millisec: number) {
   let seconds: number = millisec / 1000;
   let minutes: number = Math.floor(seconds / 60);
@@ -52,3 +54,21 @@ export function isoFormatDMY(d: any) {
 export const shorterText = (text: string, length: number) => {
   return text.length > length ? text.slice(0, length) + "..." : text;
 };
+
+interface note {
+  timestamp: number;
+}
+
+export function compare(a: note, b: note) {
+  // Use toUpperCase() to ignore character casing
+  const bandA = a.timestamp;
+  const bandB = b.timestamp;
+
+  let comparison = 0;
+  if (bandA > bandB) {
+    comparison = 1;
+  } else if (bandA < bandB) {
+    comparison = -1;
+  }
+  return comparison;
+}

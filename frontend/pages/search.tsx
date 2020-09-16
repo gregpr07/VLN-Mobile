@@ -74,7 +74,7 @@ export default SearchScreen = ({ navigation }) => {
             params: {
               videoID: item.views,
               title: item.title,
-              url: {
+              video_url: {
                 uri: item.url,
               },
             },

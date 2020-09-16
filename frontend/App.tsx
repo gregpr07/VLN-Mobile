@@ -85,9 +85,9 @@ const PlayerStackScreen = () => {
         initialParams={{
           videoID: 1,
           title: 1,
-          url: {
+          video_url: {
             uri:
-              "http://hydro.ijs.si/v00e/0c/bqsbpqtnh52xm5nnm2iidqmf5vccd4l2.mp4",
+              "http://hydro.ijs.si/v00f/0d/bxtufs7kem6ixi6dudgzemnmtf7lyk3o.mp4",
           },
         }}
       />
@@ -152,7 +152,7 @@ export default () => {
         <Tabs.Screen name="Player" component={PlayerStackScreen} />
         <Tabs.Screen name="Search" component={SearchScreen} />
         <Tabs.Screen name="Profile" component={ProfileStackScreen} />
-        {/* <Tabs.Screen name="DEV" component={DevOnlyComp} /> */}
+        <Tabs.Screen name="DEV" component={DevOnlyComp} />
       </Tabs.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>
