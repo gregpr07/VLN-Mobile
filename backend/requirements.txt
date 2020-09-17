@@ -1,12 +1,13 @@
-aniso8601==7.0.0
+aniso8601==8.0.0
 asgiref==3.2.10
 certifi==2020.6.20
 Django==3.1.1
+djangorestframework==3.11.1
 promise==2.3
 psycopg2-binary==2.8.6
 python-dotenv==0.14.0
 pytz==2020.1
-Rx==1.6.1
+Rx==3.1.1
 singledispatch==3.4.0.3
 six==1.15.0
 sqlparse==0.3.1
