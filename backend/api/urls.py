@@ -7,6 +7,9 @@ from .views import *
 router = routers.DefaultRouter()
 router.register(r'user', UserModelViewSet)
 router.register(r'lecture', LectureViewSet)
+router.register(r'slide', SlideViewSet)
+router.register(r'notes', NotesViewSet)
+router.register(r'note', NoteViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
