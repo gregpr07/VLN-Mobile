@@ -35,11 +35,7 @@ const PlayerStack = createStackNavigator();
 //const VideoModal = createStackNavigator();
 
 const HomeStackScreen = () => (
-  <HomeStack.Navigator
-  /*     screenOptions={{
-      headerShown: false,
-    }} */
-  >
+  <HomeStack.Navigator>
     <HomeStack.Screen
       name="home"
       options={{ headerShown: false }}
@@ -87,7 +83,7 @@ const PlayerStackScreen = () => {
           title: 1,
           video_url: {
             uri:
-              "http://hydro.ijs.si/v00f/0d/bxtufs7kem6ixi6dudgzemnmtf7lyk3o.mp4",
+              "https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_1920_18MG.mp4",
           },
         }}
       />
@@ -154,7 +150,7 @@ export default () => {
         <Tabs.Screen name="Profile" component={ProfileStackScreen} />
         <Tabs.Screen name="DEV" component={DevOnlyComp} />
       </Tabs.Navigator>
-      <StatusBar style="auto" />
+      <StatusBar style="black" />
     </NavigationContainer>
   );
 };

@@ -17,6 +17,7 @@ const { width, height } = Dimensions.get("window");
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import ViewPager from "@react-native-community/viewpager";
+import { ScrollView } from "react-native-gesture-handler";
 
 const padding = 24;
 export default function HomeScreen({ navigation }: any) {
@@ -37,15 +38,17 @@ export default function HomeScreen({ navigation }: any) {
     },
   ];
 
+  const eventHeight = (width / 16) * 7;
+
   const EventCard = (item, index) => (
     <View
       style={{
-        shadowOffset: {
+        /* shadowOffset: {
           width: 0,
           height: 9,
         },
         shadowOpacity: 0.15,
-        shadowRadius: 5,
+        shadowRadius: 5, */
         width: width,
         paddingHorizontal: padding,
       }}
@@ -59,17 +62,18 @@ export default function HomeScreen({ navigation }: any) {
               "How Machine Learning has Finally Solved Wanamaker’s Dilemma",
           })
         }
+        activeOpacity={0.75}
       >
         <Image
           source={{
             uri: item.image,
           }}
           style={{
-            height: ((width - 2 * padding) / 16) * 9,
+            height: eventHeight, // - 2 * padding
             maxHeight: 400,
             borderRadius: 12,
             resizeMode: "cover",
-            marginVertical: 24,
+            //marginVertical: 24,
           }}
         />
       </TouchableOpacity>
@@ -79,17 +83,19 @@ export default function HomeScreen({ navigation }: any) {
   const Header = () => (
     <View
       style={{
-        paddingTop: Constants.statusBarHeight,
-        backgroundColor: "#5DB075",
-        paddingBottom: 10,
+        paddingTop: padding / 2,
+        //backgroundColor: "white",
+
+        //paddingBottom: 10,
       }}
     >
-      <Text style={styles.h1}>Events</Text>
+      <Text style={[styles.h1, { paddingHorizontal: padding }]}>Events</Text>
       <SafeAreaView>
         <ViewPager
           initialPage={0}
           style={{
-            height: (width / 16) * 9.5,
+            height: eventHeight,
+            marginTop: 10,
           }}
           pageMargin={100}
           //transitionStyle="curl"
@@ -126,9 +132,9 @@ export default function HomeScreen({ navigation }: any) {
     const RenderAuthor = ({ item, index }) => (
       <View
         style={{
-          paddingVertical: 6,
+          //paddingVertical: 6,
           width: AUTHOR_WIDTH,
-          marginVertical: 10,
+          marginTop: 10,
         }}
       >
         <Image
@@ -166,7 +172,7 @@ export default function HomeScreen({ navigation }: any) {
     return (
       <View
         style={{
-          paddingVertical: 25,
+          paddingTop: 15,
           paddingHorizontal: padding,
         }}
       >
@@ -186,12 +192,20 @@ export default function HomeScreen({ navigation }: any) {
       </View>
     );
   };
+
   return (
-    <View style={{ backgroundColor: "white" }}>
+    <ScrollView
+      style={{
+        //backgroundColor: "white",
+        marginTop: Constants.statusBarHeight,
+      }}
+      showsVerticalScrollIndicator={false}
+    >
       <Header />
       <Authors />
-      <StatusBar style="light" />
-    </View>
+      <Authors />
+      <StatusBar style="dark" />
+    </ScrollView>
   );
 }
 
@@ -202,9 +216,9 @@ const styles = StyleSheet.create({
   },
   h1: {
     fontSize: 36,
-    textAlign: "center",
+    textAlign: "left",
     fontFamily: "Inter_600SemiBold",
-    color: "white",
+    color: "black",
   },
 
   h3: {

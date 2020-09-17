@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, View, Text, Button } from "react-native";
 import ViewPager from "@react-native-community/viewpager";
 
-import { Updates } from "expo";
+import * as Updates from "expo-updates";
 
 const MyPager = ({ navigation }) => {
   /*   React.useEffect(() => {
@@ -27,7 +27,7 @@ const MyPager = ({ navigation }) => {
           <Text>Third page</Text>
         </View>
       </ViewPager>
-      <Button onPress={() => Updates.reload()} title="reload app" />
+      <Button onPress={() => Updates.reloadAsync()} title="reload app" />
     </View>
   );
 };

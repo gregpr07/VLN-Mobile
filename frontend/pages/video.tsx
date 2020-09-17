@@ -33,6 +33,11 @@ import ViewPager from "@react-native-community/viewpager";
 // dimensions
 const { width, height } = Dimensions.get("window");
 
+const videoHeight = (width / 16) * 9;
+
+//TODO BUGS
+// - when going to audio and opening notes the continuity breakes
+
 export default function VideoScreen({ route, navigation }: any) {
   //* constants
   const initPager = 0;
@@ -68,9 +73,9 @@ export default function VideoScreen({ route, navigation }: any) {
       shouldPlay: true,
       positionMillis: currentPositionMillis,
     };
-    videoRef.unloadAsync();
-    audioRef.unloadAsync();
+
     if (page === 0) {
+      audioRef.unloadAsync();
       const load = await videoRef.loadAsync(
         video_url,
         (initialStatus = initStatus)
@@ -79,6 +84,7 @@ export default function VideoScreen({ route, navigation }: any) {
       return load;
     }
     if (page === 1) {
+      videoRef.unloadAsync();
       const loadAudio = audioRef.loadAsync(
         {
           uri:
@@ -199,6 +205,7 @@ export default function VideoScreen({ route, navigation }: any) {
         style={styles.video}
         scrollEnabled={false}
         arrowSize={0}
+        height={videoHeight}
       />
     );
   };
@@ -229,29 +236,30 @@ export default function VideoScreen({ route, navigation }: any) {
   ];
 
   const [showNotes, setShowNotes] = useState(false);
-  const [notes, setNotes] = useState([
-    {
-      text:
-        "Screens support is built into react-navigation starting from version 2.14.0 for all the different navigator types (stack, tab, drawer, etc). We plan on adding it to other navigators shortly. To configure react-navigation to use screens instead of plain RN Views for rendering screen views, follow the steps below:",
-      timestamp: 12312,
-    },
-    {
-      text: "This is how we do it?",
-      timestamp: 26312,
-    },
-    {
-      text: "Why does it matter?",
-      timestamp: 626312,
-    },
-    {
-      text: "Why does it matterrrr?",
-      timestamp: 6626312,
-    },
-  ]);
 
   const Notes = () => {
     const ITEM_SIZE = 200;
     const SEPARATOR_SIZE = 10;
+
+    const [notes, setNotes] = useState([
+      {
+        text:
+          "Screens support is built into react-navigation starting from version 2.14.0 for all the different navigator types (stack, tab, drawer, etc). We plan on adding it to other navigators shortly. To configure react-navigation to use screens instead of plain RN Views for rendering screen views, follow the steps below:",
+        timestamp: 12312,
+      },
+      {
+        text: "This is how we do it?",
+        timestamp: 26312,
+      },
+      {
+        text: "Why does it matter?",
+        timestamp: 626312,
+      },
+      {
+        text: "Why does it matterrrr?",
+        timestamp: 6626312,
+      },
+    ]);
 
     const RenderNote = ({ item, index }: any) => {
       return (
@@ -273,7 +281,7 @@ export default function VideoScreen({ route, navigation }: any) {
     const Separator = () => (
       <View
         style={{
-          marginHorizontal: SEPARATOR_SIZE,
+          //marginHorizontal: SEPARATOR_SIZE,
           borderColor: "#E8E8E8",
           borderWidth: 0.5,
         }}
@@ -308,7 +316,7 @@ export default function VideoScreen({ route, navigation }: any) {
           <View style={{}}>
             <TextInput
               style={{
-                marginVertical: 10,
+                marginBottom: 10,
               }}
               onChangeText={handleChangeText}
               value={noteText}
@@ -352,13 +360,13 @@ export default function VideoScreen({ route, navigation }: any) {
         }}
       >
         <Text style={[styles.h4, { color: "gray", marginVertical: 20 }]}>
-          Swipe left to create a note
+          Swipe down to dismiss the notes
         </Text>
       </View>
     );
 
     const handleQuit = (props: any) => {
-      const offset = 100;
+      const offset = 75;
       const currentY = props.nativeEvent.contentOffset.y;
       // || currentX > ITEM_SIZE + SEPARATOR_SIZE
       // ALSO NEED TO IMPLEMENT RIGHT SIDE
@@ -378,6 +386,7 @@ export default function VideoScreen({ route, navigation }: any) {
       <View
         style={{
           flex: 1,
+          paddingHorizontal: padding / 2,
         }}
       >
         <SafeAreaView style={styles.your_notes}>
@@ -515,6 +524,7 @@ export default function VideoScreen({ route, navigation }: any) {
           }}
           style={{
             opacity: OpacityAnim,
+            paddingHorizontal: padding,
           }}
         >
           <Text style={styles.video_title}>{video_stats.title}</Text>
@@ -529,7 +539,7 @@ export default function VideoScreen({ route, navigation }: any) {
         <ViewPager
           initialPage={initPager}
           style={{
-            height: ((width - 2 * padding) / 16) * 9,
+            height: videoHeight, // - 2 * padding
           }}
           pageMargin={100}
           onPageSelected={(e) => playVideoORAudio(e.nativeEvent.position)}
@@ -560,7 +570,10 @@ export default function VideoScreen({ route, navigation }: any) {
       {showNotes ? (
         <Notes />
       ) : (
-        <>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={{ paddingHorizontal: padding }}
+        >
           <Animated.View>
             <Description />
 
@@ -570,47 +583,45 @@ export default function VideoScreen({ route, navigation }: any) {
           {/* recommendations */}
 
           <View style={{ marginTop: 8, flex: 1 }}>
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <Text style={styles.h4}>Recommended videos {videoId}</Text>
-              {recommendations.map((recc) => (
-                <TouchableOpacity
-                  onPress={() => handleAcceptRecc(recc)}
-                  key={recc.title}
-                  style={styles.recommendation}
+            <Text style={styles.h4}>Recommended videos {videoId}</Text>
+            {recommendations.map((recc) => (
+              <TouchableOpacity
+                onPress={() => handleAcceptRecc(recc)}
+                key={recc.title}
+                style={styles.recommendation}
+              >
+                <Image
+                  source={{ uri: recc.image }}
+                  style={{
+                    height: 80,
+                    maxWidth: (80 / 9) * 16,
+                    flex: 2,
+                    borderRadius: 12,
+                    resizeMode: "cover",
+                  }}
+                />
+                <View
+                  style={{
+                    flex: 3,
+                    paddingHorizontal: 10,
+                    justifyContent: "center",
+                  }}
                 >
-                  <Image
-                    source={{ uri: recc.image }}
-                    style={{
-                      height: 80,
-                      maxWidth: (80 / 9) * 16,
-                      flex: 2,
-                      borderRadius: 12,
-                      resizeMode: "cover",
-                    }}
-                  />
-                  <View
-                    style={{
-                      flex: 3,
-                      paddingHorizontal: 10,
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Text style={styles.h5}>{shorterText(recc.title, 60)}</Text>
-                    <View style={styles.description}>
-                      <Text style={[styles.h5, { color: "#828282" }]}>
-                        {recc.views}
-                        <Separator />
-                        {recc.author}
-                        <Separator />
-                        {recc.date}
-                      </Text>
-                    </View>
+                  <Text style={styles.h5}>{shorterText(recc.title, 60)}</Text>
+                  <View style={styles.description}>
+                    <Text style={[styles.h5, { color: "#828282" }]}>
+                      {recc.views}
+                      <Separator />
+                      {recc.author}
+                      <Separator />
+                      {recc.date}
+                    </Text>
                   </View>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
+                </View>
+              </TouchableOpacity>
+            ))}
           </View>
-        </>
+        </ScrollView>
       )}
     </View>
   );
@@ -620,7 +631,7 @@ const padding = 12;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: padding,
+    //padding: padding,
     paddingTop: padding + Constants.statusBarHeight,
     backgroundColor: "white",
     paddingBottom: 0,
@@ -655,9 +666,9 @@ const styles = StyleSheet.create({
     paddingRight: 32,
   },
   video: {
-    borderRadius: 16,
-    height: ((width - 2 * padding) / 16) * 9,
-    width: width - 2 * padding,
+    //borderRadius: 32,
+    height: videoHeight, //- 2 * padding
+    width: width, // - 2 * padding,
   },
   description: {
     paddingVertical: 8,
