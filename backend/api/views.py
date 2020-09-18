@@ -25,10 +25,12 @@ class NotesViewSet(viewsets.ModelViewSet):
     serializer_class = NotesSerializer
 
     def get_queryset(self):
-        return Notes.objects.filter(user=self.request.user)
+        user_model = UserModel.objects.get(id=self.request.user.id)
+        return Notes.objects.filter(user=user_model)
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        user_model = UserModel.objects.get(id=self.request.user.id)
+        serializer.save(user=user_model)
 
 
 class NoteViewSet(SimpleViewSet):
