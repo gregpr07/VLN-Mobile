@@ -1,4 +1,3 @@
-from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -40,6 +39,7 @@ class Slide(models.Model):
     # for each lecture each user can have multiple notes
 
 
+# maybe rename to LectureNotes?
 class Notes(models.Model):
     lecture = models.ForeignKey(
         Lecture, on_delete=models.CASCADE, related_name='notes')
