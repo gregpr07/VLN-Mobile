@@ -150,20 +150,20 @@ const styles = StyleSheet.create({
   h1: {
     fontSize: 36,
     textAlign: "center",
-    fontFamily: "Inter_600SemiBold",
+    fontFamily: "SF-UI-semibold",
   },
 
   h3: {
     fontSize: 20,
-    fontFamily: "Inter_500Medium",
+    fontFamily: "SF-UI-medium",
   },
   h4: {
     fontSize: 18,
-    fontFamily: "Inter_500Medium",
+    fontFamily: "SF-UI-medium",
   },
   h5: {
     fontSize: 16,
-    fontFamily: "Inter_500Medium",
+    fontFamily: "SF-UI-medium",
   },
   gray: {
     color: "#828282",
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     paddingHorizontal: 20,
     fontSize: 20,
-    fontFamily: "Inter_500Medium",
+    fontFamily: "SF-UI-medium",
     marginBottom: 20,
     color: "#BDBDBD",
   },

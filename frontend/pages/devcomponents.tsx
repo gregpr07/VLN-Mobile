@@ -28,6 +28,7 @@ const MyPager = ({ navigation }) => {
         </View>
       </ViewPager>
       <Button onPress={() => Updates.reloadAsync()} title="reload app" />
+      <Text style={styles.h1}>Blap</Text>
     </View>
   );
 };
@@ -39,6 +40,9 @@ const styles = StyleSheet.create({
   page: {
     justifyContent: "center",
     alignItems: "center",
+  },
+  h1: {
+    fontFamily: "SF-UI-black",
   },
 });
 

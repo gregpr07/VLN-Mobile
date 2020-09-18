@@ -145,21 +145,21 @@ const styles = StyleSheet.create({
   h1: {
     fontSize: 36,
     textAlign: "center",
-    fontFamily: "Inter_600SemiBold",
+    fontFamily: "SF-UI-semibold",
     color: "white",
   },
 
   h3: {
     fontSize: 20,
-    fontFamily: "Inter_500Medium",
+    fontFamily: "SF-UI-medium",
   },
   h4: {
     fontSize: 18,
-    fontFamily: "Inter_500Medium",
+    fontFamily: "SF-UI-medium",
   },
   h5: {
     fontSize: 14,
-    fontFamily: "Inter_500Medium",
+    fontFamily: "SF-UI-medium",
   },
 
   gray: {
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     paddingBottom: 16,
     paddingTop: 16,
-    fontFamily: "Inter_500Medium",
+    fontFamily: "SF-UI-medium",
     paddingRight: 32,
   },
   video: {
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   note_text: {
-    fontFamily: "Inter_300Light",
+    fontFamily: "SF-UI-light",
     fontSize: 16,
     color: "#4F4F4F",
   },
@@ -202,6 +202,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: "#5DB075",
     fontSize: 20,
-    fontFamily: "Inter_500Medium",
+    fontFamily: "SF-UI-medium",
   },
 });

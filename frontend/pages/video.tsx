@@ -340,7 +340,7 @@ export default function VideoScreen({ route, navigation }: any) {
                 <Text
                   style={{
                     fontSize: 16,
-                    fontFamily: "Inter_500Medium",
+                    fontFamily: "SF-UI-medium",
                     color: "white",
                     textAlign: "center",
                   }}
@@ -457,7 +457,7 @@ export default function VideoScreen({ route, navigation }: any) {
           <Text
             style={{
               fontSize: 20,
-              fontFamily: "Inter_500Medium",
+              fontFamily: "SF-UI-medium",
               color: "white",
               textAlign: "center",
             }}
@@ -639,20 +639,20 @@ const styles = StyleSheet.create({
   h1: {
     fontSize: 36,
     textAlign: "center",
-    fontFamily: "Inter_600SemiBold",
+    fontFamily: "SF-UI-semibold",
   },
 
   h3: {
     fontSize: 20,
-    fontFamily: "Inter_500Medium",
+    fontFamily: "SF-UI-medium",
   },
   h4: {
     fontSize: 16,
-    fontFamily: "Inter_500Medium",
+    fontFamily: "SF-UI-medium",
   },
   h5: {
     fontSize: 14,
-    fontFamily: "Inter_500Medium",
+    fontFamily: "SF-UI-medium",
   },
 
   gray: {
@@ -662,7 +662,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     paddingBottom: 8,
 
-    fontFamily: "Inter_500Medium",
+    fontFamily: "SF-UI-medium",
     paddingRight: 32,
   },
   video: {
@@ -684,7 +684,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   note_text: {
-    fontFamily: "Inter_300Light",
+    fontFamily: "SF-UI-light",
     fontSize: 16,
     color: "#4F4F4F",
   },

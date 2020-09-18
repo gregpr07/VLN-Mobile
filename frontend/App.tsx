@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Text, View, Button, TouchableOpacity } from "react-native";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -19,12 +19,7 @@ import DevOnlyComp from "./pages/devcomponents";
 
 import { AppLoading } from "expo";
 
-import {
-  useFonts,
-  Inter_500Medium,
-  Inter_600SemiBold,
-  Inter_300Light,
-} from "@expo-google-fonts/inter";
+import * as Font from "expo-font";
 
 const Tabs = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -93,13 +88,34 @@ const PlayerStackScreen = () => {
 
 export default () => {
   // fonts
-  let [fontsLoaded] = useFonts({
-    Inter_500Medium,
-    Inter_600SemiBold,
-    Inter_300Light,
-  });
+  /*   let [fontsLoaded] = useFonts({
+    SF_UI_BLACK: require("./assets/fonts/sf-ui-display-black.otf"),
+  }); */
+
+  // fonts tutorial -  https://medium.com/@hemanshuM/add-custom-font-in-your-react-native-expo-app-88005a341f5c
+  const loadFonts = () => {
+    return Font.loadAsync({
+      "SF-UI-black": require("./assets/fonts/sf-ui-display-black.otf"),
+      "SF-UI-bold": require("./assets/fonts/sf-ui-display-bold.otf"),
+      "SF-UI-heavy": require("./assets/fonts/sf-ui-display-heavy.otf"),
+      "SF-UI-light": require("./assets/fonts/sf-ui-display-light.otf"),
+      "SF-UI-medium": require("./assets/fonts/sf-ui-display-medium.otf"),
+      "SF-UI-semibold": require("./assets/fonts/sf-ui-display-semibold.otf"),
+      "SF-UI-thin": require("./assets/fonts/sf-ui-display-thin.otf"),
+      "SF-UI-ultralight": require("./assets/fonts/sf-ui-display-ultralight.otf"),
+    });
+  };
+
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
   if (!fontsLoaded) {
-    return <AppLoading />;
+    return (
+      <AppLoading
+        startAsync={loadFonts}
+        onFinish={() => setFontsLoaded(true)}
+        onError={(err) => console.log(err)}
+      />
+    );
   }
 
   return (
@@ -120,7 +136,7 @@ export default () => {
             } else if (route.name == "DEV") {
               iconName = "ios-bug";
             } else if (route.name == "Player") {
-              iconName = "ios-play";
+              iconName = "ios-play-circle";
             }
 
             // You can return any component that you like here!
@@ -150,7 +166,7 @@ export default () => {
         <Tabs.Screen name="Profile" component={ProfileStackScreen} />
         <Tabs.Screen name="DEV" component={DevOnlyComp} />
       </Tabs.Navigator>
-      <StatusBar style="black" />
+      <StatusBar style="dark" />
     </NavigationContainer>
   );
 };
