@@ -66,7 +66,20 @@ export default SearchScreen = ({ navigation }) => {
     </Text>
   );
   const renderItem = ({ item }) => (
-    <View>
+    <View
+      style={{
+        backgroundColor: "white",
+        borderRadius: 12,
+        paddingHorizontal: 12,
+        marginBottom: 12,
+        shadowOffset: {
+          width: 6,
+          height: 3,
+        },
+        shadowOpacity: 0.075,
+        shadowRadius: 2,
+      }}
+    >
       <TouchableOpacity
         onPress={() => {
           navigation.navigate("Player", {
@@ -100,7 +113,7 @@ export default SearchScreen = ({ navigation }) => {
         <View
           style={{ flex: 4, paddingHorizontal: 10, justifyContent: "center" }}
         >
-          <Text style={styles.h5}>{shorterText(item.title, 75)}</Text>
+          <Text style={styles.h5}>{shorterText(item.title, 60)}</Text>
           <View style={styles.description}>
             <Text style={[styles.h5, { color: "#828282" }]}>
               {item.material_id}
@@ -144,7 +157,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: padding,
-    backgroundColor: "white",
+    //backgroundColor: "white",
     paddingTop: padding + Constants.statusBarHeight,
   },
   h1: {
@@ -173,15 +186,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   SearchBar: {
-    height: 50,
-    borderColor: "#E8E8E8",
-    borderWidth: 1,
+    height: 60,
+    shadowOffset: {
+      width: 4,
+      height: 5,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
     backgroundColor: "#F6F6F6",
-    borderRadius: 100,
+    borderRadius: 12,
     paddingHorizontal: 20,
     fontSize: 20,
     fontFamily: "SF-UI-medium",
     marginBottom: 20,
-    color: "#BDBDBD",
+    color: "#838f92",
   },
 });

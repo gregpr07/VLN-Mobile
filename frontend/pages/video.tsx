@@ -20,6 +20,8 @@ import {
 
 import Constants from "expo-constants";
 
+import { Ionicons } from "@expo/vector-icons";
+
 // @ts-ignore
 import Slideshow from "react-native-image-slider-show";
 
@@ -35,64 +37,97 @@ const { width, height } = Dimensions.get("window");
 
 const videoHeight = (width / 16) * 9;
 
+//? using let because we don't want the screen to re-render because of video
+let currentPositionMillis: number;
+let videoIsLoaded: boolean;
+let videoplaying: boolean;
+let audioplaying: boolean;
+
+const initPager = 0;
+let currentPager = initPager;
+
+var videoRef: any;
+const audioRef = new Audio.Sound();
+
 //TODO BUGS
 // - when going to audio and opening notes the continuity breakes
 
 export default function VideoScreen({ route, navigation }: any) {
   //* constants
-  const initPager = 0;
-  let currentPager = initPager;
 
   //* VIDEO AND AUDIO REFERENCES
-  var videoRef: any;
-  const audioRef = new Audio.Sound();
 
   //const [stateVideoRef, setStateVideoRef] = useState();
   const { videoId, title, video_url } = route.params;
 
-  //? using let because we don't want the screen to re-render because of video
-  let currentPositionMillis: number;
-  let videoIsLoaded: boolean;
+  //const [testState, setTeststate] = useState(0);
+
+  async function resetState() {
+    await videoRef.unloadAsync();
+    await audioRef.unloadAsync();
+
+    videoplaying = false;
+    audioplaying = false;
+
+    currentPositionMillis = 0;
+
+    return true;
+  }
 
   useEffect(() => {
     let shouldUpdate = true;
     navigation.addListener("state", async () => {
       if (videoRef && shouldUpdate) {
         shouldUpdate = false;
-        //! THIS IS WHERE TO IMPLEMENT MEMORY OF CURRENT TIME
-        currentPositionMillis = 0;
-        playVideoORAudio(initPager).then(() => (shouldUpdate = true));
+
+        resetState().then(() =>
+          playVideoORAudio(currentPager).then(() => (shouldUpdate = true))
+        );
       }
     });
   }, [route.params]);
 
   // currently 0 is video 1 is audio but this might change
   async function playVideoORAudio(page: number) {
-    currentPager = page;
+    console.log("page is" + currentPager);
+
     const initStatus = {
       shouldPlay: true,
       positionMillis: currentPositionMillis,
     };
+    console.log(videoplaying, audioplaying);
 
     if (page === 0) {
-      audioRef.unloadAsync();
-      const load = await videoRef.loadAsync(
-        video_url,
-        (initialStatus = initStatus)
-      );
+      if (audioplaying) {
+        await audioRef.unloadAsync();
+        audioplaying = false;
+      }
+      if (!videoplaying) {
+        const load = await videoRef.loadAsync(
+          video_url,
+          (initialStatus = initStatus)
+        );
+        videoplaying = true;
+      }
 
-      return load;
+      return null;
     }
     if (page === 1) {
-      videoRef.unloadAsync();
-      const loadAudio = audioRef.loadAsync(
-        {
-          uri:
-            "https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_5MG.mp3",
-        },
-        (initialStatus = initStatus)
-      );
-      return loadAudio;
+      if (videoplaying) {
+        await videoRef.unloadAsync();
+        videoplaying = false;
+      }
+      if (!audioplaying) {
+        const loadAudio = audioRef.loadAsync(
+          {
+            uri:
+              "https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_5MG.mp3",
+          },
+          (initialStatus = initStatus)
+        );
+        audioplaying = true;
+      }
+      return null;
     }
   }
 
@@ -179,26 +214,20 @@ export default function VideoScreen({ route, navigation }: any) {
       const newslides = slides
         .sort(compare)
         .filter((slide) => slide.timestamp < currentPositionMillis);
-      return newslides.length;
+      return newslides.length - 1;
     };
     const [slidePosition, setSlidePosition] = useState(getCurrentSlide());
 
-    //! this is very slow - must fix it!!!
+    //? this is very slow
     const handleSlideChange = () => {
       setSlidePosition(getCurrentSlide());
       //console.log(newslides.length);
     };
 
-    let intervalid = setInterval(handleSlideChange, 1000);
+    let intervalid = setInterval(handleSlideChange, 500);
 
     return (
-      /*       <Image
-        source={{
-          uri: slidesarray[slidePosition],
-        }}
-        style={styles.video}
-        blurRadius={10}
-      /> */
+      //! write this by hand
       <Slideshow
         dataSource={slides}
         position={slidePosition}
@@ -314,25 +343,33 @@ export default function VideoScreen({ route, navigation }: any) {
       return (
         <View style={{}} /* keyboardShouldPersistTaps="handled" */>
           <View style={{}}>
-            <TextInput
-              style={{
-                marginBottom: 10,
-              }}
-              onChangeText={handleChangeText}
-              value={noteText}
-              autoFocus={true}
-              //onSubmitEditing={handleSubmit}
-              clearButtonMode={"always"}
-              multiline
-              placeholder={"Add new note here"}
-              placeholderTextColor="#BDBDBD"
-            />
+            <View style={{ flex: 1, flexDirection: "row" }}>
+              <TextInput
+                style={{
+                  marginBottom: 10,
+
+                  paddingBottom: 5,
+                  flex: 9,
+                }}
+                onChangeText={handleChangeText}
+                value={noteText}
+                autoFocus={true}
+                //onSubmitEditing={handleSubmit}
+                clearButtonMode={"always"}
+                multiline
+                placeholder={"Add new note here"}
+                placeholderTextColor="#BDBDBD"
+              />
+              <TouchableOpacity onPress={() => quitNotes()}>
+                <Ionicons name={"ios-close"} size={30} color={"black"} />
+              </TouchableOpacity>
+            </View>
             {noteText ? (
               <TouchableHighlight
                 style={{
                   paddingVertical: 8,
                   borderRadius: 10,
-                  backgroundColor: "#5DB075",
+                  backgroundColor: "#5468fe",
                 }}
                 onPress={handleNoteSubmit}
                 accessible={false}
@@ -365,18 +402,18 @@ export default function VideoScreen({ route, navigation }: any) {
       </View>
     );
 
+    const quitNotes = () => {
+      setShowNotes(false);
+      SpringIn();
+      FadeIn();
+    };
     const handleQuit = (props: any) => {
       const offset = 75;
       const currentY = props.nativeEvent.contentOffset.y;
       // || currentX > ITEM_SIZE + SEPARATOR_SIZE
       // ALSO NEED TO IMPLEMENT RIGHT SIDE
       if (currentY < -offset) {
-        //console.log(videoStatus);
-        /* 
-        }); */
-        setShowNotes(false);
-        SpringIn();
-        FadeIn();
+        quitNotes();
       }
     };
 
@@ -413,13 +450,13 @@ export default function VideoScreen({ route, navigation }: any) {
 
   const Description = () => (
     <View style={styles.description}>
-      <Text style={styles.h4}>
+      <Text style={styles.h5}>
         <Text style={styles.gray}>views:</Text> {video_stats.views}
       </Text>
-      <Text style={styles.h4}>
+      <Text style={styles.h5}>
         <Text style={styles.gray}>author:</Text> {video_stats.author}
       </Text>
-      <Text style={styles.h4}>
+      <Text style={styles.h5}>
         <Text style={styles.gray}>published:</Text> {video_stats.published}
       </Text>
     </View>
@@ -428,7 +465,7 @@ export default function VideoScreen({ route, navigation }: any) {
   const Separator = () => (
     <Text
       style={{
-        color: "#6FCF97",
+        color: "#5468fe",
       }}
     >
       {" "}
@@ -450,7 +487,13 @@ export default function VideoScreen({ route, navigation }: any) {
             paddingHorizontal: 32,
             paddingVertical: 16,
             borderRadius: 20,
-            backgroundColor: "#5DB075",
+            backgroundColor: "#5468fe",
+            shadowOffset: {
+              width: 4,
+              height: 5,
+            },
+            shadowOpacity: 0.1,
+            shadowRadius: 6,
           }}
           onPress={handleSwitch}
         >
@@ -517,6 +560,10 @@ export default function VideoScreen({ route, navigation }: any) {
 
   return (
     <View style={styles.container} /* showsVerticalScrollIndicator={false} */>
+      {/*       <Button
+        onPress={() => setTeststate(testState + 1)}
+        title={testState.toString()}
+      /> */}
       {showNotes ? null : (
         <Animated.View
           onLayout={(event) => {
@@ -542,7 +589,11 @@ export default function VideoScreen({ route, navigation }: any) {
             height: videoHeight, // - 2 * padding
           }}
           pageMargin={100}
-          onPageSelected={(e) => playVideoORAudio(e.nativeEvent.position)}
+          //! this line causes the error which reloades on every state change
+          onPageSelected={(e) => {
+            currentPager = e.nativeEvent.position;
+            playVideoORAudio(e.nativeEvent.position);
+          }}
           //transitionStyle="curl"
           //showPageIndicator={true}
         >
@@ -582,8 +633,8 @@ export default function VideoScreen({ route, navigation }: any) {
 
           {/* recommendations */}
 
-          <View style={{ marginTop: 8, flex: 1 }}>
-            <Text style={styles.h4}>Recommended videos {videoId}</Text>
+          <View style={{ marginTop: 16, flex: 1 }}>
+            <Text style={styles.h3}>Recommended videos {videoId}</Text>
             {recommendations.map((recc) => (
               <TouchableOpacity
                 onPress={() => handleAcceptRecc(recc)}
@@ -593,10 +644,10 @@ export default function VideoScreen({ route, navigation }: any) {
                 <Image
                   source={{ uri: recc.image }}
                   style={{
-                    height: 80,
+                    height: 70,
                     maxWidth: (80 / 9) * 16,
                     flex: 2,
-                    borderRadius: 12,
+                    borderRadius: 8,
                     resizeMode: "cover",
                   }}
                 />
@@ -607,7 +658,7 @@ export default function VideoScreen({ route, navigation }: any) {
                     justifyContent: "center",
                   }}
                 >
-                  <Text style={styles.h5}>{shorterText(recc.title, 60)}</Text>
+                  <Text style={styles.h5}>{shorterText(recc.title, 50)}</Text>
                   <View style={styles.description}>
                     <Text style={[styles.h5, { color: "#828282" }]}>
                       {recc.views}
@@ -633,7 +684,7 @@ const styles = StyleSheet.create({
     flex: 1,
     //padding: padding,
     paddingTop: padding + Constants.statusBarHeight,
-    backgroundColor: "white",
+    //backgroundColor: "white",
     paddingBottom: 0,
   },
   h1: {
@@ -678,10 +729,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   your_notes: {
-    borderRadius: 16,
-    paddingHorizontal: 16,
+    paddingHorizontal: 8,
     marginVertical: 8,
-    backgroundColor: "white",
+    //backgroundColor: "white",
   },
   note_text: {
     fontFamily: "SF-UI-light",

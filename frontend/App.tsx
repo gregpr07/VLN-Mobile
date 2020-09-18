@@ -21,6 +21,15 @@ import { AppLoading } from "expo";
 
 import * as Font from "expo-font";
 
+const MyTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: "rgb(255, 45, 85)",
+    background: "#f4f5f9",
+  },
+};
+
 const Tabs = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
 const VideoStack = createStackNavigator();
@@ -52,13 +61,12 @@ const ProfileStackScreen = () => (
 
 const VideoStackScreen = () => {
   return (
-    <VideoStack.Navigator>
+    <VideoStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
       <VideoStack.Screen name="Videos" component={VideosScreen} />
-      {/*       <VideoStack.Screen
-        name="Video"
-        component={VideoScreen}
-
-      /> */}
     </VideoStack.Navigator>
   );
 };
@@ -119,7 +127,7 @@ export default () => {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={MyTheme}>
       <Tabs.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
@@ -144,7 +152,7 @@ export default () => {
           },
         })}
         tabBarOptions={{
-          activeTintColor: "#EB5757",
+          activeTintColor: "#da5151",
           inactiveTintColor: "gray",
           showLabel: false,
           style: {

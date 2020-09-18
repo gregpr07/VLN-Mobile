@@ -220,7 +220,6 @@ const styles = StyleSheet.create({
     fontSize: 36,
     textAlign: "left",
     fontFamily: "SF-UI-semibold",
-    color: "black",
   },
 
   h3: {
@@ -229,7 +228,7 @@ const styles = StyleSheet.create({
   },
   h4: {
     fontSize: 18,
-    fontFamily: "SF-UI-medium",
+    fontFamily: "SF-UI-light",
   },
   h5: {
     fontSize: 16,
@@ -239,43 +238,7 @@ const styles = StyleSheet.create({
   gray: {
     color: "#828282",
   },
-  video_title: {
-    fontSize: 22,
-    paddingBottom: 16,
-    paddingTop: 16,
-    fontFamily: "SF-UI-medium",
-    paddingRight: 32,
-  },
-  video: {
-    borderRadius: 16,
-    height: ((width - 2 * padding) / 16) * 9,
-    width: width - 2 * padding,
-  },
   description: {
     paddingVertical: 8,
-  },
-  recommendation: {
-    paddingVertical: 8,
-    flexDirection: "row",
-  },
-  your_notes: {
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    //height: 100,
-    marginVertical: 8,
-    backgroundColor: "white",
-  },
-  note_text: {
-    fontFamily: "SF-UI-light",
-    fontSize: 16,
-    color: "#4F4F4F",
-  },
-  button_default: {
-    paddingHorizontal: 32,
-    paddingVertical: 16,
-    borderRadius: 20,
-    backgroundColor: "#5DB075",
-    fontSize: 20,
-    fontFamily: "SF-UI-medium",
   },
 });
