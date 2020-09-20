@@ -226,16 +226,28 @@ export default function VideoScreen({ route, navigation }: any) {
 
     let intervalid = setInterval(handleSlideChange, 500);
 
+    const [playing, setPlaying] = useState(true);
+    async function handlePausePlay() {
+      if (playing) {
+        await audioRef.pauseAsync();
+      } else {
+        await audioRef.playAsync();
+      }
+      setPlaying(!playing);
+    }
+
     return (
       //! write this by hand
-      <Slideshow
-        dataSource={slides}
-        position={slidePosition}
-        style={styles.video}
-        scrollEnabled={false}
-        arrowSize={0}
-        height={videoHeight}
-      />
+      <TouchableHighlight onPress={handlePausePlay}>
+        <Slideshow
+          dataSource={slides}
+          position={slidePosition}
+          style={styles.video}
+          scrollEnabled={false}
+          arrowSize={0}
+          height={videoHeight}
+        />
+      </TouchableHighlight>
     );
   };
 
@@ -271,7 +283,7 @@ export default function VideoScreen({ route, navigation }: any) {
     const SEPARATOR_SIZE = 10;
 
     const [notes, setNotes] = useState([
-      {
+      /*       {
         text:
           "Screens support is built into react-navigation starting from version 2.14.0 for all the different navigator types (stack, tab, drawer, etc). We plan on adding it to other navigators shortly. To configure react-navigation to use screens instead of plain RN Views for rendering screen views, follow the steps below:",
         timestamp: 12312,
@@ -287,7 +299,7 @@ export default function VideoScreen({ route, navigation }: any) {
       {
         text: "Why does it matterrrr?",
         timestamp: 6626312,
-      },
+      }, */
     ]);
 
     const RenderNote = ({ item, index }: any) => {
@@ -297,10 +309,17 @@ export default function VideoScreen({ route, navigation }: any) {
             paddingVertical: 6,
           }}
         >
-          <Button
-            onPress={() => handleTimestamp(item.timestamp)}
-            title={YoutubeTime(item.timestamp)}
-          />
+          <TouchableHighlight onPress={() => handleTimestamp(item.timestamp)}>
+            <View style={{ flex: 1, flexDirection: "row" }}>
+              <Text>{YoutubeTime(item.timestamp)}</Text>
+              <Ionicons
+                name={"ios-play-circle"}
+                size={16}
+                //color={"black"}
+                style={{ marginLeft: 5 }}
+              />
+            </View>
+          </TouchableHighlight>
 
           <Text style={styles.note_text}>{item.text}</Text>
         </View>
@@ -341,7 +360,9 @@ export default function VideoScreen({ route, navigation }: any) {
         console.log(output_obj);
       };
       return (
-        <View style={{}} /* keyboardShouldPersistTaps="handled" */>
+        <View
+        /* keyboardShouldPersistTaps="handled" */
+        >
           <View style={{}}>
             <View style={{ flex: 1, flexDirection: "row" }}>
               <TextInput
@@ -396,7 +417,12 @@ export default function VideoScreen({ route, navigation }: any) {
           paddingVertical: 12,
         }}
       >
-        <Text style={[styles.h4, { color: "gray", marginVertical: 20 }]}>
+        <Text
+          style={[
+            styles.h4,
+            { color: "gray", marginVertical: 20, textAlign: "center" },
+          ]}
+        >
           Swipe down to dismiss the notes
         </Text>
       </View>
@@ -421,10 +447,12 @@ export default function VideoScreen({ route, navigation }: any) {
 
     return (
       <View
-        style={{
-          flex: 1,
-          paddingHorizontal: padding / 2,
-        }}
+        style={[
+          styles.default_card,
+          {
+            margin: padding,
+          },
+        ]}
       >
         <SafeAreaView style={styles.your_notes}>
           <FlatList
@@ -449,16 +477,32 @@ export default function VideoScreen({ route, navigation }: any) {
   };
 
   const Description = () => (
-    <View style={styles.description}>
-      <Text style={styles.h5}>
-        <Text style={styles.gray}>views:</Text> {video_stats.views}
-      </Text>
-      <Text style={styles.h5}>
-        <Text style={styles.gray}>author:</Text> {video_stats.author}
-      </Text>
-      <Text style={styles.h5}>
-        <Text style={styles.gray}>published:</Text> {video_stats.published}
-      </Text>
+    <View style={styles.default_card}>
+      <View style={{ flex: 1, flexDirection: "row" }}>
+        <View style={{ flex: 5 }}>
+          <Text style={styles.h5}>
+            <Text style={styles.gray}>views:</Text> {video_stats.views}
+          </Text>
+          <Text style={styles.h5}>
+            <Text style={styles.gray}>author:</Text> {video_stats.author}
+          </Text>
+          <Text style={styles.h5}>
+            <Text style={styles.gray}>published:</Text> {video_stats.published}
+          </Text>
+        </View>
+        <View style={{ flex: 1 }}>
+          <Image
+            source={{ uri: "https://platform.x5gon.org/imgs/team/john.jpg" }}
+            style={{
+              height: 60,
+              width: 60,
+              borderRadius: 50,
+              borderColor: "white",
+              borderWidth: 5,
+            }}
+          />
+        </View>
+      </View>
     </View>
   );
 
@@ -481,32 +525,26 @@ export default function VideoScreen({ route, navigation }: any) {
     };
 
     return (
-      <View>
+      <View
+        style={{
+          position: "absolute",
+          right: 0,
+          bottom: 0,
+          margin: padding,
+          //justifyContent: "center",
+          //alignItems: "center",
+        }}
+      >
         <TouchableOpacity
           style={{
-            paddingHorizontal: 32,
-            paddingVertical: 16,
+            paddingHorizontal: 16,
+            paddingVertical: 12,
             borderRadius: 20,
             backgroundColor: "#5468fe",
-            shadowOffset: {
-              width: 4,
-              height: 5,
-            },
-            shadowOpacity: 0.1,
-            shadowRadius: 6,
           }}
           onPress={handleSwitch}
         >
-          <Text
-            style={{
-              fontSize: 20,
-              fontFamily: "SF-UI-medium",
-              color: "white",
-              textAlign: "center",
-            }}
-          >
-            Show Notes
-          </Text>
+          <Ionicons name={"ios-create"} size={30} color={"white"} />
         </TouchableOpacity>
       </View>
     );
@@ -627,14 +665,12 @@ export default function VideoScreen({ route, navigation }: any) {
         >
           <Animated.View>
             <Description />
-
-            <SwitchToNotes />
           </Animated.View>
 
           {/* recommendations */}
 
-          <View style={{ marginTop: 16, flex: 1 }}>
-            <Text style={styles.h3}>Recommended videos {videoId}</Text>
+          <View style={styles.default_card}>
+            <Text style={styles.h3}>Related videos</Text>
             {recommendations.map((recc) => (
               <TouchableOpacity
                 onPress={() => handleAcceptRecc(recc)}
@@ -644,8 +680,8 @@ export default function VideoScreen({ route, navigation }: any) {
                 <Image
                   source={{ uri: recc.image }}
                   style={{
-                    height: 70,
-                    maxWidth: (80 / 9) * 16,
+                    height: 60,
+                    maxWidth: (60 / 9) * 16,
                     flex: 2,
                     borderRadius: 8,
                     resizeMode: "cover",
@@ -655,14 +691,14 @@ export default function VideoScreen({ route, navigation }: any) {
                   style={{
                     flex: 3,
                     paddingHorizontal: 10,
-                    justifyContent: "center",
+                    //justifyContent: "center",
                   }}
                 >
                   <Text style={styles.h5}>{shorterText(recc.title, 50)}</Text>
                   <View style={styles.description}>
                     <Text style={[styles.h5, { color: "#828282" }]}>
-                      {recc.views}
-                      <Separator />
+                      {/* {recc.views}
+                      <Separator /> */}
                       {recc.author}
                       <Separator />
                       {recc.date}
@@ -674,6 +710,8 @@ export default function VideoScreen({ route, navigation }: any) {
           </View>
         </ScrollView>
       )}
+
+      {showNotes ? null : <SwitchToNotes />}
     </View>
   );
 }
@@ -683,7 +721,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     //padding: padding,
-    paddingTop: padding + Constants.statusBarHeight,
+    paddingTop: Constants.statusBarHeight,
     //backgroundColor: "white",
     paddingBottom: 0,
   },
@@ -713,7 +751,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     paddingBottom: 8,
 
-    fontFamily: "SF-UI-medium",
+    fontFamily: "SF-UI-light",
     paddingRight: 32,
   },
   video: {
@@ -721,9 +759,7 @@ const styles = StyleSheet.create({
     height: videoHeight, //- 2 * padding
     width: width, // - 2 * padding,
   },
-  description: {
-    paddingVertical: 8,
-  },
+
   recommendation: {
     paddingVertical: 8,
     flexDirection: "row",
@@ -737,5 +773,18 @@ const styles = StyleSheet.create({
     fontFamily: "SF-UI-light",
     fontSize: 16,
     color: "#4F4F4F",
+  },
+  default_card: {
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+
+    marginTop: padding,
+    backgroundColor: "white",
+    padding: padding,
+    borderRadius: 12,
   },
 });

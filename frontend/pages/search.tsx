@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState, useEffect } from "react";
 import {
   TextInput,
   SafeAreaView,
@@ -8,6 +8,8 @@ import {
   Text,
   TouchableOpacity,
   Image,
+  ActivityIndicator,
+  Dimensions,
 } from "react-native";
 import {
   YoutubeTime,
@@ -18,6 +20,8 @@ import {
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 
+const { width, height } = Dimensions.get("window");
+
 export default SearchScreen = ({ navigation }) => {
   const site_api = "https://platform.x5gon.org/api/v2/";
 
@@ -27,9 +31,12 @@ export default SearchScreen = ({ navigation }) => {
   const [previousInputValue, setPreviousValue] = useState("");
   const [nextPage, setNextPage] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   const getData = (append_array) => {
     console.log(inputValue);
     setPreviousValue(inputValue);
+
     const search_link = site_api + "search?text=" + inputValue + "&types=video";
     fetch(append_array ? (nextPage ? nextPage : search_link) : search_link)
       .then((res) => res.json())
@@ -41,14 +48,21 @@ export default SearchScreen = ({ navigation }) => {
         console.log(new_arr.length);
         setData(new_arr);
         setNextPage(json.metadata.next_page);
+        setLoading(false);
       });
   };
 
   const handleSubmit = () => {
     if (previousInputValue !== inputValue) {
+      setLoading(true);
       getData(false);
     }
   };
+
+  //! only for faster dev
+  useEffect(() => {
+    onChangeText("machine");
+  }, []);
 
   const loadMoreData = () => {
     console.log(nextPage);
@@ -58,7 +72,7 @@ export default SearchScreen = ({ navigation }) => {
   const Separator = () => (
     <Text
       style={{
-        color: "#6FCF97",
+        color: "#5468fe",
       }}
     >
       {" "}
@@ -66,20 +80,7 @@ export default SearchScreen = ({ navigation }) => {
     </Text>
   );
   const renderItem = ({ item }) => (
-    <View
-      style={{
-        backgroundColor: "white",
-        borderRadius: 12,
-        paddingHorizontal: 12,
-        marginBottom: 12,
-        shadowOffset: {
-          width: 6,
-          height: 3,
-        },
-        shadowOpacity: 0.075,
-        shadowRadius: 2,
-      }}
-    >
+    <View style={styles.default_card}>
       <TouchableOpacity
         onPress={() => {
           navigation.navigate("Player", {
@@ -100,7 +101,7 @@ export default SearchScreen = ({ navigation }) => {
         <Image
           source={{
             uri:
-              "http://hydro.ijs.si/v013/2a/fil6y2o3eazawewmlpi4gg4osoodvfbz.jpg",
+              "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fmarketingland.com%2Fwp-content%2Fml-loads%2F2015%2F01%2Fvideo-generic-ss-1920.jpg&f=1&nofb=1",
           }}
           style={{
             height: 90,
@@ -110,11 +111,9 @@ export default SearchScreen = ({ navigation }) => {
             resizeMode: "cover",
           }}
         />
-        <View
-          style={{ flex: 4, paddingHorizontal: 10, justifyContent: "center" }}
-        >
-          <Text style={styles.h5}>{shorterText(item.title, 60)}</Text>
-          <View style={styles.description}>
+        <View style={{ flex: 4, padding: 6, alignContent: "center" }}>
+          <Text style={[styles.h4]}>{shorterText(item.title, 60)}</Text>
+          <View>
             <Text style={[styles.h5, { color: "#828282" }]}>
               {item.material_id}
               <Separator />
@@ -147,6 +146,17 @@ export default SearchScreen = ({ navigation }) => {
           //getNativeScrollRef={(ref) => (flatlistRef = ref)}
         />
       </SafeAreaView>
+      {loading ? (
+        <ActivityIndicator
+          //? 15 is for centering - very hacky!!
+          style={{
+            left: width / 2 - 15,
+            top: height / 2,
+            position: "absolute",
+          }}
+          size="small"
+        />
+      ) : null}
       <StatusBar style="dark" />
     </View>
   );
@@ -156,7 +166,7 @@ const padding = 24;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: padding,
+
     //backgroundColor: "white",
     paddingTop: padding + Constants.statusBarHeight,
   },
@@ -171,18 +181,18 @@ const styles = StyleSheet.create({
     fontFamily: "SF-UI-medium",
   },
   h4: {
-    fontSize: 18,
-    fontFamily: "SF-UI-medium",
+    fontSize: 14,
+    fontFamily: "SF-UI-light",
   },
   h5: {
-    fontSize: 16,
+    fontSize: 12,
     fontFamily: "SF-UI-medium",
   },
+
   gray: {
     color: "#828282",
   },
   recommendation: {
-    marginVertical: 12,
     flexDirection: "row",
   },
   SearchBar: {
@@ -200,5 +210,22 @@ const styles = StyleSheet.create({
     fontFamily: "SF-UI-medium",
     marginBottom: 20,
     color: "#838f92",
+
+    marginHorizontal: padding,
+  },
+  default_card: {
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+
+    marginTop: padding / 2,
+    backgroundColor: "white",
+    //padding: padding,
+    borderRadius: 12,
+
+    marginHorizontal: padding,
   },
 });

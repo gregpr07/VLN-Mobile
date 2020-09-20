@@ -51,12 +51,7 @@ export default function ProfileScreen() {
             maxWidth: 300,
             borderRadius: 300,
             borderColor: "white",
-            borderWidth: 5,
-            transform: [
-              {
-                translateY: 30,
-              },
-            ],
+            borderWidth: 8,
           }}
         />
       </View>
@@ -65,27 +60,25 @@ export default function ProfileScreen() {
       <View
         style={{
           paddingTop: Constants.statusBarHeight,
-          backgroundColor: "#5DB075",
           paddingBottom: 0,
           justifyContent: "center",
           alignItems: "center",
           marginBottom: 30,
         }}
       >
-        <Text style={styles.h1}>Profile</Text>
         <ProfileImage />
       </View>
     );
   };
 
   return (
-    <View style={{ backgroundColor: "white" }}>
+    <View>
       <Header />
       <View style={{ paddingTop: 16, paddingBottom: 24 }}>
         <Text style={styles.h2}>{profileStats.name}</Text>
         <Text style={[styles.h4, { marginTop: 8 }]}>{profileStats.title}</Text>
       </View>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
     </View>
   );
 }

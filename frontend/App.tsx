@@ -174,7 +174,6 @@ export default () => {
         <Tabs.Screen name="Profile" component={ProfileStackScreen} />
         <Tabs.Screen name="DEV" component={DevOnlyComp} />
       </Tabs.Navigator>
-      <StatusBar style="dark" />
     </NavigationContainer>
   );
 };

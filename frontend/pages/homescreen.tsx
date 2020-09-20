@@ -81,14 +81,7 @@ export default function HomeScreen({ navigation }: any) {
   );
 
   const Header = () => (
-    <View
-      style={{
-        paddingTop: padding / 2,
-        //backgroundColor: "white",
-
-        //paddingBottom: 10,
-      }}
-    >
+    <View>
       <Text style={[styles.h1, { paddingHorizontal: padding }]}>Events</Text>
       <SafeAreaView>
         <ViewPager
@@ -198,7 +191,6 @@ export default function HomeScreen({ navigation }: any) {
   return (
     <ScrollView
       style={{
-        //backgroundColor: "white",
         marginTop: Constants.statusBarHeight,
       }}
       showsVerticalScrollIndicator={false}
@@ -214,7 +206,7 @@ export default function HomeScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: padding,
+    padding: Constants.statusBarHeight,
   },
   h1: {
     fontSize: 36,

@@ -16,9 +16,9 @@ export function YoutubeTime(millisec: number) {
   seconds = Math.floor(seconds % 60);
   let seconds_str: string = seconds >= 10 ? seconds.toString() : "0" + seconds;
   if (hours != 0) {
-    return hours_str + ":" + minutes + ":" + seconds;
+    return hours_str + ":" + minutes_str + ":" + seconds_str;
   }
-  return minutes + ":" + seconds;
+  return minutes_str + ":" + seconds_str;
 }
 
 export function parseISOString(s: any) {
