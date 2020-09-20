@@ -29,6 +29,8 @@ class Lecture(models.Model):
 
     published = models.DateField()
 
+    thumbnail = models.URLField()
+
     video = models.URLField()
     audio = models.URLField()
 
@@ -41,6 +43,9 @@ class Slide(models.Model):
         Lecture, on_delete=models.CASCADE, related_name='slides')
     timestamp = models.IntegerField()
     image = models.URLField(null=True)
+
+    def __str__(self):
+        return str(self.lecture.title) + ' at ' + str(self.timestamp)
 
 
 class Event(models.Model):
