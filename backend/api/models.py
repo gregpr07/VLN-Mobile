@@ -8,10 +8,18 @@ class UserModel(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, null=True)
     last_name = models.CharField(max_length=100, null=True)
-    # TODO: avatar/image?
 
     def __str__(self):
         return f'{self.name + " " + self.last_name}\'s profile'
+
+
+class Author(models.Model):
+    user_model = models.OneToOneField(UserModel, on_delete=models.CASCADE)
+
+    views = models.IntegerField()
+
+    def __str__(self):
+        return f'{self.user_model.name + " " + self.user_model.last_name}\'s author'
 
 
 class Lecture(models.Model):
@@ -36,10 +44,34 @@ class Slide(models.Model):
     timestamp = models.IntegerField()
     image = models.URLField(null=True)
 
-    # for each lecture each user can have multiple notes
+
+class Event(models.Model):
+    title = models.CharField(max_length=256)
+    description = models.CharField(max_length=1028)  # size!
+
+    # TODO: array of lectures
+
+    def __str__(self):
+        return self.title
 
 
-# maybe rename to LectureNotes?
+class Playlist(models.Model):
+    title = models.CharField(max_length=100)
+
+    views = models.IntegerField()
+    author = models.ForeignKey(
+        UserModel, on_delete=models.CASCADE, related_name='playlist_author')
+
+    published = models.DateField()
+
+    # TODO: array of lectures
+
+    def __str__(self):
+        return self.title
+
+
+# for each lecture each user can have multiple notes
+# maybe merge Notes into Note?
 class Notes(models.Model):
     lecture = models.ForeignKey(
         Lecture, on_delete=models.CASCADE, related_name='notes')
