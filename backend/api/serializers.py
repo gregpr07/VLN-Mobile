@@ -1,10 +1,8 @@
-from abc import ABC
-
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from api.models import UserModel, Lecture, Slide, Notes, Note
+from api.models import UserModel, Lecture, Slide, Note
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -52,12 +50,6 @@ class LectureSerializer(serializers.ModelSerializer):
 class SlideSerializer(serializers.ModelSerializer):
     class Meta:
         model = Slide
-        fields = '__all__'
-
-
-class NotesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Notes
         fields = '__all__'
 
 
