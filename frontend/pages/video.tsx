@@ -14,6 +14,7 @@ import {
   TouchableHighlight,
   TextInput,
   Keyboard,
+  ActivityIndicator,
   // Pressable,
   Animated,
 } from "react-native";
@@ -28,9 +29,14 @@ import Slideshow from "react-native-image-slider-show";
 // functions
 import { YoutubeTime, shorterText, compare } from "../services/functions";
 
+import { fetcher } from "../services/fetcher";
+
 // expo
 import { Video, Audio } from "expo-av";
 import ViewPager from "@react-native-community/viewpager";
+
+// fetching
+import useSWR from "swr";
 
 // dimensions
 const { width, height } = Dimensions.get("window");
@@ -43,7 +49,7 @@ let videoIsLoaded: boolean;
 let videoplaying: boolean;
 let audioplaying: boolean;
 
-const initPager = 0;
+const initPager = 1;
 let currentPager = initPager;
 
 var videoRef: any;
@@ -53,6 +59,10 @@ const audioRef = new Audio.Sound();
 // - when going to audio and opening notes the continuity breakes
 
 export default function VideoScreen({ route, navigation }: any) {
+  const { data: lecture, error } = useSWR("lecture/1", fetcher);
+  const { data: notes } = useSWR("note", fetcher);
+  const { data: slides } = useSWR("slide", fetcher);
+
   //* constants
 
   //* VIDEO AND AUDIO REFERENCES
@@ -66,6 +76,7 @@ export default function VideoScreen({ route, navigation }: any) {
   if (videoplaying && audioplaying) {
     resetState(currentPositionMillis);
   }
+  //!
 
   async function resetState(position: number) {
     await videoRef.unloadAsync();
@@ -81,14 +92,16 @@ export default function VideoScreen({ route, navigation }: any) {
   }
 
   useEffect(() => {
-    let shouldUpdate = true;
-    navigation.addListener("state", async () => {
-      if (videoRef && shouldUpdate) {
-        shouldUpdate = false;
+    if (lecture) {
+      let shouldUpdate = true;
+      navigation.addListener("state", async () => {
+        if (videoRef && shouldUpdate) {
+          shouldUpdate = false;
 
-        resetState(0);
-      }
-    });
+          resetState(0);
+        }
+      });
+    }
   }, [route.params]);
 
   // currently 0 is video 1 is audio but this might change
@@ -108,7 +121,9 @@ export default function VideoScreen({ route, navigation }: any) {
       }
       if (!videoplaying) {
         const load = await videoRef.loadAsync(
-          video_url,
+          {
+            uri: lecture.video,
+          },
           (initialStatus = initStatus)
         );
         videoplaying = true;
@@ -124,8 +139,7 @@ export default function VideoScreen({ route, navigation }: any) {
       if (!audioplaying) {
         const loadAudio = audioRef.loadAsync(
           {
-            uri:
-              "https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_5MG.mp3",
+            uri: lecture.audio,
           },
           (initialStatus = initStatus)
         );
@@ -188,39 +202,18 @@ export default function VideoScreen({ route, navigation }: any) {
     //console.log(videoRef);
   };
 
-  const video_stats = {
-    title: title,
-    url: "http://hydro.ijs.si/v00e/0c/bqsbpqtnh52xm5nnm2iidqmf5vccd4l2.mp4",
-    poster: "http://hydro.ijs.si/v013/2a/fil6y2o3eazawewmlpi4gg4osoodvfbz.jpg",
-    views: 1498,
-    author: "Oliver Downs",
-    published: "Sept. 5, 2016",
-  };
-
   const AudioSlides = () => {
-    const slides = [
-      {
-        timestamp: 1000,
-        url: "http://hydro.ijs.si/v017/d0/2d4vgnj6yhkmc4lizj7dwj3frapczcj7.jpg",
-      },
-      {
-        timestamp: 3000,
-        url: "http://hydro.ijs.si/v017/4c/jq3hmgmb256bmcflmegdx4lrev4ynn7l.jpg",
-      },
-      {
-        timestamp: 10000,
-        url: "http://hydro.ijs.si/v017/c4/yrtcai7uxrpz6bglzu5qepi3regifjwf.jpg",
-      },
-    ];
     //const slidesarray = slides.map((slide) => slide.url);
+    const [slidePosition, setSlidePosition] = useState(0);
 
     const getCurrentSlide = () => {
       const newslides = slides
-        .sort(compare)
-        .filter((slide) => slide.timestamp < currentPositionMillis);
+        ? slides
+            .sort(compare)
+            .filter((slide) => slide.timestamp < currentPositionMillis)
+        : [];
       return newslides.length - 1;
     };
-    const [slidePosition, setSlidePosition] = useState(getCurrentSlide());
 
     //? this is very slow
     const handleSlideChange = () => {
@@ -230,31 +223,34 @@ export default function VideoScreen({ route, navigation }: any) {
       }
     };
 
-    let intervalid = setInterval(handleSlideChange, 500);
+    if (slides) {
+      let intervalid = setInterval(handleSlideChange, 500);
 
-    const [playing, setPlaying] = useState(true);
-    async function handlePausePlay() {
-      if (playing) {
-        await audioRef.pauseAsync();
-      } else {
-        await audioRef.playAsync();
+      const [playing, setPlaying] = useState(true);
+      async function handlePausePlay() {
+        if (playing) {
+          await audioRef.pauseAsync();
+        } else {
+          await audioRef.playAsync();
+        }
+        setPlaying(!playing);
       }
-      setPlaying(!playing);
-    }
 
-    return (
-      //! write this by hand
-      <TouchableHighlight onPress={handlePausePlay}>
-        <Slideshow
-          dataSource={slides}
-          position={slidePosition}
-          style={styles.video}
-          scrollEnabled={false}
-          arrowSize={0}
-          height={videoHeight}
-        />
-      </TouchableHighlight>
-    );
+      return (
+        //! write this by hand
+        <TouchableHighlight onPress={handlePausePlay}>
+          <Slideshow
+            //! SLIDESHOW REQUIRES NAME URL, CURRENTLY IS IMAGE
+            dataSource={slides}
+            position={slidePosition}
+            style={styles.video}
+            scrollEnabled={false}
+            arrowSize={0}
+            height={videoHeight}
+          />
+        </TouchableHighlight>
+      );
+    } else return null;
   };
 
   const recommendations = [
@@ -288,25 +284,7 @@ export default function VideoScreen({ route, navigation }: any) {
     const ITEM_SIZE = 200;
     const SEPARATOR_SIZE = 10;
 
-    const [notes, setNotes] = useState([
-      /*       {
-        text:
-          "Screens support is built into react-navigation starting from version 2.14.0 for all the different navigator types (stack, tab, drawer, etc). We plan on adding it to other navigators shortly. To configure react-navigation to use screens instead of plain RN Views for rendering screen views, follow the steps below:",
-        timestamp: 12312,
-      },
-      {
-        text: "This is how we do it?",
-        timestamp: 26312,
-      },
-      {
-        text: "Why does it matter?",
-        timestamp: 626312,
-      },
-      {
-        text: "Why does it matterrrr?",
-        timestamp: 6626312,
-      }, */
-    ]);
+    //const [notes, setNotes] = useState([]);
 
     const RenderNote = ({ item, index }: any) => {
       return (
@@ -487,13 +465,13 @@ export default function VideoScreen({ route, navigation }: any) {
       <View style={{ flex: 1, flexDirection: "row" }}>
         <View style={{ flex: 5 }}>
           <Text style={styles.h5}>
-            <Text style={styles.gray}>views:</Text> {video_stats.views}
+            <Text style={styles.gray}>views:</Text> {lecture.views}
           </Text>
           <Text style={styles.h5}>
-            <Text style={styles.gray}>author:</Text> {video_stats.author}
+            <Text style={styles.gray}>author:</Text> {lecture.author}
           </Text>
           <Text style={styles.h5}>
-            <Text style={styles.gray}>published:</Text> {video_stats.published}
+            <Text style={styles.gray}>published:</Text> {lecture.published}
           </Text>
         </View>
         <View style={{ flex: 1 }}>
@@ -608,116 +586,132 @@ export default function VideoScreen({ route, navigation }: any) {
         onPress={() => setTeststate(testState + 1)}
         title={testState.toString()}
       /> */}
-      {showNotes ? null : (
-        <Animated.View
-          onLayout={(event) => {
-            setTitlteHeight(event.nativeEvent.layout.height);
-          }}
-          style={{
-            opacity: OpacityAnim,
-            paddingHorizontal: padding,
-          }}
-        >
-          <Text style={styles.video_title}>{video_stats.title}</Text>
-        </Animated.View>
-      )}
-      {/* VideoAudio */}
-      <Animated.View
-        style={{
-          transform: [{ translateY: SpringAnim }],
-        }}
-      >
-        <ViewPager
-          initialPage={initPager}
-          style={{
-            height: videoHeight, // - 2 * padding
-          }}
-          pageMargin={100}
-          //! this line causes the error which reloades on every state change
-          onPageSelected={(e) => {
-            currentPager = e.nativeEvent.position;
-            playVideoORAudio(e.nativeEvent.position);
-          }}
-          //transitionStyle="curl"
-          //showPageIndicator={true}
-        >
-          <View key="0">
-            <Video
-              ref={(component) => _handleVideoRef(component)}
-              /*               source={{
+      {lecture ? (
+        <>
+          {showNotes ? null : (
+            <Animated.View
+              onLayout={(event) => {
+                setTitlteHeight(event.nativeEvent.layout.height);
+              }}
+              style={{
+                opacity: OpacityAnim,
+                paddingHorizontal: padding,
+              }}
+            >
+              <Text style={styles.video_title}>{lecture.title}</Text>
+            </Animated.View>
+          )}
+          {/* VideoAudio */}
+          <Animated.View
+            style={{
+              transform: [{ translateY: SpringAnim }],
+            }}
+          >
+            <ViewPager
+              initialPage={initPager}
+              style={{
+                height: videoHeight, // - 2 * padding
+              }}
+              pageMargin={100}
+              //! this line causes the error which reloades on every state change
+              onPageSelected={(e) => {
+                currentPager = e.nativeEvent.position;
+                playVideoORAudio(e.nativeEvent.position);
+              }}
+              //transitionStyle="curl"
+              //showPageIndicator={true}
+            >
+              <View key="0">
+                <Video
+                  ref={(component) => _handleVideoRef(component)}
+                  /*               source={{
                 uri: video_stats.url,
               }} */
-              posterSource={{
-                uri: video_stats.poster,
-              }}
-              resizeMode={Video.RESIZE_MODE_COVER}
-              usePoster={true}
-              //shouldPlay={true}
-              //isLooping={false}
-              style={styles.video}
-              useNativeControls={true}
-            />
-          </View>
-          <AudioSlides key="1" />
-        </ViewPager>
-      </Animated.View>
-
-      {showNotes ? (
-        <Notes />
-      ) : (
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={{ paddingHorizontal: padding }}
-        >
-          <Animated.View>
-            <Description />
+                  posterSource={{
+                    uri: lecture.poster,
+                  }}
+                  resizeMode={Video.RESIZE_MODE_COVER}
+                  usePoster={true}
+                  //shouldPlay={true}
+                  //isLooping={false}
+                  style={styles.video}
+                  useNativeControls={true}
+                />
+              </View>
+              <AudioSlides key="1" />
+            </ViewPager>
           </Animated.View>
 
-          {/* recommendations */}
+          {showNotes ? (
+            <Notes />
+          ) : (
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              style={{ paddingHorizontal: padding }}
+            >
+              <Animated.View>
+                <Description />
+              </Animated.View>
 
-          <View style={styles.default_card}>
-            <Text style={styles.h3}>Related videos</Text>
-            {recommendations.map((recc) => (
-              <TouchableOpacity
-                onPress={() => handleAcceptRecc(recc)}
-                key={recc.title}
-                style={styles.recommendation}
-              >
-                <Image
-                  source={{ uri: recc.image }}
-                  style={{
-                    height: 60,
-                    maxWidth: (60 / 9) * 16,
-                    flex: 2,
-                    borderRadius: 8,
-                    resizeMode: "cover",
-                  }}
-                />
-                <View
-                  style={{
-                    flex: 3,
-                    paddingHorizontal: 10,
-                    //justifyContent: "center",
-                  }}
-                >
-                  <Text style={styles.h5}>{shorterText(recc.title, 50)}</Text>
-                  <View style={styles.description}>
-                    <Text style={[styles.h5, { color: "#828282" }]}>
-                      {/* {recc.views}
+              {/* recommendations */}
+
+              <View style={styles.default_card}>
+                <Text style={styles.h3}>Related videos</Text>
+                {recommendations.map((recc) => (
+                  <TouchableOpacity
+                    onPress={() => handleAcceptRecc(recc)}
+                    key={recc.title}
+                    style={styles.recommendation}
+                  >
+                    <Image
+                      source={{ uri: recc.image }}
+                      style={{
+                        height: 60,
+                        maxWidth: (60 / 9) * 16,
+                        flex: 2,
+                        borderRadius: 8,
+                        resizeMode: "cover",
+                      }}
+                    />
+                    <View
+                      style={{
+                        flex: 3,
+                        paddingHorizontal: 10,
+                        //justifyContent: "center",
+                      }}
+                    >
+                      <Text style={styles.h5}>
+                        {shorterText(recc.title, 50)}
+                      </Text>
+                      <View>
+                        <Text style={[styles.h5, { color: "#828282" }]}>
+                          {/* {recc.views}
                       <Separator /> */}
-                      {recc.author}
-                      <Separator />
-                      {recc.date}
-                    </Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </ScrollView>
-      )}
+                          {recc.author}
+                          <Separator />
+                          {recc.date}
+                        </Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </ScrollView>
+          )}
 
-      {showNotes ? null : <SwitchToNotes />}
+          {showNotes ? null : <SwitchToNotes />}
+        </>
+      ) : (
+        <ActivityIndicator
+          //? 15 is for centering - very hacky!!
+          style={{
+            left: width / 2 - 15,
+            top: height / 2,
+            position: "absolute",
+          }}
+          size="small"
+        />
+      )}
     </View>
   );
 }

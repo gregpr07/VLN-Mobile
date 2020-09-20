@@ -1,5 +1,3 @@
-import { timeStamp } from "console";
-
 export function YoutubeTime(millisec: number) {
   let seconds: number = millisec / 1000;
   let minutes: number = Math.floor(seconds / 60);
