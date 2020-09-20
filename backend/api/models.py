@@ -18,6 +18,9 @@ class Author(models.Model):
 
     views = models.IntegerField()
 
+    def __str__(self):
+        return f'{self.user_model.name + " " + self.user_model.last_name}\'s author'
+
 
 class Lecture(models.Model):
     title = models.CharField(max_length=100)
@@ -41,14 +44,15 @@ class Slide(models.Model):
     timestamp = models.IntegerField()
     image = models.URLField(null=True)
 
-    # for each lecture each user can have multiple notes
-
 
 class Event(models.Model):
     title = models.CharField(max_length=256)
     description = models.CharField(max_length=1028)  # size!
 
     # TODO: array of lectures
+
+    def __str__(self):
+        return self.title
 
 
 class Playlist(models.Model):
@@ -62,7 +66,12 @@ class Playlist(models.Model):
 
     # TODO: array of lectures
 
+    def __str__(self):
+        return self.title
 
+
+# for each lecture each user can have multiple notes
+# maybe merge Notes into Note?
 class Notes(models.Model):
     lecture = models.ForeignKey(
         Lecture, on_delete=models.CASCADE, related_name='notes')
