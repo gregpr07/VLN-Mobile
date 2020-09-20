@@ -51,9 +51,11 @@ const HomeStackScreen = () => (
 
 const ProfileStackScreen = () => (
   <ProfileStack.Navigator
-    screenOptions={{
-      headerShown: false,
-    }}
+    screenOptions={
+      {
+        //headerShown: false,
+      }
+    }
   >
     <ProfileStack.Screen name="profile" component={ProfileScreen} />
   </ProfileStack.Navigator>

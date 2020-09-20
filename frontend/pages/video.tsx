@@ -62,15 +62,21 @@ export default function VideoScreen({ route, navigation }: any) {
 
   //const [testState, setTeststate] = useState(0);
 
-  async function resetState() {
+  //! SELF DEBUGGER - NOT GOOD
+  if (videoplaying && audioplaying) {
+    resetState(currentPositionMillis);
+  }
+
+  async function resetState(position: number) {
     await videoRef.unloadAsync();
     await audioRef.unloadAsync();
 
     videoplaying = false;
     audioplaying = false;
 
-    currentPositionMillis = 0;
+    currentPositionMillis = position;
 
+    playVideoORAudio(currentPager).then(() => (shouldUpdate = true));
     return true;
   }
 
@@ -80,9 +86,7 @@ export default function VideoScreen({ route, navigation }: any) {
       if (videoRef && shouldUpdate) {
         shouldUpdate = false;
 
-        resetState().then(() =>
-          playVideoORAudio(currentPager).then(() => (shouldUpdate = true))
-        );
+        resetState(0);
       }
     });
   }, [route.params]);
@@ -220,8 +224,10 @@ export default function VideoScreen({ route, navigation }: any) {
 
     //? this is very slow
     const handleSlideChange = () => {
-      setSlidePosition(getCurrentSlide());
-      //console.log(newslides.length);
+      if (audioplaying) {
+        setSlidePosition(getCurrentSlide());
+        //console.log(newslides.length);
+      }
     };
 
     let intervalid = setInterval(handleSlideChange, 500);

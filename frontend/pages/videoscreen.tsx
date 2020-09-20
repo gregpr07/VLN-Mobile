@@ -131,7 +131,7 @@ export default function VideosScreen({ navigation }: any) {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <Authors />
     </View>
   );
@@ -140,7 +140,7 @@ export default function VideosScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: padding,
+    paddingTop: Constants.statusBarHeight,
   },
   h1: {
     fontSize: 36,
