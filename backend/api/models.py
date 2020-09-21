@@ -45,6 +45,9 @@ class Slide(models.Model):
     timestamp = models.IntegerField()
     image = models.URLField(null=True)
 
+    class Meta:
+        ordering = ['lecture', 'timestamp']
+
     def __str__(self):
         return str(self.lecture.title) + ' at ' + str(self.timestamp)
 
@@ -81,6 +84,9 @@ class Note(models.Model):
 
     text = models.TextField(max_length=1000)  # ! rethink the size
     timestamp = models.IntegerField()
+
+    class Meta:
+        ordering = ['lecture', 'user', 'timestamp']
 
     def __str__(self):
         return str(self.user.user.username) + ' in ' + str(self.lecture.title) + ' at ' + str(self.timestamp)
