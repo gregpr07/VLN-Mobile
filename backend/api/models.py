@@ -63,7 +63,7 @@ class Playlist(models.Model):
     title = models.CharField(max_length=100)
 
     views = models.IntegerField()
-    author = models.ForeignKey(
+    user = models.ForeignKey(
         UserModel, on_delete=models.CASCADE, related_name='playlist_author')
 
     published = models.DateField()
