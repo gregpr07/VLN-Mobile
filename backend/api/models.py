@@ -81,3 +81,6 @@ class Note(models.Model):
 
     text = models.TextField(max_length=1000)  # ! rethink the size
     timestamp = models.IntegerField()
+
+    def __str__(self):
+        return str(self.user.user.username) + ' in ' + str(self.lecture.title) + ' at ' + str(self.timestamp)
