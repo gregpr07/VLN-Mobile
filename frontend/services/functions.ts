@@ -1,5 +1,3 @@
-import { timeStamp } from "console";
-
 export function YoutubeTime(millisec: number) {
   let seconds: number = millisec / 1000;
   let minutes: number = Math.floor(seconds / 60);
@@ -10,11 +8,11 @@ export function YoutubeTime(millisec: number) {
     hours = Math.floor(minutes / 60);
     hours_str = hours >= 10 ? hours.toString() : "0" + hours;
     minutes = minutes - hours * 60;
-    minutes_str = minutes >= 10 ? minutes.toString() : "0" + minutes;
   }
 
   seconds = Math.floor(seconds % 60);
   let seconds_str: string = seconds >= 10 ? seconds.toString() : "0" + seconds;
+  minutes_str = minutes >= 10 ? minutes.toString() : "0" + minutes;
   if (hours != 0) {
     return hours_str + ":" + minutes_str + ":" + seconds_str;
   }

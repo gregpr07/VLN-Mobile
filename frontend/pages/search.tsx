@@ -107,7 +107,9 @@ export default SearchScreen = ({ navigation }) => {
             height: 90,
             maxWidth: (90 / 9) * 16,
             flex: 3,
-            borderRadius: 12,
+
+            borderBottomLeftRadius: 12,
+            borderTopLeftRadius: 12,
             resizeMode: "cover",
           }}
         />

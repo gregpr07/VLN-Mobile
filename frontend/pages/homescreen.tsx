@@ -16,7 +16,12 @@ const { width, height } = Dimensions.get("window");
 // expo
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
-import ViewPager from "@react-native-community/viewpager";
+
+//import ViewPager from "@react-native-community/viewpager";
+
+// @ts-ignore
+import Carousel from "react-native-snap-carousel";
+
 import { ScrollView } from "react-native-gesture-handler";
 
 const padding = 24;
@@ -40,20 +45,8 @@ export default function HomeScreen({ navigation }: any) {
 
   const eventHeight = (width / 16) * 7;
 
-  const EventCard = (item, index) => (
-    <View
-      style={{
-        /* shadowOffset: {
-          width: 0,
-          height: 9,
-        },
-        shadowOpacity: 0.15,
-        shadowRadius: 5, */
-        width: width,
-        paddingHorizontal: padding,
-      }}
-      key={index}
-    >
+  const EventCard = ({ item, index }) => (
+    <View key={index}>
       <TouchableOpacity
         onPress={() =>
           navigation.push("event", {
@@ -84,19 +77,13 @@ export default function HomeScreen({ navigation }: any) {
     <View>
       <Text style={[styles.h1, { paddingHorizontal: padding }]}>Events</Text>
       <SafeAreaView>
-        <ViewPager
-          initialPage={0}
-          style={{
-            height: eventHeight,
-            marginTop: 10,
-            paddingHorizontal: padding,
-          }}
-          pageMargin={padding / 2}
-          //transitionStyle="curl"
-          showPageIndicator={true}
-        >
-          {events.map((event, index) => EventCard(event, index))}
-        </ViewPager>
+        <Carousel
+          data={events}
+          renderItem={EventCard}
+          sliderWidth={width}
+          itemWidth={width - 2 * padding}
+          //layout={"stack"}
+        />
       </SafeAreaView>
     </View>
   );
