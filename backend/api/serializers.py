@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from api.models import UserModel, Lecture, Slide, Note
+from api.models import UserModel, Lecture, Slide, Note, Author, Event, Playlist
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -41,6 +41,12 @@ class UserModelSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class AuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Author
+        fields = '__all__'
+
+
 class LectureSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lecture
@@ -50,6 +56,18 @@ class LectureSerializer(serializers.ModelSerializer):
 class SlideSerializer(serializers.ModelSerializer):
     class Meta:
         model = Slide
+        fields = '__all__'
+
+
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = '__all__'
+
+
+class PlaylistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Playlist
         fields = '__all__'
 
 

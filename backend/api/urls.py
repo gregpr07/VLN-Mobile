@@ -8,8 +8,11 @@ from .views import *
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'user', UserModelViewSet)
+router.register(r'author', AuthorViewSet)
 router.register(r'lecture', LectureViewSet)
 router.register(r'slide', SlideViewSet)
+router.register(r'event', EventViewSet)
+router.register(r'playlist', PlaylistViewSet)
 router.register(r'note', NoteViewSet)
 
 urlpatterns = [
