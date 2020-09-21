@@ -46,6 +46,20 @@ class SlideViewSet(SimpleViewSet):
     queryset = Slide.objects.all()
     serializer_class = SlideSerializer
 
+    @action(detail=False, url_path='lecture/(?P<lecture_pk>[^/.]+)')
+    def lecture(self, request, lecture_pk):
+        print(lecture_pk)
+
+        queryset = Slide.objects.filter(lecture_id=lecture_pk)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 class EventViewSet(SimpleViewSet):
     queryset = Event.objects.all()
