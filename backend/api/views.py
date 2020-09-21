@@ -1,5 +1,7 @@
 # from rest_framework import viewsets, permissions
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, viewsets, renderers
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from api.models import UserModel, Lecture, Note, Slide, Author, Event, Playlist
 from api.serializers import UserModelSerializer, LectureSerializer, NoteSerializer, SlideSerializer, AuthorSerializer, \
@@ -21,6 +23,18 @@ class UserModelViewSet(SimpleViewSet):
 class AuthorViewSet(SimpleViewSet):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
+
+    @action(detail=False)
+    def top(self, request, *args, **kwargs):
+        queryset = Author.objects.order_by("-views")
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class LectureViewSet(SimpleViewSet):
