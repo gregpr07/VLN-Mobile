@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 
@@ -25,7 +26,7 @@ class Lecture(models.Model):
 
     views = models.IntegerField()  # ! to je treba narest da sam skalkulera nekak
     author = models.ForeignKey(
-        UserModel, on_delete=models.CASCADE, related_name='lectures_author')
+        Author, on_delete=models.CASCADE, related_name='lectures_author')
 
     published = models.DateField()
 
@@ -47,7 +48,7 @@ class Event(models.Model):
     title = models.CharField(max_length=256)
     description = models.CharField(max_length=1028)  # size!
 
-    # TODO: array of lectures
+    lectures = ArrayField(models.IntegerField(), null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -62,7 +63,7 @@ class Playlist(models.Model):
 
     published = models.DateField()
 
-    # TODO: array of lectures
+    lectures = ArrayField(models.IntegerField(), null=True, blank=True)
 
     def __str__(self):
         return self.title
