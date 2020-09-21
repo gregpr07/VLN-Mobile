@@ -1,5 +1,5 @@
 # from rest_framework import viewsets, permissions
-from rest_framework import mixins, viewsets, renderers
+from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -15,6 +15,16 @@ class SimpleViewSet(mixins.RetrieveModelMixin,
     pass
 
 
+def list_mixin(obj, queryset):
+    page = obj.paginate_queryset(queryset)
+    if page is not None:
+        serializer = obj.get_serializer(page, many=True)
+        return obj.get_paginated_response(serializer.data)
+
+    serializer = obj.get_serializer(queryset, many=True)
+    return Response(serializer.data)
+
+
 class UserModelViewSet(SimpleViewSet):
     queryset = UserModel.objects.all()
     serializer_class = UserModelSerializer
@@ -27,14 +37,7 @@ class AuthorViewSet(SimpleViewSet):
     @action(detail=False)
     def top(self, request, *args, **kwargs):
         queryset = Author.objects.order_by("-views")
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        return list_mixin(self, queryset)
 
 
 class LectureViewSet(SimpleViewSet):
@@ -48,17 +51,8 @@ class SlideViewSet(SimpleViewSet):
 
     @action(detail=False, url_path='lecture/(?P<lecture_pk>[^/.]+)')
     def lecture(self, request, lecture_pk):
-        print(lecture_pk)
-
         queryset = Slide.objects.filter(lecture_id=lecture_pk)
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        list_mixin(self, queryset)
 
 
 class EventViewSet(SimpleViewSet):
@@ -75,3 +69,9 @@ class NoteViewSet(SimpleViewSet):
     # permission_classes = [permissions.IsAuthenticated, ]
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
+
+    @action(detail=False, url_path='user/(?P<lecture_pk>[^/.]+)/(?P<user_pk>[^/.]+)')
+    def user(self, request, lecture_pk, user_pk):
+        queryset = Note.objects.filter(lecture_id=lecture_pk, user=user_pk)
+
+        return list_mixin(self, queryset)
