@@ -75,7 +75,11 @@ export default function HomeScreen({ navigation }: any) {
 
   const Header = () => (
     <View>
-      <Text style={[styles.h1, { paddingHorizontal: padding }]}>Events</Text>
+      <Text
+        style={[styles.h1, { paddingHorizontal: padding, paddingBottom: 6 }]}
+      >
+        Events
+      </Text>
       <SafeAreaView>
         <Carousel
           data={events}

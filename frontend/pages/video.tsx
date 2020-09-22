@@ -463,7 +463,20 @@ export default function VideoScreen({ route, navigation }: any) {
   const Description = () => (
     <View style={styles.default_card}>
       <View style={{ flex: 1, flexDirection: "row" }}>
-        <View style={{ flex: 5 }}>
+        <View>
+          <Image
+            source={{ uri: "https://platform.x5gon.org/imgs/team/john.jpg" }}
+            style={{
+              height: 60,
+              width: 60,
+              borderRadius: 50,
+              borderColor: "white",
+              borderWidth: 5,
+              marginRight: 15,
+            }}
+          />
+        </View>
+        <View>
           <Text style={styles.h5}>
             <Text style={styles.gray}>views:</Text> {lecture.views}
           </Text>
@@ -473,18 +486,6 @@ export default function VideoScreen({ route, navigation }: any) {
           <Text style={styles.h5}>
             <Text style={styles.gray}>published:</Text> {lecture.published}
           </Text>
-        </View>
-        <View style={{ flex: 1 }}>
-          <Image
-            source={{ uri: "https://platform.x5gon.org/imgs/team/john.jpg" }}
-            style={{
-              height: 60,
-              width: 60,
-              borderRadius: 50,
-              borderColor: "white",
-              borderWidth: 5,
-            }}
-          />
         </View>
       </View>
     </View>
