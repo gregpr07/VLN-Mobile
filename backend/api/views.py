@@ -1,5 +1,4 @@
-# from rest_framework import viewsets, permissions
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -66,12 +65,16 @@ class PlaylistViewSet(SimpleViewSet):
 
 
 class NoteViewSet(SimpleViewSet):
-    # permission_classes = [permissions.IsAuthenticated, ]
-    queryset = Note.objects.all()
+    permission_classes = [permissions.IsAuthenticated, ]
     serializer_class = NoteSerializer
 
-    @action(detail=False, url_path='user/(?P<lecture_pk>[^/.]+)/(?P<user_pk>[^/.]+)')
-    def user(self, request, lecture_pk, user_pk):
-        queryset = Note.objects.filter(lecture_id=lecture_pk, user=user_pk)
+    def get_queryset(self):
+        user_model = UserModel.objects.get(user=self.request.user)
+        return Note.objects.filter(user=user_model)
+
+    @action(detail=False, url_path='lecture/(?P<lecture_pk>[^/.]+)')
+    def user(self, request, lecture_pk):
+        user_model = UserModel.objects.get(user=self.request.user)
+        queryset = Note.objects.filter(lecture_id=lecture_pk, user=user_model)
 
         return list_mixin(self, queryset)
