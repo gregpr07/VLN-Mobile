@@ -1,4 +1,6 @@
 # API
+When using the API always add a trailing slash (especially when using operations other than GET)!
+
 :warning: - authentication required
 
 ## Author

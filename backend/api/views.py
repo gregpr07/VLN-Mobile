@@ -1,5 +1,6 @@
 from rest_framework import mixins, viewsets, permissions
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -60,9 +61,25 @@ class EventViewSet(SimpleViewSet):
     serializer_class = EventSerializer
 
 
-class PlaylistViewSet(SimpleViewSet):
+class PlaylistViewSet(ModelViewSet):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, ]
     queryset = Playlist.objects.all()
     serializer_class = PlaylistSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user.usermodel)
+
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user.usermodel)
+
+    def perform_destroy(self, instance):
+        if instance.user != self.request.user.usermodel:
+            raise PermissionDenied({
+                "message": "You don't have the permission to delete this object.",
+                "object_id": instance.id
+            })
+
+        super().perform_destroy(instance)
 
 
 class NoteViewSet(ModelViewSet):

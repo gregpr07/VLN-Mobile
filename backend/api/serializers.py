@@ -69,6 +69,7 @@ class PlaylistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Playlist
         fields = '__all__'
+        extra_kwargs = {'user': {'required': False}}
 
 
 class NoteSerializer(serializers.ModelSerializer):
