@@ -476,7 +476,7 @@ export default function VideoScreen({ route, navigation }: any) {
             }}
           />
         </View>
-        <View>
+        <View style={{ justifyContent: "center" }}>
           <Text style={styles.h5}>
             <Text style={styles.gray}>views:</Text> {lecture.views}
           </Text>

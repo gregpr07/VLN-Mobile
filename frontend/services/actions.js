@@ -1,3 +1,5 @@
+// https://blog.usejournal.com/persisting-user-authentication-in-a-react-native-app-778e028ac816
+
 import AsyncStorage from "@react-native-community/async-storage";
 
 export const getToken = (token) => ({
@@ -36,10 +38,10 @@ export const getUserToken = () => (dispatch) =>
     });
 
 export const saveUserToken = (data) => (dispatch) =>
-  AsyncStorage.setItem("userToken", "abc")
-    .then((data) => {
+  AsyncStorage.setItem("userToken", data)
+    .then((disdata) => {
       dispatch(loading(false));
-      dispatch(saveToken("token saved"));
+      dispatch(saveToken(data));
     })
     .catch((err) => {
       dispatch(loading(false));

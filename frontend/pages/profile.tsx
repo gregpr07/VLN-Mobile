@@ -9,13 +9,15 @@ import {
   Image,
   SafeAreaView,
   FlatList,
+  Button,
 } from "react-native";
 const { width, height } = Dimensions.get("window");
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
+import Navigation from "../Navigation";
 
 const padding = 24;
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }) {
   interface profileStats {
     profileImage: string;
     name: string;
@@ -77,6 +79,7 @@ export default function ProfileScreen() {
       <View style={{ paddingTop: 16, paddingBottom: 24 }}>
         <Text style={styles.h2}>{profileStats.name}</Text>
         <Text style={[styles.h4, { marginTop: 8 }]}>{profileStats.title}</Text>
+        <Button onPress={() => navigation.push("logout")} title={"logout"} />
       </View>
       <StatusBar style="dark" />
     </View>

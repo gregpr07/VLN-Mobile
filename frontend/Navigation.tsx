@@ -15,6 +15,7 @@ import ProfileScreen from "./pages/profile";
 import VideosScreen from "./pages/videoscreen";
 import Event from "./pages/event";
 import LoginScreen from "./pages/login";
+import LogoutScreen from "./pages/logout";
 
 import DevOnlyComp from "./pages/devcomponents";
 
@@ -30,7 +31,7 @@ const MyTheme = {
   colors: {
     ...DefaultTheme.colors,
     primary: "rgb(255, 45, 85)",
-    background: "#f4f5f9",
+    background: "#F3F5F9",
   },
 };
 
@@ -133,7 +134,10 @@ const App = ({ token, getUserToken }: any) => {
       }}
     >
       {token.token ? (
-        <ProfileStack.Screen name="profile" component={ProfileScreen} />
+        <>
+          <ProfileStack.Screen name="logout" component={LogoutScreen} />
+          <ProfileStack.Screen name="profile" component={ProfileScreen} />
+        </>
       ) : (
         <ProfileStack.Screen name="login" component={LoginScreen} />
       )}
