@@ -74,4 +74,4 @@ class PlaylistSerializer(serializers.ModelSerializer):
 class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Note
-        fields = '__all__'
+        fields = ['lecture', 'text', 'timestamp']

@@ -1,6 +1,7 @@
 from rest_framework import mixins, viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
 from api.models import UserModel, Lecture, Note, Slide, Author, Event, Playlist
 from api.serializers import UserModelSerializer, LectureSerializer, NoteSerializer, SlideSerializer, AuthorSerializer, \
@@ -64,13 +65,15 @@ class PlaylistViewSet(SimpleViewSet):
     serializer_class = PlaylistSerializer
 
 
-class NoteViewSet(SimpleViewSet):
+class NoteViewSet(ModelViewSet):
     permission_classes = [permissions.IsAuthenticated, ]
     serializer_class = NoteSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user.usermodel)
+
     def get_queryset(self):
-        user_model = UserModel.objects.get(user=self.request.user)
-        return Note.objects.filter(user=user_model)
+        return Note.objects.filter(user=self.request.user.usermodel)
 
     @action(detail=False, url_path='lecture/(?P<lecture_pk>[^/.]+)')
     def user(self, request, lecture_pk):
