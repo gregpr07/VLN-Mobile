@@ -107,14 +107,14 @@ function VideoScreen({ route, navigation, token }: any) {
 
   // currently 0 is video 1 is audio but this might change
   async function playVideoORAudio(page: number) {
-    console.log("page is" + currentPager);
+    //console.log("page is" + currentPager);
 
     const initStatus = {
       //! MAKE THIS YES
       shouldPlay: false,
       positionMillis: currentPositionMillis,
     };
-    console.log(videoplaying, audioplaying);
+    //console.log(videoplaying, audioplaying);
 
     if (page === 0) {
       if (audioplaying) {
@@ -288,19 +288,20 @@ function VideoScreen({ route, navigation, token }: any) {
 
     const [notes, setNotes] = useState([]);
 
-    let headers: any = {
-      "Content-Type": "application/json",
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Token ${token}`);
+
+    const requestOptions: any = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
     };
 
-    if (token) {
-      headers["Authorization"] = `Token ${token}`;
-    }
-
     const getNotes = () => {
-      console.log(headers);
-      fetch(API + "note/lecture/1", headers)
+      fetch(API + "note/lecture/1/", requestOptions)
         .then((r) => r.json())
-        .then((json) => setNotes(json.results));
+        .then((json) => setNotes(json.results))
+        .catch((error) => console.log("error", error));
     };
 
     useEffect(() => {
