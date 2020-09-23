@@ -53,7 +53,7 @@ class SlideViewSet(SimpleViewSet):
     @action(detail=False, url_path='lecture/(?P<lecture_pk>[^/.]+)')
     def lecture(self, request, lecture_pk):
         queryset = Slide.objects.filter(lecture_id=lecture_pk)
-        list_mixin(self, queryset)
+        return list_mixin(self, queryset)
 
 
 class EventViewSet(SimpleViewSet):
