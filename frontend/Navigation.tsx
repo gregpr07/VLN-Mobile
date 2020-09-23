@@ -15,7 +15,7 @@ import ProfileScreen from "./pages/profile";
 import VideosScreen from "./pages/videoscreen";
 import Event from "./pages/event";
 import LoginScreen from "./pages/login";
-import LogoutScreen from "./pages/logout";
+import SettingScreen from "./pages/settings";
 
 import DevOnlyComp from "./pages/devcomponents";
 
@@ -130,16 +130,77 @@ const App = ({ token, getUserToken }: any) => {
   const ProfileStackScreen = () => (
     <ProfileStack.Navigator
       screenOptions={{
-        headerShown: false,
+        headerStyle: {
+          backgroundColor: "transparent",
+        },
+        headerTintColor: "black",
+        headerTitleStyle: {
+          fontFamily: "SF-UI-semibold",
+          lineHeight: 22,
+          letterSpacing: 1,
+          textAlign: "center",
+          color: "black",
+          fontSize: 20,
+        },
+
+        headerBackImage: ({ tintColor }) => (
+          <Ionicons
+            name={"md-arrow-back"}
+            size={24}
+            style={{ marginLeft: 20 }}
+            color={tintColor}
+          />
+        ),
+        headerBackTitleVisible: false,
       }}
     >
       {token.token ? (
         <>
-          <ProfileStack.Screen name="logout" component={LogoutScreen} />
-          <ProfileStack.Screen name="profile" component={ProfileScreen} />
+          <ProfileStack.Screen
+            name="profile"
+            options={({ navigation }) => ({
+              title: "",
+              headerRight: () => (
+                <TouchableOpacity
+                  style={{
+                    height: 24,
+                    width: 24,
+                    marginRight: 20,
+                  }}
+                  onPress={() => navigation.push("settings")}
+                >
+                  <Ionicons name={"md-settings"} size={24} color={"black"} />
+                </TouchableOpacity>
+              ),
+            })}
+            component={ProfileScreen}
+          />
+          <ProfileStack.Screen
+            name="settings"
+            options={({ navigation }) => ({
+              title: "Settings",
+              headerRight: () => (
+                <TouchableOpacity
+                  style={{
+                    height: 24,
+                    width: 24,
+                    marginRight: 20,
+                  }}
+                  onPress={() => console.log("settings")}
+                >
+                  <Ionicons name={"md-sunny"} size={24} color={"black"} />
+                </TouchableOpacity>
+              ),
+            })}
+            component={SettingScreen}
+          />
         </>
       ) : (
-        <ProfileStack.Screen name="login" component={LoginScreen} />
+        <ProfileStack.Screen
+          name="login"
+          options={{ headerShown: false }}
+          component={LoginScreen}
+        />
       )}
     </ProfileStack.Navigator>
   );

@@ -24,24 +24,28 @@ const SignInScreen = ({ token, saveToken }: any) => {
         console.log("logged in");
       })
       .catch((error: any) => {
-        setError(error);
+        setIsError(error);
       });
   };
 
   const postLogin = () => {
-    fetch(`${API}/auth/login/`, {
-      method: "POST",
-      body: JSON.stringify({
-        username: userName,
-        password: password,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((json) => console.log(json));
+    if (userName && password) {
+      fetch(`${API}auth/login/`, {
+        method: "POST",
+        body: JSON.stringify({
+          username: userName,
+          password: password,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => (res.status === 200 ? res.json() : null))
+        .then((json) => (json ? _signInAsync(json.token) : setIsError(true)));
+    }
   };
+
+  let pass: any;
 
   return (
     <View style={styles.container}>
@@ -58,12 +62,17 @@ const SignInScreen = ({ token, saveToken }: any) => {
       >
         Enter your login details to access your account
       </Text>
-      <Button onPress={() => _signInAsync("blabla")} title={"login"} />
       <View style={{ paddingVertical: 75 }}>
         <TextInput
           value={userName}
           autoCompleteType={"username"}
           autoFocus
+          autoCorrect={false}
+          returnKeyType={"next"}
+          autoCapitalize={"none"}
+          onSubmitEditing={() => pass.focus()}
+          placeholder={"Username"}
+          clearButtonMode={"while-editing"}
           onChangeText={(text) => setUserName(text)}
           style={[
             styles.input,
@@ -75,9 +84,16 @@ const SignInScreen = ({ token, saveToken }: any) => {
           ]}
         />
         <TextInput
+          ref={(ref) => (pass = ref)}
           value={password}
           autoCompleteType={"password"}
+          autoCorrect={false}
           onChangeText={(text) => setPassword(text)}
+          clearTextOnFocus={true}
+          returnKeyType={"send"}
+          autoCapitalize={"none"}
+          placeholder={"Password"}
+          onSubmitEditing={postLogin}
           style={[
             styles.input,
             { borderBottomRightRadius: 15, borderBottomLeftRadius: 15 },

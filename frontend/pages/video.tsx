@@ -516,8 +516,6 @@ export default function VideoScreen({ route, navigation }: any) {
           right: 0,
           bottom: 0,
           margin: padding,
-          //justifyContent: "center",
-          //alignItems: "center",
         }}
       >
         <TouchableOpacity
@@ -525,7 +523,14 @@ export default function VideoScreen({ route, navigation }: any) {
             paddingHorizontal: 16,
             paddingVertical: 12,
             borderRadius: 20,
-            backgroundColor: "#5468fe",
+            backgroundColor: "#5468ff",
+            shadowColor: "rgba(84, 104, 255, 0.3)",
+            shadowOffset: {
+              width: 0,
+              height: 10,
+            },
+            shadowRadius: 25,
+            shadowOpacity: 1,
           }}
           onPress={handleSwitch}
         >
@@ -776,12 +781,13 @@ const styles = StyleSheet.create({
     color: "#4F4F4F",
   },
   default_card: {
+    shadowColor: "rgba(60, 128, 209, 0.09)",
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 12,
     },
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
+    shadowRadius: 19,
+    shadowOpacity: 1,
 
     marginTop: padding,
     backgroundColor: "white",

@@ -20,6 +20,8 @@ import {
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 
+import { Ionicons } from "@expo/vector-icons";
+
 const { width, height } = Dimensions.get("window");
 
 export default SearchScreen = ({ navigation }) => {
@@ -55,6 +57,7 @@ export default SearchScreen = ({ navigation }) => {
   const handleSubmit = () => {
     if (previousInputValue !== inputValue) {
       setLoading(true);
+      listflat.scrollToOffset(0);
       getData(false);
     }
   };
@@ -129,18 +132,33 @@ export default SearchScreen = ({ navigation }) => {
     </View>
   );
 
+  let listflat: any;
+
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.SearchBar}
-        onChangeText={(text) => onChangeText(text)}
-        value={inputValue}
-        autoFocus={true}
-        onSubmitEditing={handleSubmit}
-        clearButtonMode={"while-editing"}
-      />
+      <View style={styles.SearchBar}>
+        <TextInput
+          style={styles.textinput}
+          onChangeText={(text) => onChangeText(text)}
+          value={inputValue}
+          autoFocus={true}
+          onSubmitEditing={handleSubmit}
+          clearButtonMode={"while-editing"}
+        />
+        <TouchableOpacity onPress={handleSubmit}>
+          <View style={styles.searchicon}>
+            <Ionicons
+              name={"ios-search"}
+              size={30}
+              style={{ paddingHorizontal: 12 }}
+              color={"white"}
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
       <SafeAreaView>
         <FlatList
+          ref={(ref) => (listflat = ref)}
           data={data}
           renderItem={renderItem}
           keyExtractor={(item) => item.material_id + item.url}
@@ -198,36 +216,66 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   SearchBar: {
-    height: 60,
+    height: 70,
+
+    backgroundColor: "white",
+    borderRadius: 15,
+    paddingLeft: 20,
+    paddingRight: 10,
+
+    marginHorizontal: padding,
+
+    shadowColor: "rgba(60, 128, 209, 0.14)",
     shadowOffset: {
-      width: 4,
-      height: 5,
+      width: 0,
+      height: 12,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    backgroundColor: "#F6F6F6",
-    borderRadius: 12,
-    paddingHorizontal: 20,
+    shadowRadius: 19,
+    shadowOpacity: 1,
+
+    flexDirection: "row",
+  },
+  textinput: {
+    height: 70,
     fontSize: 20,
     fontFamily: "SF-UI-medium",
     marginBottom: 20,
     color: "#838f92",
 
-    marginHorizontal: padding,
+    flex: 1,
   },
-  default_card: {
+  searchicon: {
+    marginVertical: 10,
+
+    width: 50,
+    height: 50,
+    borderRadius: 9,
+    backgroundColor: "#5468ff",
+    shadowColor: "rgba(84, 104, 255, 0.3)",
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 10,
     },
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
+    shadowRadius: 25,
+    shadowOpacity: 1,
+
+    justifyContent: "center",
+  },
+  default_card: {
+    shadowColor: "rgba(60, 128, 209, 0.09)",
+    shadowOffset: {
+      width: 0,
+      height: 12,
+    },
+    shadowRadius: 19,
+    shadowOpacity: 1,
 
     marginTop: padding / 2,
     backgroundColor: "white",
     //padding: padding,
-    borderRadius: 12,
+    borderRadius: 15,
 
     marginHorizontal: padding,
+    maxWidth: 400,
   },
 });
