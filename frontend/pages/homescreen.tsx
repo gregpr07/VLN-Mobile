@@ -113,7 +113,7 @@ export default function HomeScreen({ navigation }: any) {
       },
     ];
 
-    const AUTHOR_WIDTH = 115;
+    const AUTHOR_WIDTH = 100;
     const SEPARATOR_WIDTH = 10;
     const RenderAuthor = ({ item, index }) => (
       <View
@@ -125,13 +125,15 @@ export default function HomeScreen({ navigation }: any) {
       >
         <View
           style={{
-            shadowColor: "rgba(60, 128, 209, 0.09)",
+            shadowColor: "rgba(0, 0, 0, 0.09)",
             shadowOffset: {
               width: 0,
               height: 12,
             },
             shadowRadius: 19,
             shadowOpacity: 1,
+
+            borderRadius: AUTHOR_WIDTH,
           }}
         >
           <Image
@@ -146,11 +148,13 @@ export default function HomeScreen({ navigation }: any) {
               height: AUTHOR_WIDTH,
               width: AUTHOR_WIDTH,
               borderRadius: AUTHOR_WIDTH,
-              borderColor: "white",
-              borderWidth: 5,
+
               resizeMode: "cover",
 
               marginBottom: 5,
+
+              borderColor: "white",
+              borderWidth: 4,
             }}
           />
         </View>
@@ -164,18 +168,22 @@ export default function HomeScreen({ navigation }: any) {
     return (
       <View
         style={{
-          paddingTop: 30,
-          paddingHorizontal: padding,
+          marginTop: 30,
+
           marginBottom: 30,
         }}
       >
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row", marginHorizontal: padding }}>
           <Text style={[styles.h3, { flex: 1 }]}>Top authors</Text>
-          <Text style={[styles.h4, { color: "#5468ff" }]}>Show all</Text>
+          <Text style={[styles.h3, { color: "#5468ff" }]}>Show all</Text>
         </View>
+
         <SafeAreaView>
           <FlatList
             data={authors}
+            ListHeaderComponent={() => (
+              <View style={{ paddingLeft: padding }} />
+            )}
             renderItem={RenderAuthor}
             keyExtractor={(item) => item.name}
             ItemSeparatorComponent={AuthorSeparator}
@@ -263,13 +271,15 @@ export default function HomeScreen({ navigation }: any) {
 
     return (
       <View
-        style={{
-          paddingHorizontal: padding,
-        }}
+        style={
+          {
+            //paddingHorizontal: padding,
+          }
+        }
       >
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row", paddingHorizontal: padding }}>
           <Text style={[styles.h3, { flex: 1 }]}>Categories</Text>
-          <Text style={[styles.h4, { color: "#5468ff" }]}>Show all</Text>
+          <Text style={[styles.h3, { color: "#5468ff" }]}>Show all</Text>
         </View>
         {/* CANT GET THIS TO WORK FROM LEFT */}
         {/*         <SafeAreaView>
@@ -288,6 +298,9 @@ export default function HomeScreen({ navigation }: any) {
             keyExtractor={(item) => item.name}
             ItemSeparatorComponent={() => <View style={{ marginLeft: 10 }} />}
             horizontal
+            ListHeaderComponent={() => (
+              <View style={{ paddingLeft: padding }} />
+            )}
             snapToInterval={CAT_WIDTH + 10}
             showsHorizontalScrollIndicator={false}
             decelerationRate={0}
@@ -344,5 +357,19 @@ const styles = StyleSheet.create({
   },
   description: {
     paddingVertical: 8,
+  },
+  default_card: {
+    shadowColor: "rgba(60, 128, 209, 0.09)",
+    shadowOffset: {
+      width: 0,
+      height: 12,
+    },
+    shadowRadius: 19,
+    shadowOpacity: 1,
+
+    marginTop: padding,
+    backgroundColor: "white",
+    padding: padding,
+    borderRadius: 12,
   },
 });
