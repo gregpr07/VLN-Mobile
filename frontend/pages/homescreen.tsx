@@ -45,7 +45,7 @@ export default function HomeScreen({ navigation }: any) {
 
   const eventHeight = (width / 16) * 7;
 
-  const EventCard = ({ item, index }) => (
+  const EventCard = ({ item, index }: any) => (
     <View key={index}>
       <TouchableOpacity
         onPress={() =>
@@ -75,7 +75,11 @@ export default function HomeScreen({ navigation }: any) {
 
   const Header = () => (
     <View>
-      <Text style={[styles.h1, { paddingHorizontal: padding }]}>Events</Text>
+      <Text
+        style={[styles.h1, { paddingHorizontal: padding, paddingBottom: 6 }]}
+      >
+        Events
+      </Text>
       <SafeAreaView>
         <Carousel
           data={events}
@@ -109,7 +113,7 @@ export default function HomeScreen({ navigation }: any) {
       },
     ];
 
-    const AUTHOR_WIDTH = 120;
+    const AUTHOR_WIDTH = 112;
     const SEPARATOR_WIDTH = 20;
     const RenderAuthor = ({ item, index }) => (
       <View

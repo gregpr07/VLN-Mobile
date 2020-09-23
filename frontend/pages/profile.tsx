@@ -9,13 +9,16 @@ import {
   Image,
   SafeAreaView,
   FlatList,
+  Button,
 } from "react-native";
 const { width, height } = Dimensions.get("window");
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 
+import { Ionicons } from "@expo/vector-icons";
+
 const padding = 24;
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }) {
   interface profileStats {
     profileImage: string;
     name: string;
@@ -32,26 +35,23 @@ export default function ProfileScreen() {
     const ProfileImage = () => (
       <View
         style={{
-          shadowColor: "#000",
+          shadowColor: "rgba(60, 128, 209, 0.09)",
           shadowOffset: {
             width: 0,
-            height: 3,
+            height: 12,
           },
-          shadowOpacity: 0.27,
-          shadowRadius: 4.65,
-          elevation: 6,
+          shadowRadius: 19,
+          shadowOpacity: 1,
         }}
       >
         <Image
           source={{ uri: profileStats.profileImage }}
           style={{
-            height: width / 2.4,
-            width: width / 2.4,
-            maxHeight: 300,
-            maxWidth: 300,
-            borderRadius: 300,
+            height: 150,
+            width: 150,
+            borderRadius: 150,
             borderColor: "white",
-            borderWidth: 8,
+            borderWidth: 9,
           }}
         />
       </View>
@@ -59,11 +59,7 @@ export default function ProfileScreen() {
     return (
       <View
         style={{
-          paddingTop: Constants.statusBarHeight,
-          paddingBottom: 0,
-          justifyContent: "center",
           alignItems: "center",
-          marginBottom: 30,
         }}
       >
         <ProfileImage />
@@ -74,9 +70,9 @@ export default function ProfileScreen() {
   return (
     <View>
       <Header />
-      <View style={{ paddingTop: 16, paddingBottom: 24 }}>
+      <View style={{ paddingTop: 15 }}>
         <Text style={styles.h2}>{profileStats.name}</Text>
-        <Text style={[styles.h4, { marginTop: 8 }]}>{profileStats.title}</Text>
+        <Text style={[styles.h4]}>{profileStats.title}</Text>
       </View>
       <StatusBar style="dark" />
     </View>
@@ -96,14 +92,16 @@ const styles = StyleSheet.create({
     color: "white",
   },
   h2: {
-    fontSize: 28,
+    fontSize: 30,
     fontFamily: "SF-UI-semibold",
     textAlign: "center",
+    lineHeight: 40,
   },
 
   h3: {
-    fontSize: 20,
+    fontSize: 28,
     fontFamily: "SF-UI-medium",
+    height: 28,
   },
   h4: {
     fontSize: 18,
