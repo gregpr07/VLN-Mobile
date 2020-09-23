@@ -29,7 +29,7 @@ import Slideshow from "react-native-image-slider-show";
 // functions
 import { YoutubeTime, shorterText, compare } from "../services/functions";
 
-import { fetcher } from "../services/fetcher";
+import { fetcher, API } from "../services/fetcher";
 
 // expo
 import { Video, Audio } from "expo-av";
@@ -37,6 +37,8 @@ import ViewPager from "@react-native-community/viewpager";
 
 // fetching
 import useSWR from "swr";
+
+import { connect } from "react-redux";
 
 // dimensions
 const { width, height } = Dimensions.get("window");
@@ -49,7 +51,7 @@ let videoIsLoaded: boolean;
 let videoplaying: boolean;
 let audioplaying: boolean;
 
-const initPager = 1;
+const initPager = 0;
 let currentPager = initPager;
 
 var videoRef: any;
@@ -58,10 +60,9 @@ const audioRef = new Audio.Sound();
 //TODO BUGS
 // - when going to audio and opening notes the continuity breakes
 
-export default function VideoScreen({ route, navigation }: any) {
+function VideoScreen({ route, navigation, token }: any) {
   const { data: lecture, error } = useSWR("lecture/1", fetcher);
-  const { data: notes } = useSWR("note", fetcher);
-  const { data: slides } = useSWR("slide", fetcher);
+  const { data: slides } = useSWR("slide/lecture/1", fetcher);
 
   //* constants
 
@@ -208,7 +209,7 @@ export default function VideoScreen({ route, navigation }: any) {
 
     const getCurrentSlide = () => {
       const newslides = slides
-        ? slides
+        ? slides.results
             .sort(compare)
             .filter((slide) => slide.timestamp < currentPositionMillis)
         : [];
@@ -241,7 +242,7 @@ export default function VideoScreen({ route, navigation }: any) {
         <TouchableHighlight onPress={handlePausePlay}>
           <Slideshow
             //! SLIDESHOW REQUIRES NAME URL, CURRENTLY IS IMAGE
-            dataSource={slides}
+            dataSource={slides.results}
             position={slidePosition}
             style={styles.video}
             scrollEnabled={false}
@@ -284,7 +285,27 @@ export default function VideoScreen({ route, navigation }: any) {
     const ITEM_SIZE = 200;
     const SEPARATOR_SIZE = 10;
 
-    //const [notes, setNotes] = useState([]);
+    const [notes, setNotes] = useState([]);
+
+    let headers: any = {
+      "Content-Type": "application/json",
+    };
+
+    if (token) {
+      headers["Authorization"] = `Token ${token}`;
+    }
+
+    const getNotes = () => {
+      fetch(API + "note/lecture/1", {
+        headers,
+      })
+        .then((r) => r.json())
+        .then((json) => setNotes(json.results));
+    };
+
+    useEffect(() => {
+      getNotes();
+    }, []);
 
     const RenderNote = ({ item, index }: any) => {
       return (
@@ -336,7 +357,7 @@ export default function VideoScreen({ route, navigation }: any) {
       };
       const handleNoteSubmit = () => {
         if (noteText) {
-          let newnotes = [...notes, output_obj].sort(compare);
+          let newnotes: any = [...notes, output_obj].sort(compare);
           setNotes(newnotes);
         }
         Keyboard.dismiss();
@@ -795,3 +816,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
 });
+
+const mapStateToProps = (state) => ({
+  token: state.token,
+});
+
+export default connect(mapStateToProps, null)(VideoScreen);
