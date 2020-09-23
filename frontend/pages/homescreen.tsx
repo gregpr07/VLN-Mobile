@@ -76,7 +76,7 @@ export default function HomeScreen({ navigation }: any) {
   const Header = () => (
     <View>
       <Text
-        style={[styles.h1, { paddingHorizontal: padding, paddingBottom: 6 }]}
+        style={[styles.h1, { paddingHorizontal: padding, paddingBottom: 10 }]}
       >
         Events
       </Text>
@@ -113,8 +113,8 @@ export default function HomeScreen({ navigation }: any) {
       },
     ];
 
-    const AUTHOR_WIDTH = 112;
-    const SEPARATOR_WIDTH = 20;
+    const AUTHOR_WIDTH = 115;
+    const SEPARATOR_WIDTH = 10;
     const RenderAuthor = ({ item, index }) => (
       <View
         style={{
@@ -123,32 +123,38 @@ export default function HomeScreen({ navigation }: any) {
           marginTop: 10,
         }}
       >
-        <Image
-          source={
-            item.image
-              ? {
-                  uri: item.image,
-                }
-              : require(`../assets/icons/profile_image.png`)
-          }
+        <View
           style={{
-            height: AUTHOR_WIDTH,
-            borderRadius: 12,
-            resizeMode: item.image ? "cover" : "center",
-            marginBottom: 5,
+            shadowColor: "rgba(60, 128, 209, 0.09)",
+            shadowOffset: {
+              width: 0,
+              height: 12,
+            },
+            shadowRadius: 19,
+            shadowOpacity: 1,
           }}
-        />
-        <Text style={styles.h5}>{item.name}</Text>
-        <Text>
-          <Text
+        >
+          <Image
+            source={
+              item.image
+                ? {
+                    uri: item.image,
+                  }
+                : require(`../assets/icons/profile_image.png`)
+            }
             style={{
-              fontFamily: "SF-UI-medium",
+              height: AUTHOR_WIDTH,
+              width: AUTHOR_WIDTH,
+              borderRadius: AUTHOR_WIDTH,
+              borderColor: "white",
+              borderWidth: 5,
+              resizeMode: "cover",
+
+              marginBottom: 5,
             }}
-          >
-            {item.views}
-          </Text>{" "}
-          views
-        </Text>
+          />
+        </View>
+        <Text style={styles.h5}>{item.name}</Text>
       </View>
     );
 
@@ -158,11 +164,15 @@ export default function HomeScreen({ navigation }: any) {
     return (
       <View
         style={{
-          paddingTop: 15,
+          paddingTop: 30,
           paddingHorizontal: padding,
+          marginBottom: 30,
         }}
       >
-        <Text style={styles.h3}>Top authors</Text>
+        <View style={{ flexDirection: "row" }}>
+          <Text style={[styles.h3, { flex: 1 }]}>Top authors</Text>
+          <Text style={[styles.h4, { color: "#5468ff" }]}>Show all</Text>
+        </View>
         <SafeAreaView>
           <FlatList
             data={authors}
@@ -171,6 +181,114 @@ export default function HomeScreen({ navigation }: any) {
             ItemSeparatorComponent={AuthorSeparator}
             horizontal
             snapToInterval={AUTHOR_WIDTH + SEPARATOR_WIDTH}
+            showsHorizontalScrollIndicator={false}
+            decelerationRate={0}
+          />
+        </SafeAreaView>
+      </View>
+    );
+  };
+
+  const Categories = () => {
+    const cats = [
+      {
+        name: "computer science",
+        image:
+          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F000%2F385%2F812%2Foriginal%2Fillustration-of-characters-and-computer-science-concept-vector.jpg&f=1&nofb=1",
+      },
+      {
+        name: "mathematics",
+        image:
+          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F000%2F155%2F609%2Fnon_2x%2Ffree-vector-illustration-about-mathematics.jpg&f=1&nofb=1",
+      },
+      {
+        name: "physics",
+        image:
+          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmedia.istockphoto.com%2Fvectors%2Fsymbols-of-physics-vector-id174160850%3Fk%3D6%26m%3D174160850%26s%3D612x612%26w%3D0%26h%3D_VZkZAhx6MHcnXQkJZwrsTZf2Pbp42ThxybIogrFDCQ%3D&f=1&nofb=1",
+      },
+      {
+        name: "social sciences",
+        image:
+          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fst.depositphotos.com%2F1845839%2F4823%2Fv%2F950%2Fdepositphotos_48230925-stock-illustration-word-cloud-social-science.jpg&f=1&nofb=1",
+      },
+    ];
+
+    const CAT_WIDTH = 130;
+
+    const RenderCategory = ({ item, index }: any) => (
+      <View
+        style={{
+          width: CAT_WIDTH,
+          borderRadius: 8,
+          backgroundColor: "#ffffff",
+          shadowColor: "rgba(60, 128, 209, 0.09)",
+          shadowOffset: {
+            width: 0,
+            height: 12,
+          },
+          shadowRadius: 19,
+          shadowOpacity: 1,
+
+          marginTop: 10,
+          marginBottom: 30,
+        }}
+      >
+        <Image
+          source={{
+            uri: item.image,
+          }}
+          style={{
+            width: "100%",
+            height: 75,
+            borderTopLeftRadius: 8,
+            borderTopRightRadius: 8,
+            resizeMode: "cover",
+            marginBottom: 5,
+          }}
+        />
+        <View style={{ paddingHorizontal: 16, paddingVertical: 10 }}>
+          <Text
+            style={{
+              fontSize: 14,
+
+              fontFamily: "SF-UI-medium",
+              letterSpacing: 0,
+            }}
+          >
+            {item.name}
+          </Text>
+        </View>
+      </View>
+    );
+
+    return (
+      <View
+        style={{
+          paddingHorizontal: padding,
+        }}
+      >
+        <View style={{ flexDirection: "row" }}>
+          <Text style={[styles.h3, { flex: 1 }]}>Categories</Text>
+          <Text style={[styles.h4, { color: "#5468ff" }]}>Show all</Text>
+        </View>
+        {/* CANT GET THIS TO WORK FROM LEFT */}
+        {/*         <SafeAreaView>
+          <Carousel
+            data={cats}
+            renderItem={RenderCategory}
+            sliderWidth={width}
+            itemWidth={CAT_WIDTH}
+            //layout={"stack"}
+          />
+        </SafeAreaView> */}
+        <SafeAreaView>
+          <FlatList
+            data={cats}
+            renderItem={RenderCategory}
+            keyExtractor={(item) => item.name}
+            ItemSeparatorComponent={() => <View style={{ marginLeft: 10 }} />}
+            horizontal
+            snapToInterval={CAT_WIDTH + 10}
             showsHorizontalScrollIndicator={false}
             decelerationRate={0}
           />
@@ -188,7 +306,7 @@ export default function HomeScreen({ navigation }: any) {
     >
       <Header />
       <Authors />
-      <Authors />
+      <Categories />
       <StatusBar style="dark" />
     </ScrollView>
   );
@@ -208,14 +326,17 @@ const styles = StyleSheet.create({
   h3: {
     fontSize: 20,
     fontFamily: "SF-UI-medium",
+    lineHeight: 20,
   },
   h4: {
     fontSize: 18,
     fontFamily: "SF-UI-light",
+    lineHeight: 20,
   },
   h5: {
     fontSize: 16,
     fontFamily: "SF-UI-medium",
+    textAlign: "center",
   },
 
   gray: {

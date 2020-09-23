@@ -110,7 +110,8 @@ function VideoScreen({ route, navigation, token }: any) {
     console.log("page is" + currentPager);
 
     const initStatus = {
-      shouldPlay: true,
+      //! MAKE THIS YES
+      shouldPlay: false,
       positionMillis: currentPositionMillis,
     };
     console.log(videoplaying, audioplaying);
@@ -296,9 +297,8 @@ function VideoScreen({ route, navigation, token }: any) {
     }
 
     const getNotes = () => {
-      fetch(API + "note/lecture/1", {
-        headers,
-      })
+      console.log(headers);
+      fetch(API + "note/lecture/1", headers)
         .then((r) => r.json())
         .then((json) => setNotes(json.results));
     };
@@ -526,8 +526,11 @@ function VideoScreen({ route, navigation, token }: any) {
   // when press it switches to notes, on long press it goes to add new note screen
   const SwitchToNotes = () => {
     const handleSwitch = () => {
-      setShowNotes(true);
-      SpringOut();
+      if (token) {
+        console.log(token);
+        setShowNotes(true);
+        SpringOut();
+      } else navigation.navigate("login");
     };
 
     return (
@@ -818,7 +821,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-  token: state.token,
+  token: state.token.token,
 });
 
 export default connect(mapStateToProps, null)(VideoScreen);
