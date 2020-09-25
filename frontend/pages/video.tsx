@@ -51,7 +51,7 @@ let videoIsLoaded: boolean;
 let videoplaying: boolean;
 let audioplaying: boolean;
 
-const initPager = 0;
+const initPager = 1;
 let currentPager = initPager;
 
 var videoRef: any;
@@ -111,7 +111,7 @@ function VideoScreen({ route, navigation, token }: any) {
 
     const initStatus = {
       //! MAKE THIS YES
-      shouldPlay: false,
+      shouldPlay: true,
       positionMillis: currentPositionMillis,
     };
     //console.log(videoplaying, audioplaying);
@@ -238,12 +238,16 @@ function VideoScreen({ route, navigation, token }: any) {
         setPlaying(!playing);
       }
 
+      const slides_imgs = slides.results.map((res) => {
+        return { url: res.image };
+      });
+
       return (
         //! write this by hand
         <TouchableHighlight onPress={handlePausePlay}>
           <Slideshow
             //! SLIDESHOW REQUIRES NAME URL, CURRENTLY IS IMAGE
-            dataSource={slides.results}
+            dataSource={slides_imgs}
             position={slidePosition}
             style={styles.video}
             scrollEnabled={false}
