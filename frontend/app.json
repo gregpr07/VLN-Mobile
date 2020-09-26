@@ -13,12 +13,22 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "UIBackgroundModes": ["audio"]
-      }
+        "UIBackgroundModes": [
+          "audio"
+        ]
+      },
+      "bundleIdentifier": "com.videolectures.mobile",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "com.videolectures.mobile",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"

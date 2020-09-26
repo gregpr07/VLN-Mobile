@@ -119,6 +119,7 @@ function VideoScreen({ route, navigation, token }: any) {
       shouldPlay: true,
       positionMillis: currentPositionMillis,
       staysActiveInBackground: true,
+      shouldCorrectPitch: true,
     };
     //console.log(videoplaying, audioplaying);
 
@@ -393,7 +394,7 @@ function VideoScreen({ route, navigation, token }: any) {
             <View style={{ flex: 1, flexDirection: "row" }}>
               <TextInput
                 style={{
-                  marginBottom: 10,
+                  marginBottom: 5,
 
                   paddingBottom: 5,
                   flex: 9,
@@ -653,6 +654,43 @@ function VideoScreen({ route, navigation, token }: any) {
     }).start();
   };
 
+  const SpeedControll = () => {
+    const speeds = [1, 1.25, 1.5, 2];
+
+    const Speeder = (value: number, index: number) => (
+      <View
+        style={[
+          styles.default_card,
+          {
+            flex: 1,
+            maxWidth: 150,
+            marginRight: index !== speeds.length - 1 ? 16 : 0,
+          },
+        ]}
+      >
+        <Text
+          style={{
+            textAlign: "center",
+            color: index === 0 ? colors.primary : colors.secondary,
+            fontFamily: index === 0 ? "SF-UI-heavy" : "SF-UI-medium",
+          }}
+        >
+          {value}
+        </Text>
+      </View>
+    );
+    return (
+      <View
+        style={{
+          //paddingHorizontal: padding,
+          flexDirection: "row",
+        }}
+      >
+        {speeds.map((speed, index) => Speeder(speed, index))}
+      </View>
+    );
+  };
+
   const padding = 12;
   const styles = StyleSheet.create({
     container: {
@@ -802,9 +840,9 @@ function VideoScreen({ route, navigation, token }: any) {
               showsVerticalScrollIndicator={false}
               style={{ paddingHorizontal: padding }}
             >
-              <Animated.View>
-                <Description />
-              </Animated.View>
+              <SpeedControll />
+
+              <Description />
 
               {/* recommendations */}
 

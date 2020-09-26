@@ -51,8 +51,8 @@ export const DarkTheme: theme = {
   colors: {
     primary: colors.orangish,
     secondary: colors.lightPeriwinkle,
-    background: colors.dark,
-    card: colors.darkBlueGrey,
+    background: "black", //colors.dark,
+    card: colors.dark,
     text: "white",
     border: colors.darkBlueGrey,
     notification: "rgb(255, 69, 58)",

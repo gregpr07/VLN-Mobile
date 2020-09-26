@@ -133,13 +133,13 @@ const App = ({ token, getUserToken }: any) => {
         headerStyle: {
           backgroundColor: "transparent",
         },
-        headerTintColor: themeIsDark ? colors.dark : colors.darkGreyBlue,
+        //headerTintColor: themeIsDark ? colors.dark : colors.darkGreyBlue,
         headerTitleStyle: {
           fontFamily: "SF-UI-semibold",
           lineHeight: 22,
           letterSpacing: 1,
           textAlign: "center",
-          color: themeIsDark ? colors.dark : colors.darkGreyBlue,
+          color: themeIsDark ? colors.paleGrey : colors.darkGreyBlue,
           fontSize: 20,
           shadowOpacity: 0,
         },
