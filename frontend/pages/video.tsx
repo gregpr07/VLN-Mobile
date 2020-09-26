@@ -118,6 +118,7 @@ function VideoScreen({ route, navigation, token }: any) {
       //! MAKE THIS YES
       shouldPlay: true,
       positionMillis: currentPositionMillis,
+      staysActiveInBackground: true,
     };
     //console.log(videoplaying, audioplaying);
 
