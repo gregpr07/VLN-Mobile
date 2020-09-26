@@ -26,19 +26,9 @@ import * as Font from "expo-font";
 import { connect } from "react-redux";
 import { getUserToken } from "./services/actions";
 
-import { colors } from "./services/colors";
+import { colors, LightTheme, DarkTheme } from "./services/themes";
 
-const LightTheme = {
-  dark: false,
-  colors: {
-    primary: "rgb(255, 45, 85)",
-    background: "rgb(242, 242, 242)",
-    card: "rgb(255, 255, 255)",
-    text: "rgb(28, 28, 30)",
-    border: "rgb(199, 199, 204)",
-    notification: "rgb(255, 69, 58)",
-  },
-};
+import { useColorScheme } from "react-native-appearance";
 
 const Tabs = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -122,6 +112,11 @@ const App = ({ token, getUserToken }: any) => {
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
+  const scheme = useColorScheme();
+
+  // default is the system default
+  const [themeIsDark, setThemeIsDark] = useState(scheme === "dark");
+
   if (!fontsLoaded) {
     return (
       <AppLoading
@@ -138,14 +133,15 @@ const App = ({ token, getUserToken }: any) => {
         headerStyle: {
           backgroundColor: "transparent",
         },
-        headerTintColor: "black",
+        headerTintColor: themeIsDark ? colors.dark : colors.darkGreyBlue,
         headerTitleStyle: {
           fontFamily: "SF-UI-semibold",
           lineHeight: 22,
           letterSpacing: 1,
           textAlign: "center",
-          color: "black",
+          color: themeIsDark ? colors.dark : colors.darkGreyBlue,
           fontSize: 20,
+          shadowOpacity: 0,
         },
 
         headerBackImage: ({ tintColor }) => (
@@ -153,7 +149,7 @@ const App = ({ token, getUserToken }: any) => {
             name={"md-arrow-back"}
             size={24}
             style={{ marginLeft: 20 }}
-            color={tintColor}
+            color={themeIsDark ? colors.paleGrey : colors.darkGreyBlue}
           />
         ),
         headerBackTitleVisible: false,
@@ -174,7 +170,11 @@ const App = ({ token, getUserToken }: any) => {
                   }}
                   onPress={() => navigation.push("settings")}
                 >
-                  <Ionicons name={"md-settings"} size={24} color={"black"} />
+                  <Ionicons
+                    name={"md-settings"}
+                    size={24}
+                    color={themeIsDark ? colors.paleGrey : colors.darkGreyBlue}
+                  />
                 </TouchableOpacity>
               ),
             })}
@@ -191,9 +191,13 @@ const App = ({ token, getUserToken }: any) => {
                     width: 24,
                     marginRight: 20,
                   }}
-                  onPress={() => console.log("settings")}
+                  onPress={() => setThemeIsDark(!themeIsDark)}
                 >
-                  <Ionicons name={"md-sunny"} size={24} color={"black"} />
+                  <Ionicons
+                    name={"md-sunny"}
+                    size={24}
+                    color={themeIsDark ? colors.paleGrey : colors.darkGreyBlue}
+                  />
                 </TouchableOpacity>
               ),
             })}
@@ -211,7 +215,7 @@ const App = ({ token, getUserToken }: any) => {
   );
 
   return (
-    <NavigationContainer theme={LightTheme}>
+    <NavigationContainer theme={themeIsDark ? DarkTheme : LightTheme}>
       <Tabs.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
@@ -236,12 +240,12 @@ const App = ({ token, getUserToken }: any) => {
           },
         })}
         tabBarOptions={{
-          activeTintColor: "#da5151",
-          inactiveTintColor: "gray",
+          activeTintColor: themeIsDark ? colors.orangish : colors.orangish,
+          inactiveTintColor: themeIsDark ? "white" : "gray",
           showLabel: false,
           style: {
             borderTopWidth: 0,
-            backgroundColor: "white",
+            //backgroundColor: "white",
             shadowOffset: {
               width: 5,
               height: 10,
@@ -258,6 +262,7 @@ const App = ({ token, getUserToken }: any) => {
         <Tabs.Screen name="Profile" component={ProfileStackScreen} />
         <Tabs.Screen name="DEV" component={DevOnlyComp} />
       </Tabs.Navigator>
+      <StatusBar style={themeIsDark ? "light" : "dark"} />
     </NavigationContainer>
   );
 };

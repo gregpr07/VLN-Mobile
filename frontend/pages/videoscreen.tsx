@@ -18,8 +18,12 @@ import {
   TouchableOpacity,
 } from "react-native-gesture-handler";
 
+import { useTheme } from "@react-navigation/native";
+
 const padding = 24;
 export default function VideosScreen({ navigation }: any) {
+  const { colors, dark } = useTheme();
+
   /*   React.useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       if (videoreference) {
@@ -97,8 +101,8 @@ export default function VideosScreen({ navigation }: any) {
               marginBottom: 5,
             }}
           />
-          <Text style={styles.h5}>{item.title}</Text>
-          <Text>{item.author}</Text>
+          <Text style={[styles.h5, { color: colors.text }]}>{item.title}</Text>
+          <Text style={{ color: colors.secondary }}>{item.author}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -113,7 +117,7 @@ export default function VideosScreen({ navigation }: any) {
           paddingHorizontal: padding,
         }}
       >
-        <Text style={styles.h3}>Videos for you</Text>
+        <Text style={[styles.h3, { color: colors.text }]}>Videos for you</Text>
         <SafeAreaView>
           <FlatList
             data={recommendations}
@@ -146,7 +150,6 @@ const styles = StyleSheet.create({
     fontSize: 36,
     textAlign: "center",
     fontFamily: "SF-UI-semibold",
-    color: "white",
   },
 
   h3: {
@@ -159,49 +162,6 @@ const styles = StyleSheet.create({
   },
   h5: {
     fontSize: 14,
-    fontFamily: "SF-UI-medium",
-  },
-
-  gray: {
-    color: "#828282",
-  },
-  video_title: {
-    fontSize: 22,
-    paddingBottom: 16,
-    paddingTop: 16,
-    fontFamily: "SF-UI-medium",
-    paddingRight: 32,
-  },
-  video: {
-    borderRadius: 16,
-    height: ((width - 2 * padding) / 16) * 9,
-    width: width - 2 * padding,
-  },
-  description: {
-    paddingVertical: 8,
-  },
-  recommendation: {
-    paddingVertical: 8,
-    flexDirection: "row",
-  },
-  your_notes: {
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    //height: 100,
-    marginVertical: 8,
-    backgroundColor: "white",
-  },
-  note_text: {
-    fontFamily: "SF-UI-light",
-    fontSize: 16,
-    color: "#4F4F4F",
-  },
-  button_default: {
-    paddingHorizontal: 32,
-    paddingVertical: 16,
-    borderRadius: 20,
-    backgroundColor: "#5DB075",
-    fontSize: 20,
     fontFamily: "SF-UI-medium",
   },
 });

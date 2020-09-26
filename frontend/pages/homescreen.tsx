@@ -15,7 +15,6 @@ const { width, height } = Dimensions.get("window");
 
 // expo
 import Constants from "expo-constants";
-import { StatusBar } from "expo-status-bar";
 
 //import ViewPager from "@react-native-community/viewpager";
 
@@ -24,8 +23,14 @@ import Carousel from "react-native-snap-carousel";
 
 import { ScrollView } from "react-native-gesture-handler";
 
+import { useTheme } from "@react-navigation/native";
+
+//import { color } from "react-native-reanimated";
+
 const padding = 24;
 export default function HomeScreen({ navigation }: any) {
+  const { colors, dark } = useTheme();
+
   type events = Array<{ id: string; image: string }>;
   const events: events = [
     {
@@ -76,7 +81,10 @@ export default function HomeScreen({ navigation }: any) {
   const Header = () => (
     <View>
       <Text
-        style={[styles.h1, { paddingHorizontal: padding, paddingBottom: 10 }]}
+        style={[
+          styles.h1,
+          { paddingHorizontal: padding, paddingBottom: 10, color: colors.text },
+        ]}
       >
         Events
       </Text>
@@ -125,7 +133,7 @@ export default function HomeScreen({ navigation }: any) {
       >
         <View
           style={{
-            shadowColor: "rgba(0, 0, 0, 0.09)",
+            shadowColor: colors.shadow,
             shadowOffset: {
               width: 0,
               height: 12,
@@ -153,12 +161,12 @@ export default function HomeScreen({ navigation }: any) {
 
               marginBottom: 5,
 
-              borderColor: "white",
+              borderColor: colors.card,
               borderWidth: 4,
             }}
           />
         </View>
-        <Text style={styles.h5}>{item.name}</Text>
+        <Text style={[styles.h5, { color: colors.text }]}>{item.name}</Text>
       </View>
     );
 
@@ -174,8 +182,10 @@ export default function HomeScreen({ navigation }: any) {
         }}
       >
         <View style={{ flexDirection: "row", marginHorizontal: padding }}>
-          <Text style={[styles.h3, { flex: 1 }]}>Top authors</Text>
-          <Text style={[styles.h3, { color: "#5468ff" }]}>Show all</Text>
+          <Text style={[styles.h3, { flex: 1, color: colors.text }]}>
+            Top authors
+          </Text>
+          <Text style={[styles.h3, { color: colors.secondary }]}>Show all</Text>
         </View>
 
         <SafeAreaView>
@@ -228,8 +238,8 @@ export default function HomeScreen({ navigation }: any) {
         style={{
           width: CAT_WIDTH,
           borderRadius: 8,
-          backgroundColor: "#ffffff",
-          shadowColor: "rgba(60, 128, 209, 0.09)",
+          backgroundColor: colors.card,
+          shadowColor: colors.shadow,
           shadowOffset: {
             width: 0,
             height: 12,
@@ -261,6 +271,7 @@ export default function HomeScreen({ navigation }: any) {
 
               fontFamily: "SF-UI-medium",
               letterSpacing: 0,
+              color: colors.text,
             }}
           >
             {item.name}
@@ -278,8 +289,10 @@ export default function HomeScreen({ navigation }: any) {
         }
       >
         <View style={{ flexDirection: "row", paddingHorizontal: padding }}>
-          <Text style={[styles.h3, { flex: 1 }]}>Categories</Text>
-          <Text style={[styles.h3, { color: "#5468ff" }]}>Show all</Text>
+          <Text style={[styles.h3, { flex: 1, color: colors.text }]}>
+            Categories
+          </Text>
+          <Text style={[styles.h3, { color: colors.secondary }]}>Show all</Text>
         </View>
         {/* CANT GET THIS TO WORK FROM LEFT */}
         {/*         <SafeAreaView>
@@ -313,14 +326,13 @@ export default function HomeScreen({ navigation }: any) {
   return (
     <ScrollView
       style={{
-        marginTop: Constants.statusBarHeight,
+        marginTop: Constants.statusBarHeight + 6,
       }}
       showsVerticalScrollIndicator={false}
     >
       <Header />
       <Authors />
       <Categories />
-      <StatusBar style="dark" />
     </ScrollView>
   );
 }
@@ -328,7 +340,6 @@ export default function HomeScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: Constants.statusBarHeight,
   },
   h1: {
     fontSize: 36,
@@ -357,19 +368,5 @@ const styles = StyleSheet.create({
   },
   description: {
     paddingVertical: 8,
-  },
-  default_card: {
-    shadowColor: "rgba(60, 128, 209, 0.09)",
-    shadowOffset: {
-      width: 0,
-      height: 12,
-    },
-    shadowRadius: 19,
-    shadowOpacity: 1,
-
-    marginTop: padding,
-    backgroundColor: "white",
-    padding: padding,
-    borderRadius: 12,
   },
 });

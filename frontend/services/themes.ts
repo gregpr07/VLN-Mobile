@@ -18,14 +18,44 @@ export const colors = {
   iconBaseOfCta22: "#01c6bb",
 };
 
-export const LightTheme = {
+export interface theme {
+  dark: boolean;
+  colors: {
+    primary: string;
+    secondary: string;
+    background: string;
+    card: string;
+    text: string;
+    border: string;
+    notification: string;
+    shadow: string;
+  };
+}
+
+export const LightTheme: theme = {
   dark: false,
   colors: {
-    primary: "rgb(255, 45, 85)",
+    primary: colors.twilight,
+    secondary: colors.twilight,
     background: "rgb(242, 242, 242)",
     card: "rgb(255, 255, 255)",
-    text: "rgb(28, 28, 30)",
-    border: "rgb(199, 199, 204)",
+    text: colors.dark,
+    border: "white",
     notification: "rgb(255, 69, 58)",
+    shadow: "rgba(60, 128, 209, 0.09)",
+  },
+};
+
+export const DarkTheme: theme = {
+  dark: true,
+  colors: {
+    primary: colors.orangish,
+    secondary: colors.lightPeriwinkle,
+    background: colors.dark,
+    card: colors.darkBlueGrey,
+    text: "white",
+    border: colors.darkBlueGrey,
+    notification: "rgb(255, 69, 58)",
+    shadow: "#5468FF10",
   },
 };
