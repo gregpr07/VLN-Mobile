@@ -43,6 +43,9 @@ import { connect } from "react-redux";
 // dimensions
 const { width, height } = Dimensions.get("window");
 
+import { useTheme } from "@react-navigation/native";
+import { color } from "react-native-reanimated";
+
 const videoHeight = (width / 16) * 9;
 
 //? using let because we don't want the screen to re-render because of video
@@ -51,7 +54,7 @@ let videoIsLoaded: boolean;
 let videoplaying: boolean;
 let audioplaying: boolean;
 
-const initPager = 0;
+const initPager = 1;
 let currentPager = initPager;
 
 var videoRef: any;
@@ -61,6 +64,8 @@ const audioRef = new Audio.Sound();
 // - when going to audio and opening notes the continuity breakes
 
 function VideoScreen({ route, navigation, token }: any) {
+  const { colors, dark } = useTheme();
+
   const { data: lecture, error } = useSWR("lecture/1", fetcher);
   const { data: slides } = useSWR("slide/lecture/1", fetcher);
 
@@ -111,7 +116,7 @@ function VideoScreen({ route, navigation, token }: any) {
 
     const initStatus = {
       //! MAKE THIS YES
-      shouldPlay: false,
+      shouldPlay: true,
       positionMillis: currentPositionMillis,
     };
     //console.log(videoplaying, audioplaying);
@@ -238,12 +243,16 @@ function VideoScreen({ route, navigation, token }: any) {
         setPlaying(!playing);
       }
 
+      const slides_imgs = slides.results.map((res) => {
+        return { url: res.image };
+      });
+
       return (
         //! write this by hand
         <TouchableHighlight onPress={handlePausePlay}>
           <Slideshow
             //! SLIDESHOW REQUIRES NAME URL, CURRENTLY IS IMAGE
-            dataSource={slides.results}
+            dataSource={slides_imgs}
             position={slidePosition}
             style={styles.video}
             scrollEnabled={false}
@@ -299,8 +308,16 @@ function VideoScreen({ route, navigation, token }: any) {
 
     const getNotes = () => {
       fetch(API + "note/lecture/1/", requestOptions)
-        .then((r) => r.json())
-        .then((json) => setNotes(json.results))
+        .then((r) => {
+          if (r.status === 200) {
+            return r.json();
+          } else return null;
+        })
+        .then((json) => {
+          if (json) {
+            setNotes(json.results);
+          }
+        })
         .catch((error) => console.log("error", error));
     };
 
@@ -317,11 +334,13 @@ function VideoScreen({ route, navigation, token }: any) {
         >
           <TouchableHighlight onPress={() => handleTimestamp(item.timestamp)}>
             <View style={{ flex: 1, flexDirection: "row" }}>
-              <Text>{YoutubeTime(item.timestamp)}</Text>
+              <Text style={{ color: colors.secondary }}>
+                {YoutubeTime(item.timestamp)}
+              </Text>
               <Ionicons
                 name={"ios-play-circle"}
                 size={16}
-                //color={"black"}
+                color={colors.secondary}
                 style={{ marginLeft: 5 }}
               />
             </View>
@@ -377,6 +396,8 @@ function VideoScreen({ route, navigation, token }: any) {
 
                   paddingBottom: 5,
                   flex: 9,
+
+                  color: colors.text,
                 }}
                 onChangeText={handleChangeText}
                 value={noteText}
@@ -386,17 +407,29 @@ function VideoScreen({ route, navigation, token }: any) {
                 multiline
                 placeholder={"Add new note here"}
                 placeholderTextColor="#BDBDBD"
+                keyboardAppearance={dark ? "dark" : "light"}
               />
               <TouchableOpacity onPress={() => quitNotes()}>
-                <Ionicons name={"ios-close"} size={30} color={"black"} />
+                <Ionicons name={"ios-close"} size={30} color={colors.primary} />
               </TouchableOpacity>
             </View>
             {noteText ? (
               <TouchableHighlight
                 style={{
-                  paddingVertical: 8,
+                  paddingVertical: 10,
+                  marginBottom: 6,
                   borderRadius: 10,
                   backgroundColor: "#5468fe",
+
+                  width: 200,
+
+                  shadowColor: colors.shadow,
+                  shadowOffset: {
+                    width: 0,
+                    height: 10,
+                  },
+                  shadowRadius: 25,
+                  shadowOpacity: 1,
                 }}
                 onPress={handleNoteSubmit}
                 accessible={false}
@@ -492,9 +525,17 @@ function VideoScreen({ route, navigation, token }: any) {
               height: 60,
               width: 60,
               borderRadius: 50,
-              borderColor: "white",
+              borderColor: colors.border,
               borderWidth: 5,
               marginRight: 15,
+
+              shadowColor: colors.shadow,
+              shadowOffset: {
+                width: 0,
+                height: 10,
+              },
+              shadowRadius: 25,
+              shadowOpacity: 1,
             }}
           />
         </View>
@@ -549,7 +590,7 @@ function VideoScreen({ route, navigation, token }: any) {
             paddingVertical: 12,
             borderRadius: 20,
             backgroundColor: "#5468ff",
-            shadowColor: "rgba(84, 104, 255, 0.3)",
+            shadowColor: colors.shadow,
             shadowOffset: {
               width: 0,
               height: 10,
@@ -610,6 +651,86 @@ function VideoScreen({ route, navigation, token }: any) {
       useNativeDriver: true,
     }).start();
   };
+
+  const padding = 12;
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      //padding: padding,
+      paddingTop: Constants.statusBarHeight,
+      //backgroundColor: "white",
+      paddingBottom: 0,
+    },
+    h1: {
+      fontSize: 36,
+      textAlign: "center",
+      fontFamily: "SF-UI-semibold",
+    },
+
+    h3: {
+      fontSize: 20,
+      fontFamily: "SF-UI-medium",
+      color: colors.text,
+    },
+    h4: {
+      fontSize: 16,
+      fontFamily: "SF-UI-medium",
+    },
+    h5: {
+      fontSize: 14,
+      fontFamily: "SF-UI-medium",
+      color: colors.text,
+    },
+
+    gray: {
+      color: colors.secondary,
+    },
+    video_title: {
+      fontSize: 18,
+      paddingBottom: 8,
+
+      fontFamily: "SF-UI-light",
+      paddingRight: 32,
+
+      color: colors.text,
+    },
+    video: {
+      //borderRadius: 32,
+      height: videoHeight, //- 2 * padding
+      width: width, // - 2 * padding,
+    },
+
+    recommendation: {
+      paddingVertical: 8,
+      flexDirection: "row",
+    },
+    your_notes: {
+      paddingHorizontal: 8,
+      marginVertical: 8,
+      //backgroundColor: "white",
+    },
+    note_text: {
+      fontFamily: "SF-UI-light",
+      fontSize: 16,
+      color: colors.text,
+    },
+    default_card: {
+      shadowColor: colors.shadow,
+      shadowOffset: {
+        width: 0,
+        height: 12,
+      },
+      shadowRadius: 19,
+      shadowOpacity: 1,
+
+      backgroundColor: colors.card,
+
+      marginTop: padding,
+
+      padding: padding,
+      borderRadius: 12,
+    },
+  });
 
   return (
     <View style={styles.container} /* showsVerticalScrollIndicator={false} */>
@@ -746,80 +867,6 @@ function VideoScreen({ route, navigation, token }: any) {
     </View>
   );
 }
-
-const padding = 12;
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    //padding: padding,
-    paddingTop: Constants.statusBarHeight,
-    //backgroundColor: "white",
-    paddingBottom: 0,
-  },
-  h1: {
-    fontSize: 36,
-    textAlign: "center",
-    fontFamily: "SF-UI-semibold",
-  },
-
-  h3: {
-    fontSize: 20,
-    fontFamily: "SF-UI-medium",
-  },
-  h4: {
-    fontSize: 16,
-    fontFamily: "SF-UI-medium",
-  },
-  h5: {
-    fontSize: 14,
-    fontFamily: "SF-UI-medium",
-  },
-
-  gray: {
-    color: "#828282",
-  },
-  video_title: {
-    fontSize: 18,
-    paddingBottom: 8,
-
-    fontFamily: "SF-UI-light",
-    paddingRight: 32,
-  },
-  video: {
-    //borderRadius: 32,
-    height: videoHeight, //- 2 * padding
-    width: width, // - 2 * padding,
-  },
-
-  recommendation: {
-    paddingVertical: 8,
-    flexDirection: "row",
-  },
-  your_notes: {
-    paddingHorizontal: 8,
-    marginVertical: 8,
-    //backgroundColor: "white",
-  },
-  note_text: {
-    fontFamily: "SF-UI-light",
-    fontSize: 16,
-    color: "#4F4F4F",
-  },
-  default_card: {
-    shadowColor: "rgba(60, 128, 209, 0.09)",
-    shadowOffset: {
-      width: 0,
-      height: 12,
-    },
-    shadowRadius: 19,
-    shadowOpacity: 1,
-
-    marginTop: padding,
-    backgroundColor: "white",
-    padding: padding,
-    borderRadius: 12,
-  },
-});
 
 const mapStateToProps = (state) => ({
   token: state.token.token,

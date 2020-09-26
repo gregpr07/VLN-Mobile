@@ -13,7 +13,11 @@ import Constants from "expo-constants";
 
 import { API } from "../services/fetcher";
 
+import { useTheme } from "@react-navigation/native";
+
 const SignInScreen = ({ token, saveToken }: any) => {
+  const { colors, dark } = useTheme();
+
   const [isError, setIsError] = useState(false);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
@@ -47,6 +51,39 @@ const SignInScreen = ({ token, saveToken }: any) => {
 
   let pass: any;
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: "center",
+      paddingTop: Constants.statusBarHeight + 16,
+    },
+    h3: {
+      fontSize: 20,
+      fontFamily: "SF-UI-medium",
+      alignContent: "center",
+      color: colors.text,
+    },
+    bold: {
+      fontFamily: "SF-UI-semibold",
+    },
+    input: {
+      width: 315,
+      height: 70,
+      backgroundColor: colors.card,
+      shadowColor: colors.shadow,
+      shadowOffset: {
+        width: 0,
+        height: 12,
+      },
+      shadowRadius: 19,
+      shadowOpacity: 1,
+      paddingHorizontal: 35,
+      fontFamily: "SF-UI-semibold",
+
+      color: colors.text,
+    },
+  });
+
   return (
     <View style={styles.container}>
       <Text style={[styles.h3, styles.bold]}>Log in</Text>
@@ -72,8 +109,10 @@ const SignInScreen = ({ token, saveToken }: any) => {
           autoCapitalize={"none"}
           onSubmitEditing={() => pass.focus()}
           placeholder={"Username"}
+          placeholderTextColor={colors.secondary}
           clearButtonMode={"while-editing"}
           onChangeText={(text) => setUserName(text)}
+          keyboardAppearance={dark ? "dark" : "light"}
           style={[
             styles.input,
             {
@@ -93,7 +132,9 @@ const SignInScreen = ({ token, saveToken }: any) => {
           returnKeyType={"send"}
           autoCapitalize={"none"}
           placeholder={"Password"}
+          placeholderTextColor={colors.secondary}
           onSubmitEditing={postLogin}
+          keyboardAppearance={dark ? "dark" : "light"}
           style={[
             styles.input,
             { borderBottomRightRadius: 15, borderBottomLeftRadius: 15 },
@@ -132,37 +173,6 @@ const SignInScreen = ({ token, saveToken }: any) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    paddingTop: Constants.statusBarHeight + 16,
-  },
-  h3: {
-    fontSize: 20,
-    fontFamily: "SF-UI-medium",
-    alignContent: "center",
-    color: "rgb(52, 67, 86)",
-  },
-  bold: {
-    fontFamily: "SF-UI-semibold",
-  },
-  input: {
-    width: 315,
-    height: 70,
-    backgroundColor: "#ffffff",
-    shadowColor: "rgba(60, 128, 209, 0.09)",
-    shadowOffset: {
-      width: 0,
-      height: 12,
-    },
-    shadowRadius: 19,
-    shadowOpacity: 1,
-    paddingHorizontal: 35,
-    fontFamily: "SF-UI-semibold",
-  },
-});
 
 const mapStateToProps = (state) => ({
   token: state.token,

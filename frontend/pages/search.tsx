@@ -18,13 +18,16 @@ import {
   shorterText,
 } from "../services/functions";
 import Constants from "expo-constants";
-import { StatusBar } from "expo-status-bar";
 
 import { Ionicons } from "@expo/vector-icons";
 
 const { width, height } = Dimensions.get("window");
 
+import { useTheme } from "@react-navigation/native";
+
 export default SearchScreen = ({ navigation }) => {
+  const { colors, dark } = useTheme();
+
   const site_api = "https://platform.x5gon.org/api/v2/";
 
   const [data, setData] = useState([]);
@@ -119,7 +122,7 @@ export default SearchScreen = ({ navigation }) => {
         <View style={{ flex: 4, padding: 6, alignContent: "center" }}>
           <Text style={[styles.h4]}>{shorterText(item.title, 60)}</Text>
           <View>
-            <Text style={[styles.h5, { color: "#828282" }]}>
+            <Text style={[styles.h5, { color: colors.primary }]}>
               {item.material_id}
               <Separator />
               {item.language}
@@ -134,6 +137,105 @@ export default SearchScreen = ({ navigation }) => {
 
   let listflat: any;
 
+  const padding = 24;
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+
+      paddingTop: padding + Constants.statusBarHeight,
+    },
+    h1: {
+      fontSize: 36,
+      textAlign: "center",
+      fontFamily: "SF-UI-semibold",
+    },
+
+    h3: {
+      fontSize: 20,
+      fontFamily: "SF-UI-medium",
+    },
+    h4: {
+      fontSize: 14,
+      fontFamily: "SF-UI-light",
+      color: colors.text,
+      paddingBottom: 2,
+    },
+    h5: {
+      fontSize: 12,
+      fontFamily: "SF-UI-medium",
+    },
+
+    gray: {
+      color: "#828282",
+    },
+    recommendation: {
+      flexDirection: "row",
+    },
+    SearchBar: {
+      height: 70,
+
+      backgroundColor: colors.card,
+      borderRadius: 15,
+      paddingLeft: 20,
+      paddingRight: 10,
+
+      marginHorizontal: padding,
+
+      shadowColor: colors.shadow,
+      shadowOffset: {
+        width: 0,
+        height: 12,
+      },
+      shadowRadius: 19,
+      shadowOpacity: 1,
+
+      flexDirection: "row",
+    },
+    textinput: {
+      height: 70,
+      fontSize: 20,
+      fontFamily: "SF-UI-medium",
+      marginBottom: 20,
+      color: dark ? "white" : "#838f92",
+
+      flex: 1,
+    },
+    searchicon: {
+      marginVertical: 10,
+
+      width: 50,
+      height: 50,
+      borderRadius: 9,
+      backgroundColor: "#5468ff",
+      shadowColor: "rgba(84, 104, 255, 0.3)",
+      shadowOffset: {
+        width: 0,
+        height: 10,
+      },
+      shadowRadius: 25,
+      shadowOpacity: 1,
+
+      justifyContent: "center",
+    },
+    default_card: {
+      shadowColor: colors.shadow,
+      shadowOffset: {
+        width: 0,
+        height: 12,
+      },
+      shadowRadius: 19,
+      shadowOpacity: 1,
+
+      marginTop: padding / 2,
+      backgroundColor: colors.card,
+      //padding: padding,
+      borderRadius: 15,
+
+      marginHorizontal: padding,
+      maxWidth: 400,
+    },
+  });
+
   return (
     <View style={styles.container}>
       <View style={styles.SearchBar}>
@@ -144,6 +246,7 @@ export default SearchScreen = ({ navigation }) => {
           autoFocus={true}
           onSubmitEditing={handleSubmit}
           clearButtonMode={"while-editing"}
+          keyboardAppearance={dark ? "dark" : "light"}
         />
         <TouchableOpacity onPress={handleSubmit}>
           <View style={styles.searchicon}>
@@ -164,6 +267,7 @@ export default SearchScreen = ({ navigation }) => {
           keyExtractor={(item) => item.material_id + item.url}
           onEndReached={loadMoreData}
           //getNativeScrollRef={(ref) => (flatlistRef = ref)}
+          keyboardDismissMode={"on-drag"}
         />
       </SafeAreaView>
       {loading ? (
@@ -177,105 +281,6 @@ export default SearchScreen = ({ navigation }) => {
           size="small"
         />
       ) : null}
-      <StatusBar style="dark" />
     </View>
   );
 };
-
-const padding = 24;
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-
-    //backgroundColor: "white",
-    paddingTop: padding + Constants.statusBarHeight,
-  },
-  h1: {
-    fontSize: 36,
-    textAlign: "center",
-    fontFamily: "SF-UI-semibold",
-  },
-
-  h3: {
-    fontSize: 20,
-    fontFamily: "SF-UI-medium",
-  },
-  h4: {
-    fontSize: 14,
-    fontFamily: "SF-UI-light",
-  },
-  h5: {
-    fontSize: 12,
-    fontFamily: "SF-UI-medium",
-  },
-
-  gray: {
-    color: "#828282",
-  },
-  recommendation: {
-    flexDirection: "row",
-  },
-  SearchBar: {
-    height: 70,
-
-    backgroundColor: "white",
-    borderRadius: 15,
-    paddingLeft: 20,
-    paddingRight: 10,
-
-    marginHorizontal: padding,
-
-    shadowColor: "rgba(60, 128, 209, 0.14)",
-    shadowOffset: {
-      width: 0,
-      height: 12,
-    },
-    shadowRadius: 19,
-    shadowOpacity: 1,
-
-    flexDirection: "row",
-  },
-  textinput: {
-    height: 70,
-    fontSize: 20,
-    fontFamily: "SF-UI-medium",
-    marginBottom: 20,
-    color: "#838f92",
-
-    flex: 1,
-  },
-  searchicon: {
-    marginVertical: 10,
-
-    width: 50,
-    height: 50,
-    borderRadius: 9,
-    backgroundColor: "#5468ff",
-    shadowColor: "rgba(84, 104, 255, 0.3)",
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
-    shadowRadius: 25,
-    shadowOpacity: 1,
-
-    justifyContent: "center",
-  },
-  default_card: {
-    shadowColor: "rgba(60, 128, 209, 0.09)",
-    shadowOffset: {
-      width: 0,
-      height: 12,
-    },
-    shadowRadius: 19,
-    shadowOpacity: 1,
-
-    marginTop: padding / 2,
-    backgroundColor: "white",
-    //padding: padding,
-    borderRadius: 15,
-
-    marginHorizontal: padding,
-    maxWidth: 400,
-  },
-});
