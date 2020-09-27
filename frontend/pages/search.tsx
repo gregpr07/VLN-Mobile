@@ -107,7 +107,7 @@ export default SearchScreen = ({ navigation }) => {
         <Image
           source={{
             uri:
-              "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fmarketingland.com%2Fwp-content%2Fml-loads%2F2015%2F01%2Fvideo-generic-ss-1920.jpg&f=1&nofb=1",
+              "http://hydro.ijs.si/v013/d2/2ley3qjmm7a3v7g6lnq5duermqrzbq7f.jpg",
           }}
           style={{
             height: 90,

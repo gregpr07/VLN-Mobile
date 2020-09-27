@@ -87,7 +87,7 @@ const PlayerStackScreen = () => {
 const App = ({ token, getUserToken }: any) => {
   // fonts
   /*   let [fontsLoaded] = useFonts({
-    SF_UI_BLACK: require("./assets/fonts/sf-ui-display-black.otf"),
+    SF_UI_BLACK: require("./assets/fonts/HKGrotesk-black.otf"),
   }); */
 
   console.log(token);
@@ -99,14 +99,15 @@ const App = ({ token, getUserToken }: any) => {
   // fonts tutorial -  https://medium.com/@hemanshuM/add-custom-font-in-your-react-native-expo-app-88005a341f5c
   const loadFonts = () => {
     return Font.loadAsync({
-      "SF-UI-black": require("./assets/fonts/sf-ui-display-black.otf"),
-      "SF-UI-bold": require("./assets/fonts/sf-ui-display-bold.otf"),
-      "SF-UI-heavy": require("./assets/fonts/sf-ui-display-heavy.otf"),
-      "SF-UI-light": require("./assets/fonts/sf-ui-display-light.otf"),
-      "SF-UI-medium": require("./assets/fonts/sf-ui-display-medium.otf"),
-      "SF-UI-semibold": require("./assets/fonts/sf-ui-display-semibold.otf"),
-      "SF-UI-thin": require("./assets/fonts/sf-ui-display-thin.otf"),
-      "SF-UI-ultralight": require("./assets/fonts/sf-ui-display-ultralight.otf"),
+      //"SF-UI-black": require("./assets/fonts/HKGrotesk-black.otf"),
+      "SF-UI-bold": require("./assets/fonts/HKGrotesk-Bold.otf"),
+      //"SF-UI-heavy": require("./assets/fonts/HKGrotesk-heavy.otf"),
+      "SF-UI-light": require("./assets/fonts/HKGrotesk-Light.otf"),
+      "SF-UI-regular": require("./assets/fonts/HKGrotesk-Regular.otf"),
+      "SF-UI-medium": require("./assets/fonts/HKGrotesk-Medium.otf"),
+      "SF-UI-semibold": require("./assets/fonts/HKGrotesk-SemiBold.otf"),
+      //"SF-UI-thin": require("./assets/fonts/HKGrotesk-Thin.otf"),
+      //"SF-UI-ultralight": require("./assets/fonts/HKGrotesk-ultralight.otf"),
     });
   };
 

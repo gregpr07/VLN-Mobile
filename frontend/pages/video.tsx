@@ -60,6 +60,8 @@ let currentPager = initPager;
 var videoRef: any;
 const audioRef = new Audio.Sound();
 
+let shouldUpdate: boolean;
+
 //TODO BUGS
 // - when going to audio and opening notes the continuity breakes
 
@@ -99,7 +101,7 @@ function VideoScreen({ route, navigation, token }: any) {
 
   useEffect(() => {
     if (lecture) {
-      let shouldUpdate = true;
+      shouldUpdate = true;
       navigation.addListener("state", async () => {
         if (videoRef && shouldUpdate) {
           shouldUpdate = false;
@@ -655,7 +657,12 @@ function VideoScreen({ route, navigation, token }: any) {
   };
 
   const SpeedControll = () => {
-    const speeds = [1, 1.25, 1.5, 2];
+    //const speeds = [1, 1.25, 1.5, 2];
+    const speeds = [
+      "machine learning",
+      "support vector machine",
+      "mathematics",
+    ];
 
     const Speeder = (value: number, index: number) => (
       <View
@@ -663,16 +670,16 @@ function VideoScreen({ route, navigation, token }: any) {
           styles.default_card,
           {
             flex: 1,
-            maxWidth: 150,
-            marginRight: index !== speeds.length - 1 ? 16 : 0,
+            //maxWidth: 150,
+            marginRight: index !== speeds.length - 1 ? padding : 0,
           },
         ]}
       >
         <Text
           style={{
             textAlign: "center",
-            color: index === 0 ? colors.primary : colors.secondary,
-            fontFamily: index === 0 ? "SF-UI-heavy" : "SF-UI-medium",
+            color: colors.secondary,
+            fontFamily: "SF-UI-medium",
           }}
         >
           {value}
@@ -726,9 +733,9 @@ function VideoScreen({ route, navigation, token }: any) {
     },
     video_title: {
       fontSize: 18,
-      paddingBottom: 8,
+      paddingVertical: padding,
 
-      fontFamily: "SF-UI-light",
+      fontFamily: "SF-UI-regular",
       paddingRight: 32,
 
       color: colors.text,

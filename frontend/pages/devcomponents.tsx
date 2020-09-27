@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   h1: {
-    fontFamily: "SF-UI-black",
+    fontFamily: "SF-UI-medium",
   },
 });
 
