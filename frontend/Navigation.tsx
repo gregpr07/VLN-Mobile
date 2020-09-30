@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, Button, TouchableOpacity } from "react-native";
+import { Text, View, Button, TouchableOpacity, Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -16,6 +16,7 @@ import VideosScreen from "./pages/videoscreen";
 import Event from "./pages/event";
 import LoginScreen from "./pages/login";
 import SettingScreen from "./pages/settings";
+import Category from "./pages/category";
 
 import DevOnlyComp from "./pages/devcomponents";
 
@@ -46,6 +47,7 @@ const HomeStackScreen = () => (
       component={HomeScreen}
     />
     <HomeStack.Screen name="event" component={Event} />
+    <HomeStack.Screen name="category" component={Category} />
   </HomeStack.Navigator>
 );
 
@@ -234,6 +236,18 @@ const App = ({ token, getUserToken }: any) => {
               iconName = "ios-bug";
             } else if (route.name == "Player") {
               iconName = "ios-play-circle";
+              /* return (
+                <Image
+                  source={{
+                    uri:
+                      "https://static.videolectures.net/r.1483388978//custom/vln-touch-icon-precomposed.png",
+                  }}
+                  style={{
+                    height: size,
+                    width: size,
+                  }}
+                />
+              ); */
             }
 
             // You can return any component that you like here!

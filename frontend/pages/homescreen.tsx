@@ -251,32 +251,36 @@ export default function HomeScreen({ navigation }: any) {
           marginBottom: 30,
         }}
       >
-        <Image
-          source={{
-            uri: item.image,
-          }}
-          style={{
-            width: "100%",
-            height: 75,
-            borderTopLeftRadius: 8,
-            borderTopRightRadius: 8,
-            resizeMode: "cover",
-            marginBottom: 5,
-          }}
-        />
-        <View style={{ paddingHorizontal: 16, paddingVertical: 10 }}>
-          <Text
-            style={{
-              fontSize: 14,
+        <TouchableOpacity onPress={() => navigation.push("category")}>
+          <>
+            <Image
+              source={{
+                uri: item.image,
+              }}
+              style={{
+                width: "100%",
+                height: 75,
+                borderTopLeftRadius: 8,
+                borderTopRightRadius: 8,
+                resizeMode: "cover",
+                marginBottom: 5,
+              }}
+            />
+            <View style={{ paddingHorizontal: 16, paddingVertical: 10 }}>
+              <Text
+                style={{
+                  fontSize: 14,
 
-              fontFamily: "SF-UI-medium",
-              letterSpacing: 0,
-              color: colors.text,
-            }}
-          >
-            {item.name}
-          </Text>
-        </View>
+                  fontFamily: "SF-UI-medium",
+                  letterSpacing: 0,
+                  color: colors.text,
+                }}
+              >
+                {item.name}
+              </Text>
+            </View>
+          </>
+        </TouchableOpacity>
       </View>
     );
 

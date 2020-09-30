@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
   FlatList,
   SafeAreaView,
-  Modal,
   TouchableHighlight,
   TextInput,
   Keyboard,
@@ -18,6 +17,8 @@ import {
   // Pressable,
   Animated,
 } from "react-native";
+
+import Modal from "react-native-modal";
 
 import Constants from "expo-constants";
 
@@ -526,8 +527,8 @@ function VideoScreen({ route, navigation, token }: any) {
           <Image
             source={{ uri: "https://platform.x5gon.org/imgs/team/john.jpg" }}
             style={{
-              height: 60,
-              width: 60,
+              height: 75,
+              width: 75,
               borderRadius: 50,
               borderColor: colors.border,
               borderWidth: 5,
@@ -552,6 +553,9 @@ function VideoScreen({ route, navigation, token }: any) {
           </Text>
           <Text style={styles.h5}>
             <Text style={styles.gray}>published:</Text> {lecture.published}
+          </Text>
+          <Text style={[styles.h5, { paddingTop: 4, color: colors.primary }]}>
+            SiKDD2019
           </Text>
         </View>
       </View>
@@ -664,14 +668,14 @@ function VideoScreen({ route, navigation, token }: any) {
       "mathematics",
     ];
 
-    const Speeder = (value: number, index: number) => (
+    const Cat = ({ item }) => (
       <View
         style={[
           styles.default_card,
           {
             flex: 1,
             //maxWidth: 150,
-            marginRight: index !== speeds.length - 1 ? padding : 0,
+            //marginRight: index !== speeds.length - 1 ? padding : 0,
           },
         ]}
       >
@@ -682,18 +686,103 @@ function VideoScreen({ route, navigation, token }: any) {
             fontFamily: "SF-UI-medium",
           }}
         >
-          {value}
+          {item}
         </Text>
       </View>
     );
     return (
-      <View
-        style={{
-          //paddingHorizontal: padding,
-          flexDirection: "row",
-        }}
-      >
-        {speeds.map((speed, index) => Speeder(speed, index))}
+      <FlatList
+        data={speeds}
+        renderItem={Cat}
+        keyExtractor={(item) => item}
+        ItemSeparatorComponent={() => <View style={{ marginLeft: padding }} />}
+        horizontal
+        //snapToInterval={AUTHOR_WIDTH + SEPARATOR_WIDTH}
+        showsHorizontalScrollIndicator={false}
+        decelerationRate={0}
+      />
+    );
+  };
+
+  const VideoHeader = () => {
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const stylez = StyleSheet.create({
+      modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+      },
+      openButton: {
+        backgroundColor: "#F194FF",
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+      },
+      textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center",
+      },
+      modalText: {
+        marginBottom: 15,
+        textAlign: "center",
+      },
+    });
+    return (
+      <View style={{ flexDirection: "row" }}>
+        <Text
+          style={{
+            flex: 1,
+            fontSize: 18,
+
+            fontFamily: "SF-UI-regular",
+
+            color: colors.text,
+
+            paddingVertical: padding,
+          }}
+        >
+          {lecture.title}
+        </Text>
+        <TouchableOpacity
+          style={{ paddingHorizontal: padding / 2, paddingVertical: padding }}
+        >
+          <Ionicons name={"ios-star"} size={20} color={colors.text} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setModalVisible(!modalVisible)}
+          style={{ paddingHorizontal: padding / 2, paddingVertical: padding }}
+        >
+          <Ionicons name={"ios-options"} size={20} color={colors.text} />
+        </TouchableOpacity>
+
+        <Modal
+          isVisible={modalVisible}
+          onSwipeComplete={() => setModalVisible(false)}
+          swipeDirection="down"
+        >
+          <View
+            style={[
+              { height: 100, backgroundColor: "red" },
+              styles.default_card,
+            ]}
+          >
+            <Text>Hello!</Text>
+
+            <Button title="Hide modal" onPress={() => setModalVisible(false)} />
+          </View>
+        </Modal>
       </View>
     );
   };
@@ -731,15 +820,7 @@ function VideoScreen({ route, navigation, token }: any) {
     gray: {
       color: colors.secondary,
     },
-    video_title: {
-      fontSize: 18,
-      paddingVertical: padding,
 
-      fontFamily: "SF-UI-regular",
-      paddingRight: 32,
-
-      color: colors.text,
-    },
     video: {
       //borderRadius: 32,
       height: videoHeight, //- 2 * padding
@@ -779,11 +860,7 @@ function VideoScreen({ route, navigation, token }: any) {
   });
 
   return (
-    <View style={styles.container} /* showsVerticalScrollIndicator={false} */>
-      {/*       <Button
-        onPress={() => setTeststate(testState + 1)}
-        title={testState.toString()}
-      /> */}
+    <View style={styles.container}>
       {lecture ? (
         <>
           {showNotes ? null : (
@@ -796,7 +873,7 @@ function VideoScreen({ route, navigation, token }: any) {
                 paddingHorizontal: padding,
               }}
             >
-              <Text style={styles.video_title}>{lecture.title}</Text>
+              <VideoHeader />
             </Animated.View>
           )}
           {/* VideoAudio */}

@@ -36,9 +36,10 @@ const SignOutScreen = ({ token, removeUserToken }: any) => {
     },
     h3: {
       fontSize: 20,
-      fontFamily: "SF-UI-medium",
+      fontFamily: "SF-UI-semibold",
       alignContent: "center",
       color: colors.text,
+      paddingVertical: 5,
     },
     bold: {
       fontFamily: "SF-UI-semibold",
@@ -57,15 +58,25 @@ const SignOutScreen = ({ token, removeUserToken }: any) => {
 
       paddingHorizontal: 20,
       paddingVertical: 26,
-      marginVertical: 40,
+      marginVertical: 15,
     },
   });
   return (
     <View style={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.h3}>Setting 1</Text>
-        <Text style={styles.h3}>Blabla 2</Text>
-        <Text style={styles.h3}>Blabla 3</Text>
+      <View style={{ marginVertical: 25, width: "100%" }}>
+        <View style={styles.card}>
+          <Text style={styles.h3}>Prefered playback speed</Text>
+          <Text style={styles.h3}>Prefered : slides/video</Text>
+          <Text style={styles.h3}>Play in background (true/false)</Text>
+        </View>
+        <View style={styles.card}>
+          <Text style={styles.h3}>Update email</Text>
+          <Text style={styles.h3}>Change password</Text>
+          <Text style={styles.h3}>Remove user data</Text>
+          <Text style={styles.h3}>Do not track</Text>
+          <Text style={styles.h3}>Privacy and terms (GDPR)</Text>
+          <Text style={styles.h3}>Contact us</Text>
+        </View>
       </View>
       <TouchableOpacity onPress={_signOutAsync}>
         <Text
