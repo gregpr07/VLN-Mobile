@@ -770,17 +770,54 @@ function VideoScreen({ route, navigation, token }: any) {
         <Modal
           isVisible={modalVisible}
           onSwipeComplete={() => setModalVisible(false)}
-          swipeDirection="down"
+          onBackButtonPress={() => setModalVisible(false)}
+          onBackdropPress={() => setModalVisible(false)}
+          swipeDirection={["left", "down"]}
+          animationIn="bounceInLeft"
+          animationOut="bounceOutLeft"
         >
           <View
-            style={[
-              { height: 100, backgroundColor: "red" },
-              styles.default_card,
-            ]}
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
-            <Text>Hello!</Text>
-
-            <Button title="Hide modal" onPress={() => setModalVisible(false)} />
+            <View
+              style={[
+                { height: 100, maxWidth: 250, margin: 0 },
+                styles.default_card,
+              ]}
+            >
+              <View
+                style={{
+                  width: "100%",
+                  flexDirection: "row",
+                  paddingBottom: padding,
+                }}
+              >
+                <Text
+                  style={[
+                    styles.h4,
+                    {
+                      color: colors.secondary,
+                      textAlign: "center",
+                      flex: 1,
+                      paddingTop: 2,
+                    },
+                  ]}
+                >
+                  Video settings
+                </Text>
+                <TouchableOpacity onPress={() => setModalVisible(false)}>
+                  <Ionicons
+                    name={"md-close"}
+                    size={20}
+                    color={colors.primary}
+                  />
+                </TouchableOpacity>
+              </View>
+              <Text style={{ color: colors.text }}>Playback speed</Text>
+            </View>
           </View>
         </Modal>
       </View>
