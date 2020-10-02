@@ -110,8 +110,8 @@ export default SearchScreen = ({ navigation }) => {
               "http://hydro.ijs.si/v013/d2/2ley3qjmm7a3v7g6lnq5duermqrzbq7f.jpg",
           }}
           style={{
-            height: 90,
-            maxWidth: (90 / 9) * 16,
+            height: 80,
+            maxWidth: (80 / 9) * 16,
             flex: 3,
 
             borderBottomLeftRadius: 12,
@@ -155,10 +155,10 @@ export default SearchScreen = ({ navigation }) => {
       fontFamily: "SF-UI-medium",
     },
     h4: {
-      fontSize: 14,
-      fontFamily: "SF-UI-light",
-      color: colors.text,
       paddingBottom: 2,
+      fontSize: 14,
+      fontFamily: "SF-UI-medium",
+      color: colors.text,
     },
     h5: {
       fontSize: 12,

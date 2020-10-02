@@ -251,7 +251,9 @@ export default function HomeScreen({ navigation }: any) {
           marginBottom: 30,
         }}
       >
-        <TouchableOpacity onPress={() => navigation.push("category")}>
+        <TouchableOpacity
+          onPress={() => navigation.push("category", { category: item.name })}
+        >
           <>
             <Image
               source={{
