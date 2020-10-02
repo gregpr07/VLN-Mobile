@@ -21,8 +21,15 @@ class Author(models.Model):
         return f'{self.user_model.name + " " + self.user_model.last_name}\'s author'
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=150)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE)
+
+
 class Lecture(models.Model):
     title = models.CharField(max_length=100)
+
+    description = models.TextField(max_length=1000, blank=True)
 
     views = models.IntegerField()  # ! to je treba narest da sam skalkulera nekak
     author = models.ForeignKey(
@@ -34,6 +41,8 @@ class Lecture(models.Model):
 
     video = models.URLField()
     audio = models.URLField()
+
+    categories = models.ManyToManyField(Category)
 
     def __str__(self):
         return self.title

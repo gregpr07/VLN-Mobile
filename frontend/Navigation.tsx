@@ -47,7 +47,11 @@ const HomeStackScreen = () => (
       component={HomeScreen}
     />
     <HomeStack.Screen name="event" component={Event} />
-    <HomeStack.Screen name="category" component={Category} />
+    <HomeStack.Screen
+      name="category"
+      component={Category}
+      options={({ route }) => ({ title: route.params.category })}
+    />
   </HomeStack.Navigator>
 );
 
@@ -130,34 +134,34 @@ const App = ({ token, getUserToken }: any) => {
     );
   }
 
-  const ProfileStackScreen = () => (
-    <ProfileStack.Navigator
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: "transparent",
-        },
-        //headerTintColor: themeIsDark ? colors.dark : colors.darkGreyBlue,
-        headerTitleStyle: {
-          fontFamily: "SF-UI-semibold",
-          lineHeight: 22,
-          letterSpacing: 1,
-          textAlign: "center",
-          color: themeIsDark ? colors.paleGrey : colors.darkGreyBlue,
-          fontSize: 20,
-          shadowOpacity: 0,
-        },
+  const HeaderOptions = {
+    headerStyle: {
+      backgroundColor: "transparent",
+    },
+    //headerTintColor: themeIsDark ? colors.dark : colors.darkGreyBlue,
+    headerTitleStyle: {
+      fontFamily: "SF-UI-semibold",
+      lineHeight: 22,
+      letterSpacing: 1,
+      textAlign: "center",
+      color: themeIsDark ? colors.paleGrey : colors.darkGreyBlue,
+      fontSize: 20,
+      shadowOpacity: 0,
+    },
 
-        headerBackImage: ({ tintColor }) => (
-          <Ionicons
-            name={"md-arrow-back"}
-            size={24}
-            style={{ marginLeft: 20 }}
-            color={themeIsDark ? colors.paleGrey : colors.darkGreyBlue}
-          />
-        ),
-        headerBackTitleVisible: false,
-      }}
-    >
+    headerBackImage: ({ tintColor }) => (
+      <Ionicons
+        name={"md-arrow-back"}
+        size={24}
+        style={{ marginLeft: 20 }}
+        color={themeIsDark ? colors.paleGrey : colors.darkGreyBlue}
+      />
+    ),
+    headerBackTitleVisible: false,
+  };
+
+  const ProfileStackScreen = () => (
+    <ProfileStack.Navigator screenOptions={{ ...HeaderOptions }}>
       {token.token ? (
         <>
           <ProfileStack.Screen

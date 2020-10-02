@@ -669,26 +669,37 @@ function VideoScreen({ route, navigation, token }: any) {
     ];
 
     const Cat = ({ item }) => (
-      <View
-        style={[
-          styles.default_card,
-          {
-            flex: 1,
-            //maxWidth: 150,
-            //marginRight: index !== speeds.length - 1 ? padding : 0,
-          },
-        ]}
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("Home", {
+            screen: "category",
+            params: {
+              category: item,
+            },
+          })
+        }
       >
-        <Text
-          style={{
-            textAlign: "center",
-            color: colors.secondary,
-            fontFamily: "SF-UI-medium",
-          }}
+        <View
+          style={[
+            styles.default_card,
+            {
+              flex: 1,
+              //maxWidth: 150,
+              //marginRight: index !== speeds.length - 1 ? padding : 0,
+            },
+          ]}
         >
-          {item}
-        </Text>
-      </View>
+          <Text
+            style={{
+              textAlign: "center",
+              color: colors.secondary,
+              fontFamily: "SF-UI-medium",
+            }}
+          >
+            {item}
+          </Text>
+        </View>
+      </TouchableOpacity>
     );
     return (
       <FlatList
