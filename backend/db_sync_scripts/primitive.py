@@ -4,7 +4,7 @@ import json
 
 
 data = json.loads(open(
-    "/Users/greg/Documents/Programming/Projects/videolectures/research/data/lectures_categories.json").read())
+    "<>PATH TO JSON<>").read())
 
 for l in data[5:100]:
     author = Author.objects.get(views=777)
