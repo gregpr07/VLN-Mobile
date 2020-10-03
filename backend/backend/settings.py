@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'knox',
     'api',
+    'django_cleanup.apps.CleanupConfig',  # keep me last
 ]
 
 
