@@ -14,6 +14,7 @@ class UserModel(models.Model):
 
 class Author(models.Model):
     user_model = models.OneToOneField(UserModel, on_delete=models.CASCADE)
+    image = models.ImageField(null=True, blank=True, upload_to="image/author")
 
     views = models.IntegerField()
 
@@ -23,7 +24,14 @@ class Author(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=150)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE)
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
+    image = models.ImageField(null=True, blank=True, upload_to="image/category")
+
+    class Meta:
+        verbose_name_plural = "categories"
+
+    def __str__(self):
+        return self.name
 
 
 class Lecture(models.Model):
@@ -64,8 +72,12 @@ class Slide(models.Model):
 class Event(models.Model):
     title = models.CharField(max_length=256)
     description = models.CharField(max_length=1028)  # size!
+    image = models.ImageField(null=True, blank=True, upload_to="image/event")
 
+    # lecture order, manytomany
     lectures = ArrayField(models.IntegerField(), null=True, blank=True)
+
+    # categories, authors, videos
 
     def __str__(self):
         return self.title
