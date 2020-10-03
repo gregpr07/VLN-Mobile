@@ -57,11 +57,13 @@ fetch("http://127.0.0.1:8000/api/note/lecture/1/", requestOptions)
 ### Author
 1. List (http://127.0.0.1:8000/api/author/)
 1. Detail (http://127.0.0.1:8000/api/author/author_id/)
-1. Top authors (http://127.0.0.1:8000/api/author/top/) (ordered by views desc)
+1. Most viewed authors (http://127.0.0.1:8000/api/author/most_viewed/)
 
 ### Lecture
 1. List (http://127.0.0.1:8000/api/lecture/)
 1. Detail (http://127.0.0.1:8000/api/lecture/lecture_id/)
+1. Most viewed lectures (http://127.0.0.1:8000/api/lecture/most_viewed/)
+1. Most starred lectures (http://127.0.0.1:8000/api/lecture/most_starred/)
 1. Star (http://127.0.0.1:8000/api/star/lecture_id/)
 1. Unstar (http://127.0.0.1:8000/api/unstar/lecture_id/)
 
@@ -77,6 +79,7 @@ fetch("http://127.0.0.1:8000/api/note/lecture/1/", requestOptions)
 ### Playlist
 1. List (http://127.0.0.1:8000/api/playlist/)
 1. Detail (http://127.0.0.1:8000/api/playlist/playlist_id/)
+1. Most viewed playlists (http://127.0.0.1:8000/api/playlist/most_viewed/)
 
 ### Note
 1. :warning: List (http://127.0.0.1:8000/api/note/)

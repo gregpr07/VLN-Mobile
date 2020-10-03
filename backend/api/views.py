@@ -1,3 +1,4 @@
+from django.db.models import Count
 from rest_framework import mixins, viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -37,14 +38,24 @@ class AuthorViewSet(SimpleViewSet):
     serializer_class = AuthorSerializer
 
     @action(detail=False)
-    def top(self, request, *args, **kwargs):
-        queryset = Author.objects.order_by("-views")
+    def most_viewed(self, request, *args, **kwargs):
+        queryset = self.queryset.order_by("-views")
         return list_mixin(self, queryset)
 
 
 class LectureViewSet(SimpleViewSet):
     queryset = Lecture.objects.all()
     serializer_class = LectureSerializer
+
+    @action(detail=False)
+    def most_viewed(self, request, *args, **kwargs):
+        queryset = self.queryset.order_by("-views")
+        return list_mixin(self, queryset)
+
+    @action(detail=False)
+    def most_starred(self, request, *args, **kwargs):
+        queryset = self.queryset.annotate(count=Count("stargazers")).order_by("-count")
+        return list_mixin(self, queryset)
 
 
 class SlideViewSet(SimpleViewSet):
@@ -66,6 +77,11 @@ class PlaylistViewSet(ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, ]
     queryset = Playlist.objects.all()
     serializer_class = PlaylistSerializer
+
+    @action(detail=False)
+    def most_viewed(self, request, *args, **kwargs):
+        queryset = self.queryset.order_by("-views")
+        return list_mixin(self, queryset)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user.usermodel)
