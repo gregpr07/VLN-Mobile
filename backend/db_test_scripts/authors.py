@@ -1,5 +1,5 @@
 # coding: utf-8
-from api.models import Lecture, Author
+from esearch.models import Lecture, Author
 from django.utils.timezone import now
 import json
 data = json.loads(open(
