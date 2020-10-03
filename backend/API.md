@@ -62,6 +62,8 @@ fetch("http://127.0.0.1:8000/api/note/lecture/1/", requestOptions)
 ### Lecture
 1. List (http://127.0.0.1:8000/api/lecture/)
 1. Detail (http://127.0.0.1:8000/api/lecture/lecture_id/)
+1. Star (http://127.0.0.1:8000/api/star/lecture_id/)
+1. Unstar (http://127.0.0.1:8000/api/unstar/lecture_id/)
 
 ### Slide
 1. List (http://127.0.0.1:8000/api/slide/)
