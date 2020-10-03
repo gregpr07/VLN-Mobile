@@ -4,12 +4,15 @@ certifi==2020.6.20
 cffi==1.14.2
 cryptography==3.1
 Django==3.1.1
+django-elasticsearch-dsl==7.1.4
 django-rest-knox==4.1.0
 djangorestframework==3.11.1
-drf-nested-routers==0.91
+elasticsearch==7.9.1
+elasticsearch-dsl==7.3.0
 promise==2.3
 psycopg2-binary==2.8.6
 pycparser==2.20
+python-dateutil==2.8.1
 python-dotenv==0.14.0
 pytz==2020.1
 Rx==3.1.1
@@ -17,3 +20,4 @@ singledispatch==3.4.0.3
 six==1.15.0
 sqlparse==0.3.1
 Unidecode==1.1.1
+urllib3==1.25.10

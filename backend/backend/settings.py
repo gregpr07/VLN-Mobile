@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_elasticsearch_dsl',
     'rest_framework',
     'knox',
     'api',
@@ -72,6 +73,12 @@ DATABASES = {
         'HOST': os.getenv('DATABASE_HOST'),
         "PORT": os.getenv('DATABASE_PORT')
     }
+}
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'localhost:9200'
+    },
 }
 
 
