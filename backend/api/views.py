@@ -2,6 +2,7 @@ from rest_framework import mixins, viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from api.models import UserModel, Lecture, Note, Slide, Author, Event, Playlist
@@ -98,3 +99,39 @@ class NoteViewSet(ModelViewSet):
         queryset = Note.objects.filter(lecture_id=lecture_pk, user=user_model)
 
         return list_mixin(self, queryset)
+
+
+class StarLectureView(APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    @staticmethod
+    def get(request, lecture_id):
+        if not Lecture.objects.filter(id=lecture_id).exists():
+            return Response({
+                "detail": "Not found."
+            })
+
+        lecture = Lecture.objects.get(id=lecture_id)
+        lecture.stargazers.add(request.user.usermodel)
+
+        return Response({
+            "starred": "true"
+        })
+
+
+class UnstarLectureView(APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    @staticmethod
+    def get(request, lecture_id):
+        if not Lecture.objects.filter(id=lecture_id).exists():
+            return Response({
+                "detail": "Not found."
+            })
+
+        lecture = Lecture.objects.get(id=lecture_id)
+        lecture.stargazers.remove(request.user.usermodel)
+
+        return Response({
+            "starred": "false"
+        })

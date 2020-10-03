@@ -18,6 +18,9 @@ router.register(r'note', NoteViewSet, 'note')
 urlpatterns = [
     path('', include(router.urls)),
 
+    path('star/<int:lecture_id>/', StarLectureView.as_view()),
+    path('unstar/<int:lecture_id>/', UnstarLectureView.as_view()),
+
     url("^auth/user/$", UserAPI.as_view()),
     url("^auth/login/$", LoginAPI.as_view()),
     url("^auth/register/$", RegistrationAPI.as_view()),
