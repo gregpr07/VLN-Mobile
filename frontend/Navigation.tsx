@@ -7,7 +7,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
 
 import { Ionicons } from "@expo/vector-icons";
-import VideoScreen from "./pages/video";
+import VideoScreen from "./pages/video/index";
 import SearchScreen from "./pages/search";
 //import ModalScreen from "./pages/video_new_note_deprecated";
 import HomeScreen from "./pages/homescreen";
@@ -279,7 +279,7 @@ const App = ({ token, getUserToken }: any) => {
         <Tabs.Screen name="Player" component={PlayerStackScreen} />
         <Tabs.Screen name="Search" component={SearchScreen} />
         <Tabs.Screen name="Profile" component={ProfileStackScreen} />
-        {/* <Tabs.Screen name="DEV" component={DevOnlyComp} /> */}
+        <Tabs.Screen name="DEV" component={DevOnlyComp} />
       </Tabs.Navigator>
       <StatusBar style={themeIsDark ? "light" : "dark"} />
     </NavigationContainer>
