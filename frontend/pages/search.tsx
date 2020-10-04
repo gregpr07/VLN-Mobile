@@ -25,43 +25,73 @@ const { width, height } = Dimensions.get("window");
 
 import { useTheme } from "@react-navigation/native";
 
-export default SearchScreen = ({ navigation }) => {
+import { BASEURL } from "../services/fetcher";
+
+let CURRENT_PAGE_LEC: number;
+let LOADED_ALL_LEC: boolean;
+
+const SearchScreen = ({ navigation }: any) => {
   const { colors, dark } = useTheme();
 
-  const site_api = "https://platform.x5gon.org/api/v2/";
-
-  const [data, setData] = useState([]);
+  const [lecture, setLectures] = useState([]);
+  const [authors, setAuthors] = useState([]);
 
   const [inputValue, onChangeText] = useState("");
   const [previousInputValue, setPreviousValue] = useState("");
-  const [nextPage, setNextPage] = useState("");
 
   const [loading, setLoading] = useState(false);
 
-  const getData = (append_array) => {
-    console.log(inputValue);
+  // BASEURL + "esearch/search/lecture/erik%20novak/0/"
+
+  async function getData(append_array: boolean) {
+    console.log(CURRENT_PAGE_LEC);
+    //console.log(inputValue);
     setPreviousValue(inputValue);
 
-    const search_link = site_api + "search?text=" + inputValue + "&types=video";
-    fetch(append_array ? (nextPage ? nextPage : search_link) : search_link)
+    const search_link = `${BASEURL}esearch/search/lecture/${inputValue}/${CURRENT_PAGE_LEC}/`;
+    fetch(search_link)
       .then((res) => res.json())
       .then((json) => {
-        console.log("data returned");
+        console.log("data returned on link: " + search_link);
+
         const new_arr = append_array
-          ? data.concat(json.rec_materials)
-          : json.rec_materials;
-        console.log(new_arr.length);
-        setData(new_arr);
-        setNextPage(json.metadata.next_page);
+          ? lecture.concat(json.lectures)
+          : json.lectures;
+        //console.log(new_arr.length);
+        setLectures(new_arr);
         setLoading(false);
+        if (json.lectures === []) {
+          LOADED_ALL_LEC = true;
+        }
       });
-  };
+  }
+
+  async function getDataAut(append_array: boolean) {
+    if (inputValue) {
+      const search_link = `${BASEURL}esearch/search/author/${inputValue}/0/`;
+      fetch(search_link)
+        .then((res) => res.json())
+        .then((json) => {
+          console.log("data returned on link: " + search_link);
+
+          const new_arr = append_array
+            ? authors.concat(json.authors)
+            : json.authors;
+          //console.log(new_arr.length);
+          setAuthors(new_arr);
+          setLoading(false);
+        });
+    }
+  }
 
   const handleSubmit = () => {
     if (previousInputValue !== inputValue) {
+      CURRENT_PAGE_LEC = 0;
+      LOADED_ALL_LEC = false;
       setLoading(true);
       listflat.scrollToOffset(0);
       getData(false);
+      getDataAut(false);
     }
   };
 
@@ -70,10 +100,13 @@ export default SearchScreen = ({ navigation }) => {
     onChangeText("machine");
   }, []);
 
-  const loadMoreData = () => {
-    console.log(nextPage);
-    getData(true, nextPage);
-  };
+  async function loadMoreLecs() {
+    if (!LOADED_ALL_LEC) {
+      //console.log(nextPage);
+      CURRENT_PAGE_LEC++;
+      getData(true);
+    }
+  }
 
   const Separator = () => (
     <Text
@@ -85,18 +118,14 @@ export default SearchScreen = ({ navigation }) => {
       |{" "}
     </Text>
   );
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }: any) => (
     <View style={styles.default_card}>
       <TouchableOpacity
         onPress={() => {
           navigation.navigate("Player", {
             screen: "Video",
             params: {
-              videoID: item.views,
-              title: item.title,
-              video_url: {
-                uri: item.url,
-              },
+              videoID: item.id,
             },
           });
           //videoRef.stopAsync();
@@ -106,12 +135,11 @@ export default SearchScreen = ({ navigation }) => {
       >
         <Image
           source={{
-            uri:
-              "http://hydro.ijs.si/v013/d2/2ley3qjmm7a3v7g6lnq5duermqrzbq7f.jpg",
+            uri: item.thumbnail,
           }}
           style={{
-            height: 90,
-            maxWidth: (90 / 9) * 16,
+            height: 80,
+            maxWidth: (80 / 9) * 16,
             flex: 3,
 
             borderBottomLeftRadius: 12,
@@ -123,17 +151,101 @@ export default SearchScreen = ({ navigation }) => {
           <Text style={[styles.h4]}>{shorterText(item.title, 60)}</Text>
           <View>
             <Text style={[styles.h5, { color: colors.primary }]}>
-              {item.material_id}
+              {item.author}
               <Separator />
-              {item.language}
-              <Separator />
-              {isoFormatDMY(parseISOString(item.creation_date))}
+              {item.views}
             </Text>
           </View>
         </View>
       </TouchableOpacity>
     </View>
   );
+
+  const Authors = () => {
+    const AUTHOR_WIDTH = 100;
+    const SEPARATOR_WIDTH = 10;
+    const RenderAuthor = ({ item, index }) => (
+      <View
+        style={{
+          //paddingVertical: 6,
+          width: AUTHOR_WIDTH,
+          marginTop: 14,
+        }}
+      >
+        <View
+          style={{
+            shadowColor: colors.shadow,
+            shadowOffset: {
+              width: 0,
+              height: 12,
+            },
+            shadowRadius: 19,
+            shadowOpacity: 1,
+
+            borderRadius: AUTHOR_WIDTH,
+          }}
+        >
+          <Image
+            source={
+              item.image
+                ? {
+                    uri: item.image,
+                  }
+                : require(`../assets/icons/profile_image.png`)
+            }
+            style={{
+              height: AUTHOR_WIDTH,
+              width: AUTHOR_WIDTH,
+              borderRadius: AUTHOR_WIDTH,
+
+              resizeMode: "cover",
+
+              marginBottom: 5,
+
+              borderColor: colors.card,
+              borderWidth: 4,
+            }}
+          />
+        </View>
+        <Text style={[styles.h3, { color: colors.text, height: 34 }]}>
+          {item.name}
+        </Text>
+      </View>
+    );
+
+    const AuthorSeparator = () => (
+      <View style={{ paddingRight: SEPARATOR_WIDTH }} />
+    );
+    if (!authors) {
+      return null;
+    }
+
+    return (
+      <View
+        style={
+          {
+            //marginVertical: padding,
+          }
+        }
+      >
+        <SafeAreaView>
+          <FlatList
+            data={authors}
+            ListHeaderComponent={() => (
+              <View style={{ paddingLeft: padding }} />
+            )}
+            renderItem={RenderAuthor}
+            keyExtractor={(item) => item.name}
+            ItemSeparatorComponent={AuthorSeparator}
+            horizontal
+            snapToInterval={AUTHOR_WIDTH + SEPARATOR_WIDTH}
+            showsHorizontalScrollIndicator={false}
+            decelerationRate={0}
+          />
+        </SafeAreaView>
+      </View>
+    );
+  };
 
   let listflat: any;
 
@@ -151,14 +263,15 @@ export default SearchScreen = ({ navigation }) => {
     },
 
     h3: {
-      fontSize: 20,
+      fontSize: 14,
       fontFamily: "SF-UI-medium",
+      textAlign: "center",
     },
     h4: {
-      fontSize: 14,
-      fontFamily: "SF-UI-light",
-      color: colors.text,
       paddingBottom: 2,
+      fontSize: 14,
+      fontFamily: "SF-UI-medium",
+      color: colors.text,
     },
     h5: {
       fontSize: 12,
@@ -194,6 +307,7 @@ export default SearchScreen = ({ navigation }) => {
     textinput: {
       height: 70,
       fontSize: 20,
+      lineHeight: 25,
       fontFamily: "SF-UI-medium",
       marginBottom: 20,
       color: dark ? "white" : "#838f92",
@@ -259,17 +373,21 @@ export default SearchScreen = ({ navigation }) => {
           </View>
         </TouchableOpacity>
       </View>
-      <SafeAreaView>
-        <FlatList
-          ref={(ref) => (listflat = ref)}
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.material_id + item.url}
-          onEndReached={loadMoreData}
-          //getNativeScrollRef={(ref) => (flatlistRef = ref)}
-          keyboardDismissMode={"on-drag"}
-        />
-      </SafeAreaView>
+      <Authors />
+      {lecture ? (
+        <SafeAreaView>
+          <FlatList
+            ref={(ref) => (listflat = ref)}
+            data={lecture}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+            onEndReached={loadMoreLecs}
+            ListFooterComponent={() => <View style={{ marginBottom: 100 }} />}
+            //getNativeScrollRef={(ref) => (flatlistRef = ref)}
+            keyboardDismissMode={"on-drag"}
+          />
+        </SafeAreaView>
+      ) : null}
       {loading ? (
         <ActivityIndicator
           //? 15 is for centering - very hacky!!
@@ -284,3 +402,5 @@ export default SearchScreen = ({ navigation }) => {
     </View>
   );
 };
+
+export default SearchScreen;

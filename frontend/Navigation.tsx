@@ -7,7 +7,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
 
 import { Ionicons } from "@expo/vector-icons";
-import VideoScreen from "./pages/video";
+import VideoScreen from "./pages/video/index";
 import SearchScreen from "./pages/search";
 //import ModalScreen from "./pages/video_new_note_deprecated";
 import HomeScreen from "./pages/homescreen";
@@ -38,22 +38,6 @@ const ProfileStack = createStackNavigator();
 const PlayerStack = createStackNavigator();
 
 //const VideoModal = createStackNavigator();
-
-const HomeStackScreen = () => (
-  <HomeStack.Navigator>
-    <HomeStack.Screen
-      name="home"
-      options={{ headerShown: false }}
-      component={HomeScreen}
-    />
-    <HomeStack.Screen name="event" component={Event} />
-    <HomeStack.Screen
-      name="category"
-      component={Category}
-      options={({ route }) => ({ title: route.params.category })}
-    />
-  </HomeStack.Navigator>
-);
 
 const VideoStackScreen = () => {
   return (
@@ -136,7 +120,7 @@ const App = ({ token, getUserToken }: any) => {
 
   const HeaderOptions = {
     headerStyle: {
-      backgroundColor: "transparent",
+      backgroundColor: themeIsDark ? "black" : colors.whiteBackground,
     },
     //headerTintColor: themeIsDark ? colors.dark : colors.darkGreyBlue,
     headerTitleStyle: {
@@ -159,6 +143,22 @@ const App = ({ token, getUserToken }: any) => {
     ),
     headerBackTitleVisible: false,
   };
+
+  const HomeStackScreen = () => (
+    <HomeStack.Navigator screenOptions={{ ...HeaderOptions }}>
+      <HomeStack.Screen
+        name="home"
+        options={{ headerShown: false }}
+        component={HomeScreen}
+      />
+      <HomeStack.Screen name="event" component={Event} />
+      <HomeStack.Screen
+        name="category"
+        component={Category}
+        options={({ route }) => ({ title: route.params.category })}
+      />
+    </HomeStack.Navigator>
+  );
 
   const ProfileStackScreen = () => (
     <ProfileStack.Navigator screenOptions={{ ...HeaderOptions }}>
@@ -279,7 +279,7 @@ const App = ({ token, getUserToken }: any) => {
         <Tabs.Screen name="Player" component={PlayerStackScreen} />
         <Tabs.Screen name="Search" component={SearchScreen} />
         <Tabs.Screen name="Profile" component={ProfileStackScreen} />
-        {/* <Tabs.Screen name="DEV" component={DevOnlyComp} /> */}
+        <Tabs.Screen name="DEV" component={DevOnlyComp} />
       </Tabs.Navigator>
       <StatusBar style={themeIsDark ? "light" : "dark"} />
     </NavigationContainer>

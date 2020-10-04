@@ -16,6 +16,7 @@ export const colors = {
   lightPeriwinkle: "#d4dce7",
   pastelBlue: "#aeb8ff",
   iconBaseOfCta22: "#01c6bb",
+  whiteBackground: "rgb(242, 242, 242)",
 };
 
 export interface theme {
@@ -37,7 +38,7 @@ export const LightTheme: theme = {
   colors: {
     primary: colors.twilight,
     secondary: colors.twilight,
-    background: "rgb(242, 242, 242)",
+    background: colors.whiteBackground,
     card: "rgb(255, 255, 255)",
     text: colors.dark,
     border: "white",

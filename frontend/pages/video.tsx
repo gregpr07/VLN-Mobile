@@ -1007,7 +1007,7 @@ function VideoScreen({ route, navigation, token }: any) {
                         {shorterText(recc.title, 50)}
                       </Text>
                       <View>
-                        <Text style={[styles.h5, { color: "#828282" }]}>
+                        <Text style={[styles.h5, { color: colors.secondary }]}>
                           {/* {recc.views}
                       <Separator /> */}
                           {recc.author}

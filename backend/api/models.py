@@ -13,13 +13,18 @@ class UserModel(models.Model):
 
 
 class Author(models.Model):
-    user_model = models.OneToOneField(UserModel, on_delete=models.CASCADE)
+    user_model = models.ForeignKey(
+        UserModel, on_delete=models.SET_NULL, blank=True, null=True)
+
+    name = models.CharField(max_length=100, null=True)
+    #last_name = models.CharField(max_length=100, null=True)
+
     image = models.ImageField(null=True, blank=True, upload_to="image/author")
 
     views = models.IntegerField()
 
     def __str__(self):
-        return f'{self.user_model.name + " " + self.user_model.last_name}\'s author'
+        return f'{self.name}'
 
 
 class Category(models.Model):
@@ -35,7 +40,7 @@ class Category(models.Model):
 
 
 class Lecture(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=500)
 
     description = models.TextField(max_length=1000, blank=True)
 
