@@ -29,3 +29,9 @@ PRODUCTION = <0 OR 1>
 `python manage.py migrate` to migrate the database
 
 `python manage.py runserver`
+
+---
+
+## Elasticsearch
+
+Install elasticsearch from link https://www.elastic.co/guide/en/elasticsearch/reference/current/install-elasticsearch.html and run it on default port `localhost:9200`
