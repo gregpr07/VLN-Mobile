@@ -31,7 +31,7 @@ class Category(models.Model):
 
 
 class Lecture(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=500)
 
     description = models.TextField(max_length=1000, blank=True)
 

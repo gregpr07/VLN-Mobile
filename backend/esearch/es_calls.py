@@ -3,17 +3,20 @@ from elasticsearch_dsl import Search, Q
 
 from elasticsearch_dsl.query import MoreLikeThis
 
+PAGINATE_SIZE = 20
 
-def authorCall(query):
+
+def authorCall(query, page=0):
     q = Q('bool',
           must=[Q('match', name=query)],
           #should=[Q(...), Q(...)],
           # minimum_should_match=0.1
           )
 
-    s = AuthorDocument.search().query(q)
+    s = AuthorDocument.search().query(
+        q)[page*PAGINATE_SIZE:(page+1)*PAGINATE_SIZE]
     resp = s.execute()
-    print(f'Found {resp.hits.total} authors for query: "{query}"')
+    print(f'Found {resp.hits.total.value} authors for query: "{query}"')
 
     return formatAuthorResp(resp)
 
@@ -29,17 +32,22 @@ def formatAuthorResp(resp):
     return results
 
 
-def lectureCall(query):
+def lectureCall(query, page=0):
     q = Q('bool',
-          should=[Q("multi_match", query=query,
-                    fields=['title', 'description', 'author__name'])],
-          #should=[Q(...), Q(...)],
-          # minimum_should_match=0.1
+
+          should=[Q('match', title=query),
+                  Q('match', description=query),
+                  Q('match', author__name=query)
+                  ],
+          #must=[Q('match', author__name=query)],
+          minimum_should_match=1
           )
 
-    s = LectureDocument.search().query(q)
+    s = LectureDocument.search().query(
+        q)[page*PAGINATE_SIZE:(page+1)*PAGINATE_SIZE]
     resp = s.execute()
-    print(f'Found {resp.hits.total} lectures for query: "{query}"')
+    print(f'Found {resp.hits.total.value} lectures for query: "{query}"')
+    print(len(resp))
 
     return formatLectureResp(resp)
 
@@ -49,8 +57,11 @@ def formatLectureResp(resp):
     for hit in resp:
         obj = {
             'title': hit.title,
-            'description': hit.description,
-            'views': hit.views
+            # 'description': hit.description,
+            'views': hit.views,
+            'thumbnail': hit.thumbnail,
+            'author': hit.author.name,
+            'id': hit.id
         }
         results.append(obj)
     return results

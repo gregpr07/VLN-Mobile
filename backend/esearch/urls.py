@@ -1,7 +1,8 @@
 from django.conf.urls import url
 from django.urls import path, include
-from .views import Search
+from .views import SearchAuthors, SearchLectures
 
 urlpatterns = [
-    path("search/<str:query>/", Search.as_view())
+    path("search/author/<str:query>/<int:page>/", SearchAuthors.as_view()),
+    path("search/lecture/<str:query>/<int:page>/", SearchLectures.as_view())
 ]
