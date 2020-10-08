@@ -4,8 +4,8 @@ import json
 from tqdm import tqdm
 
 
-data = json.loads(open(
-    "/Users/greg/Documents/Programming/Projects/videolectures/research/data/lectures_categories.json").read())
+data = json.loads(open(input('location of json file (crawled)')).read())
+
 
 for l in tqdm(data):
     try:
