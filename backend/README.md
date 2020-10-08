@@ -35,3 +35,6 @@ PRODUCTION = <0 OR 1>
 ## Elasticsearch
 
 Install elasticsearch from link https://www.elastic.co/guide/en/elasticsearch/reference/current/install-elasticsearch.html and run it on default port `localhost:9200`
+
+Populate the database with
+`python manage.py search_index --rebuild`
