@@ -20,3 +20,6 @@ for lec in tqdm(data):
 
     except Exception as e:
         print(e)
+
+for aut in authors:
+    Author.objects.update_or_create(name='aut', views=authors[aut])
