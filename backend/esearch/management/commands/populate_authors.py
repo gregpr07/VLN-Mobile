@@ -22,4 +22,4 @@ for lec in tqdm(data):
         print(e)
 
 for aut in authors:
-    Author.objects.update_or_create(name='aut', views=authors[aut])
+    Author.objects.update_or_create(name=aut, views=authors[aut])
