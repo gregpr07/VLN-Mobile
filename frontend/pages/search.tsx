@@ -114,8 +114,10 @@ const SearchScreen = ({
   }
 
   const _handleResultsClick = async (item) => {
-    await videoRef.unloadAsync();
-    await audioRef.unloadAsync();
+    if (videoRef) {
+      await videoRef.unloadAsync();
+      await audioRef.unloadAsync();
+    }
 
     setVidID(item.id);
     navigation.navigate("Player", {

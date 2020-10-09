@@ -1,4 +1,4 @@
-export const BASEURL = "http://localhost:8000/";
+export const BASEURL = "http://192.168.1.115:8000/";
 
 export const API = BASEURL + "api/";
 

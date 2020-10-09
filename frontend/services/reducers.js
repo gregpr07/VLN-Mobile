@@ -27,7 +27,7 @@ const rootReducer = (
 
 const videoReducer = (
   state = {
-    videoID: 1000,
+    videoID: null,
     videoRef: null,
     audioRef: new Audio.Sound(),
   },

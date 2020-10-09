@@ -37,8 +37,6 @@ const VideoStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
 const PlayerStack = createStackNavigator();
 
-//const VideoModal = createStackNavigator();
-
 const VideoStackScreen = () => {
   return (
     <VideoStack.Navigator
@@ -69,7 +67,7 @@ const PlayerStackScreen = () => {
   );
 };
 
-const App = ({ token, getUserToken }: any) => {
+const App = ({ token, getUserToken, videoID, videoRef }: any) => {
   // fonts
   /*   let [fontsLoaded] = useFonts({
     SF_UI_BLACK: require("./assets/fonts/HKGrotesk-black.otf"),
@@ -258,7 +256,10 @@ const App = ({ token, getUserToken }: any) => {
       >
         <Tabs.Screen name="Home" component={HomeStackScreen} />
         <Tabs.Screen name="Video" component={VideoStackScreen} />
+        {/*    {videoID || !videoRef ? ( */}
         <Tabs.Screen name="Player" component={PlayerStackScreen} />
+        {/*      ) : null} */}
+
         <Tabs.Screen name="Search" component={SearchScreen} />
         <Tabs.Screen name="Profile" component={ProfileStackScreen} />
         <Tabs.Screen name="DEV" component={DevOnlyComp} />
@@ -270,6 +271,8 @@ const App = ({ token, getUserToken }: any) => {
 
 const mapStateToProps = (state) => ({
   token: state.token,
+  videoID: state.video.videoID,
+  videoRef: state.video.videoRef,
 });
 
 const mapDispatchToProps = (dispatch) => ({

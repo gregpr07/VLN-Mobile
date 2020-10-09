@@ -32,10 +32,6 @@ import { YoutubeTime, shorterText, compare } from "../services/functions";
 
 import { fetcher, API } from "../services/fetcher";
 
-// expo
-import { Video, Audio } from "expo-av";
-import ViewPager from "@react-native-community/viewpager";
-
 // fetching
 import useSWR from "swr";
 
@@ -49,6 +45,7 @@ import { useTheme } from "@react-navigation/native";
 import { color } from "react-native-reanimated";
 
 import VideoAudioComponent from "./video/video_audio_component";
+import RecommendedVids from "./video/recommendations";
 
 const videoHeight = (width / 16) * 9;
 
@@ -85,7 +82,7 @@ function VideoScreen({
   //* VIDEO AND AUDIO REFERENCES
 
   useEffect(() => {
-    if (lecture && videoRef) {
+    if (videoID && videoRef) {
       playVideoORAudio(currentPager);
     }
   }, [videoRef]);
@@ -223,32 +220,12 @@ function VideoScreen({
     } else return null;
   };
 
-  const recommendations = [
-    {
-      title:
-        "This page - How Machine Learning has Finally Solved Wanamaker’s Dilemma",
-      views: 2784,
-      author: "Oliver Downs",
-      date: "2016",
-      image: "http://hydro.ijs.si/v013/d2/2ley3qjmm7a3v7g6lnq5duermqrzbq7f.jpg",
-    },
-    {
-      title: "This page - How Machine ",
-      views: 2233,
-      author: "Oliver Downs",
-      date: "2016",
-      image: "http://hydro.ijs.si/v013/d2/2ley3qjmm7a3v7g6lnq5duermqrzbq7f.jpg",
-    },
-    {
-      title: "Blabla video title ",
-      views: 2500,
-      author: "Erik Novak",
-      date: "201123",
-      image: "http://hydro.ijs.si/v013/d2/2ley3qjmm7a3v7g6lnq5duermqrzbq7f.jpg",
-    },
-  ];
-
   const [showNotes, setShowNotes] = useState(false);
+
+  const parent = navigation.dangerouslyGetParent();
+  parent.setOptions({
+    tabBarVisible: !showNotes,
+  });
 
   const Notes = () => {
     const ITEM_SIZE = 200;
@@ -514,17 +491,6 @@ function VideoScreen({
     </View>
   );
 
-  const Separator = () => (
-    <Text
-      style={{
-        color: "#5468fe",
-      }}
-    >
-      {" "}
-      |{" "}
-    </Text>
-  );
-
   // when press it switches to notes, on long press it goes to add new note screen
   const SwitchToNotes = () => {
     const handleSwitch = () => {
@@ -564,13 +530,6 @@ function VideoScreen({
         </TouchableOpacity>
       </View>
     );
-  };
-
-  const handleAcceptRecc = async (recc: { views: number; title: string }) => {
-    await videoRef.unloadAsync();
-    await audioRef.unloadAsync();
-
-    setVidID(recc.views);
   };
 
   // ANIMATIONS
@@ -821,6 +780,9 @@ function VideoScreen({
       padding: padding,
       borderRadius: 12,
     },
+    marginBottom: {
+      marginBottom: padding,
+    },
   });
 
   if (!lecture) {
@@ -873,45 +835,7 @@ function VideoScreen({
 
           {/* recommendations */}
 
-          <View style={styles.default_card}>
-            <Text style={styles.h3}>Related videos</Text>
-            {recommendations.map((recc) => (
-              <TouchableOpacity
-                onPress={() => handleAcceptRecc(recc)}
-                key={recc.title}
-                style={styles.recommendation}
-              >
-                <Image
-                  source={{ uri: recc.image }}
-                  style={{
-                    height: 60,
-                    maxWidth: (60 / 9) * 16,
-                    flex: 2,
-                    borderRadius: 8,
-                    resizeMode: "cover",
-                  }}
-                />
-                <View
-                  style={{
-                    flex: 3,
-                    paddingHorizontal: 10,
-                    //justifyContent: "center",
-                  }}
-                >
-                  <Text style={styles.h5}>{shorterText(recc.title, 50)}</Text>
-                  <View>
-                    <Text style={[styles.h5, { color: colors.secondary }]}>
-                      {/* {recc.views}
-                      <Separator /> */}
-                      {recc.author}
-                      <Separator />
-                      {recc.date}
-                    </Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
+          <RecommendedVids styles={styles} colors={colors} lecture={lecture} />
         </ScrollView>
       )}
 
