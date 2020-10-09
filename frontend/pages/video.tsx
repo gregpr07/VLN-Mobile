@@ -40,12 +40,15 @@ import ViewPager from "@react-native-community/viewpager";
 import useSWR from "swr";
 
 import { connect } from "react-redux";
+import { setVideoID } from "../services/actions";
 
 // dimensions
 const { width, height } = Dimensions.get("window");
 
 import { useTheme } from "@react-navigation/native";
 import { color } from "react-native-reanimated";
+
+import VideoAudioComponent from "./video/video_audio_component";
 
 const videoHeight = (width / 16) * 9;
 
@@ -55,67 +58,41 @@ let videoIsLoaded: boolean;
 let videoplaying: boolean;
 let audioplaying: boolean;
 
-const initPager = 1;
+const initPager = 0;
 let currentPager = initPager;
-
-var videoRef: any;
-const audioRef = new Audio.Sound();
 
 let shouldUpdate: boolean;
 
 //TODO BUGS
 // - when going to audio and opening notes the continuity breakes
 
-function VideoScreen({ route, navigation, token }: any) {
+function VideoScreen({
+  route,
+  navigation,
+  token,
+  audioRef,
+  videoID,
+  setVidID,
+  videoRef,
+}: any) {
   const { colors, dark } = useTheme();
 
-  const { data: lecture, error } = useSWR("lecture/1", fetcher);
-  const { data: slides } = useSWR("slide/lecture/1", fetcher);
+  const { data: lecture } = useSWR("lecture/" + videoID, fetcher);
+  const { data: slides } = useSWR("slide/lecture/" + videoID, fetcher);
 
   //* constants
 
   //* VIDEO AND AUDIO REFERENCES
 
-  //const [stateVideoRef, setStateVideoRef] = useState();
-  const { videoId, title, video_url } = route.params;
-
-  //const [testState, setTeststate] = useState(0);
-
-  //! SELF DEBUGGER - NOT GOOD
-  if (videoplaying && audioplaying) {
-    resetState(currentPositionMillis);
-  }
-  //!
-
-  async function resetState(position: number) {
-    await videoRef.unloadAsync();
-    await audioRef.unloadAsync();
-
-    videoplaying = false;
-    audioplaying = false;
-
-    currentPositionMillis = position;
-
-    playVideoORAudio(currentPager).then(() => (shouldUpdate = true));
-    return true;
-  }
-
   useEffect(() => {
-    if (lecture) {
-      shouldUpdate = true;
-      navigation.addListener("state", async () => {
-        if (videoRef && shouldUpdate) {
-          shouldUpdate = false;
-
-          resetState(0);
-        }
-      });
+    if (lecture && videoRef) {
+      playVideoORAudio(currentPager);
     }
-  }, [route.params]);
+  }, [videoRef]);
 
   // currently 0 is video 1 is audio but this might change
   async function playVideoORAudio(page: number) {
-    //console.log("page is" + currentPager);
+    console.log("calling video");
 
     const initStatus = {
       //! MAKE THIS YES
@@ -124,24 +101,22 @@ function VideoScreen({ route, navigation, token }: any) {
       staysActiveInBackground: true,
       shouldCorrectPitch: true,
     };
-    //console.log(videoplaying, audioplaying);
 
     if (page === 0) {
       if (audioplaying) {
         await audioRef.unloadAsync();
         audioplaying = false;
       }
-      if (!videoplaying) {
-        const load = await videoRef.loadAsync(
-          {
-            uri: lecture.video,
-          },
-          (initialStatus = initStatus)
-        );
-        videoplaying = true;
-      }
+      console.log("loading video");
 
-      return null;
+      await videoRef.loadAsync(
+        {
+          uri: lecture.video,
+        },
+        initStatus
+      );
+      console.log("video loaded");
+      videoplaying = true;
     }
     if (page === 1) {
       if (videoplaying) {
@@ -149,37 +124,16 @@ function VideoScreen({ route, navigation, token }: any) {
         videoplaying = false;
       }
       if (!audioplaying) {
-        const loadAudio = audioRef.loadAsync(
+        await audioRef.loadAsync(
           {
             uri: lecture.audio,
           },
-          (initialStatus = initStatus)
+          initStatus
         );
         audioplaying = true;
       }
-      return null;
     }
   }
-
-  // this is set when dealing with video
-  const onPlaybackStatusUpdate = (status: any) => {
-    //console.log(status.positionMillis);
-    currentPositionMillis = status.positionMillis;
-    videoIsLoaded = status.isLoaded;
-    console.log(currentPositionMillis);
-
-    //! change timestamp
-    //handleSlideChange();
-  };
-
-  //console.log(videoId);
-  const _handleVideoRef = (component: any) => {
-    if (!videoRef) {
-      videoRef = component;
-      videoRef.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-      audioRef.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-    }
-  };
 
   // HANDLE FULLSCREEN ON ROTATION
   const isPortrait = () => {
@@ -273,21 +227,21 @@ function VideoScreen({ route, navigation, token }: any) {
     {
       title:
         "This page - How Machine Learning has Finally Solved Wanamaker’s Dilemma",
-      views: 12784,
+      views: 2784,
       author: "Oliver Downs",
       date: "2016",
       image: "http://hydro.ijs.si/v013/d2/2ley3qjmm7a3v7g6lnq5duermqrzbq7f.jpg",
     },
     {
       title: "This page - How Machine ",
-      views: 127123,
+      views: 2233,
       author: "Oliver Downs",
       date: "2016",
       image: "http://hydro.ijs.si/v013/d2/2ley3qjmm7a3v7g6lnq5duermqrzbq7f.jpg",
     },
     {
       title: "Blabla video title ",
-      views: 27312391,
+      views: 2500,
       author: "Erik Novak",
       date: "201123",
       image: "http://hydro.ijs.si/v013/d2/2ley3qjmm7a3v7g6lnq5duermqrzbq7f.jpg",
@@ -487,8 +441,6 @@ function VideoScreen({ route, navigation, token }: any) {
       }
     };
 
-    //videoRef
-
     return (
       <View
         style={[
@@ -614,13 +566,11 @@ function VideoScreen({ route, navigation, token }: any) {
     );
   };
 
-  const handleAcceptRecc = (recc: { views: number; title: string }) => {
-    //console.log(videoRef);
-    //videoRef.stopAsync();
-    navigation.setParams({
-      videoID: recc.views,
-      title: recc.title,
-    });
+  const handleAcceptRecc = async (recc: { views: number; title: string }) => {
+    await videoRef.unloadAsync();
+    await audioRef.unloadAsync();
+
+    setVidID(recc.views);
   };
 
   // ANIMATIONS
@@ -684,8 +634,6 @@ function VideoScreen({ route, navigation, token }: any) {
             styles.default_card,
             {
               flex: 1,
-              //maxWidth: 150,
-              //marginRight: index !== speeds.length - 1 ? padding : 0,
             },
           ]}
         >
@@ -718,38 +666,6 @@ function VideoScreen({ route, navigation, token }: any) {
   const VideoHeader = () => {
     const [modalVisible, setModalVisible] = useState(false);
 
-    const stylez = StyleSheet.create({
-      modalView: {
-        margin: 20,
-        backgroundColor: "white",
-        borderRadius: 20,
-        padding: 35,
-        alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-      },
-      openButton: {
-        backgroundColor: "#F194FF",
-        borderRadius: 20,
-        padding: 10,
-        elevation: 2,
-      },
-      textStyle: {
-        color: "white",
-        fontWeight: "bold",
-        textAlign: "center",
-      },
-      modalText: {
-        marginBottom: 15,
-        textAlign: "center",
-      },
-    });
     return (
       <View style={{ flexDirection: "row" }}>
         <Text
@@ -907,140 +823,112 @@ function VideoScreen({ route, navigation, token }: any) {
     },
   });
 
+  if (!lecture) {
+    return (
+      <ActivityIndicator
+        //? 15 is for centering - very hacky!!
+        style={{
+          left: width / 2 - 15,
+          top: height / 2,
+          position: "absolute",
+        }}
+        size="small"
+      />
+    );
+  }
+
   return (
     <View style={styles.container}>
-      {lecture ? (
-        <>
-          {showNotes ? null : (
-            <Animated.View
-              onLayout={(event) => {
-                setTitlteHeight(event.nativeEvent.layout.height);
-              }}
-              style={{
-                opacity: OpacityAnim,
-                paddingHorizontal: padding,
-              }}
-            >
-              <VideoHeader />
-            </Animated.View>
-          )}
-          {/* VideoAudio */}
-          <Animated.View
-            style={{
-              transform: [{ translateY: SpringAnim }],
-            }}
-          >
-            <ViewPager
-              initialPage={initPager}
-              style={{
-                height: videoHeight, // - 2 * padding
-              }}
-              pageMargin={100}
-              //! this line causes the error which reloades on every state change
-              onPageSelected={(e) => {
-                currentPager = e.nativeEvent.position;
-                playVideoORAudio(e.nativeEvent.position);
-              }}
-              //transitionStyle="curl"
-              //showPageIndicator={true}
-            >
-              <View key="0">
-                <Video
-                  ref={(component) => _handleVideoRef(component)}
-                  /*               source={{
-                uri: video_stats.url,
-              }} */
-                  posterSource={{
-                    uri: lecture.poster,
-                  }}
-                  resizeMode={Video.RESIZE_MODE_COVER}
-                  usePoster={true}
-                  //shouldPlay={true}
-                  //isLooping={false}
-                  style={styles.video}
-                  useNativeControls={true}
-                />
-              </View>
-              <AudioSlides key="1" />
-            </ViewPager>
-          </Animated.View>
-
-          {showNotes ? (
-            <Notes />
-          ) : (
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              style={{ paddingHorizontal: padding }}
-            >
-              <SpeedControll />
-
-              <Description />
-
-              {/* recommendations */}
-
-              <View style={styles.default_card}>
-                <Text style={styles.h3}>Related videos</Text>
-                {recommendations.map((recc) => (
-                  <TouchableOpacity
-                    onPress={() => handleAcceptRecc(recc)}
-                    key={recc.title}
-                    style={styles.recommendation}
-                  >
-                    <Image
-                      source={{ uri: recc.image }}
-                      style={{
-                        height: 60,
-                        maxWidth: (60 / 9) * 16,
-                        flex: 2,
-                        borderRadius: 8,
-                        resizeMode: "cover",
-                      }}
-                    />
-                    <View
-                      style={{
-                        flex: 3,
-                        paddingHorizontal: 10,
-                        //justifyContent: "center",
-                      }}
-                    >
-                      <Text style={styles.h5}>
-                        {shorterText(recc.title, 50)}
-                      </Text>
-                      <View>
-                        <Text style={[styles.h5, { color: colors.secondary }]}>
-                          {/* {recc.views}
-                      <Separator /> */}
-                          {recc.author}
-                          <Separator />
-                          {recc.date}
-                        </Text>
-                      </View>
-                    </View>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </ScrollView>
-          )}
-
-          {showNotes ? null : <SwitchToNotes />}
-        </>
-      ) : (
-        <ActivityIndicator
-          //? 15 is for centering - very hacky!!
-          style={{
-            left: width / 2 - 15,
-            top: height / 2,
-            position: "absolute",
+      {showNotes ? null : (
+        <Animated.View
+          onLayout={(event) => {
+            setTitlteHeight(event.nativeEvent.layout.height);
           }}
-          size="small"
-        />
+          style={{
+            opacity: OpacityAnim,
+            paddingHorizontal: padding,
+          }}
+        >
+          <VideoHeader />
+        </Animated.View>
       )}
+      {/* VideoAudio */}
+      <VideoAudioComponent
+        SpringAnim={SpringAnim}
+        initPager={initPager}
+        videoHeight={videoHeight}
+        videostyle={styles.video}
+      />
+
+      {showNotes ? (
+        <Notes />
+      ) : (
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={{ paddingHorizontal: padding }}
+        >
+          <SpeedControll />
+
+          <Description />
+
+          {/* recommendations */}
+
+          <View style={styles.default_card}>
+            <Text style={styles.h3}>Related videos</Text>
+            {recommendations.map((recc) => (
+              <TouchableOpacity
+                onPress={() => handleAcceptRecc(recc)}
+                key={recc.title}
+                style={styles.recommendation}
+              >
+                <Image
+                  source={{ uri: recc.image }}
+                  style={{
+                    height: 60,
+                    maxWidth: (60 / 9) * 16,
+                    flex: 2,
+                    borderRadius: 8,
+                    resizeMode: "cover",
+                  }}
+                />
+                <View
+                  style={{
+                    flex: 3,
+                    paddingHorizontal: 10,
+                    //justifyContent: "center",
+                  }}
+                >
+                  <Text style={styles.h5}>{shorterText(recc.title, 50)}</Text>
+                  <View>
+                    <Text style={[styles.h5, { color: colors.secondary }]}>
+                      {/* {recc.views}
+                      <Separator /> */}
+                      {recc.author}
+                      <Separator />
+                      {recc.date}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+      )}
+
+      {showNotes ? null : <SwitchToNotes />}
     </View>
   );
 }
 
 const mapStateToProps = (state) => ({
   token: state.token.token,
+  videoID: state.video.videoID,
+  audioRef: state.video.audioRef,
+  videoRef: state.video.videoRef,
 });
 
-export default connect(mapStateToProps, null)(VideoScreen);
+const mapDispatchToProps = (dispatch) => ({
+  setVidID: (num: number) => dispatch(setVideoID(num)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(VideoScreen);

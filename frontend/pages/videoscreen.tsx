@@ -71,11 +71,6 @@ export default function VideosScreen({ navigation }: any) {
         onPress={() =>
           navigation.navigate("Player", {
             screen: "Video",
-            params: {
-              videoID: 10,
-              title:
-                "How Machine Learning has Finally Solved Wanamaker’s Dilemma",
-            },
           })
         }
       >

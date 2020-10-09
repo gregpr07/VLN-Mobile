@@ -1,34 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Text, Button } from "react-native";
 import ViewPager from "@react-native-community/viewpager";
 
 import * as Updates from "expo-updates";
 
-const MyPager = ({ navigation }) => {
-  /*   React.useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      console.log(navigation.dangerouslyGetState());
-    });
+import { Video, Audio } from "expo-av";
 
-    return unsubscribe;
-  }, [navigation]); */
+import { connect } from "react-redux";
+import { setVideoID, setVideoRef } from "../services/actions";
 
+let component: any;
+
+const MyPager = ({ navigation, videoRef, audioRef, videoID, setVidID }) => {
   return (
-    <View style={{ flex: 1 }}>
-      <ViewPager style={styles.viewPager} initialPage={0}>
-        <View style={styles.page} key="1">
-          <Text>First page</Text>
-          <Text>Swipe ➡️</Text>
-        </View>
-        <View style={styles.page} key="2">
-          <Text>Second page</Text>
-        </View>
-        <View style={styles.page} key="3">
-          <Text>Third page</Text>
-        </View>
-      </ViewPager>
+    <View style={{ flex: 1, paddingTop: 50 }}>
       <Button onPress={() => Updates.reloadAsync()} title="reload app" />
-      <Text style={styles.h1}>Blap</Text>
+
+      <Button onPress={() => videoRef.playAsync()} title="ref" />
     </View>
   );
 };
@@ -46,4 +34,18 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyPager;
+const mapStateToProps = (state) => ({
+  token: state.token.token,
+  videoID: state.video.videoID,
+  audioRef: state.video.audioRef,
+  videoRef: state.video.videoRef,
+  /*   videoRef: state.video.videoRef, */
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  setVidID: (num: number) => dispatch(setVideoID(num)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps, null, {
+  forwardRef: true,
+})(MyPager);

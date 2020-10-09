@@ -58,3 +58,17 @@ export const removeUserToken = () => (dispatch) =>
       dispatch(loading(false));
       dispatch(error(err.message || "ERROR"));
     });
+
+export const videoID = (videoID) => ({
+  type: "VIDEO_ID",
+  videoID,
+});
+
+export const videoRef = (videoRef) => ({
+  type: "VIDEO_REF",
+  videoRef,
+});
+
+export const setVideoID = (data) => (dispatch) => dispatch(videoID(data));
+
+export const setVideoRef = (ref) => (dispatch) => dispatch(videoRef(ref));
