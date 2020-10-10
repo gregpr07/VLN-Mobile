@@ -31,7 +31,6 @@ const Notes = ({
   token,
   videoRef,
   audioRef,
-  currentPager,
   styles,
   padding,
   quitNotes,
@@ -41,11 +40,14 @@ const Notes = ({
   const ITEM_SIZE = 200;
   const SEPARATOR_SIZE = 10;
 
-  const handleTimestamp = (timestamp: number) => {
-    if (currentPager === 0) {
+  const handleTimestamp = async (timestamp: number) => {
+    const audioplaying = (await audioRef.getStatusAsync()).isLoaded;
+    const videoplaying = (await videoRef.getStatusAsync()).isLoaded;
+
+    if (videoplaying) {
       videoRef.setPositionAsync(timestamp);
     }
-    if (currentPager === 1) {
+    if (audioplaying) {
       audioRef.setPositionAsync(timestamp);
     }
     //console.log(videoRef);

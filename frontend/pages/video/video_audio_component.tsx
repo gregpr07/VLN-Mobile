@@ -4,6 +4,10 @@ import {
   // Pressable,
   Animated,
   Button,
+  TouchableHighlight,
+  FlatList,
+  Image,
+  Text,
 } from "react-native";
 
 import { connect } from "react-redux";
@@ -13,9 +17,13 @@ import { Video, Audio } from "expo-av";
 
 import { setVideoID, setVideoRef } from "../../services/actions";
 
+import { compare } from "../../services/functions";
+
 let component: any;
 
-let currentPositionMillis: number;
+let currentPositionMillis: number = 0;
+
+let currentSlide: number;
 
 const VideoAudio = ({
   SpringAnim,
@@ -26,16 +34,35 @@ const VideoAudio = ({
   setVidRef,
   audioRef,
   playVideoORAudio,
+  slides,
 }: any) => {
-  // this is set when dealing with video
+  const getCurrentSlide = () => {
+    const newslides = slides
+      ? slides.results
+          .sort(compare)
+          .filter((slide) => slide.timestamp < currentPositionMillis)
+      : [];
+    if (!newslides.length) {
+      return 0;
+    }
+    return newslides.length - 1;
+  };
+
+  // this is set when dealing with video loop
   const onPlaybackStatusUpdate = (status: any) => {
-    //console.log(status.positionMillis);
     currentPositionMillis = status.positionMillis;
-    //videoIsLoaded = status.isLoaded;
-    //console.log(currentPositionMillis);
 
     //! change timestamp
     //handleSlideChange();
+    const gotSlide = getCurrentSlide();
+    if (gotSlide !== currentSlide && slidesRef) {
+      //setCurrSlide(gotSlide);
+
+      console.log("slide should change to: " + gotSlide);
+
+      slidesRef.current.scrollToIndex({ index: gotSlide });
+      currentSlide = gotSlide;
+    }
   };
 
   async function _handleVideoRef(ref: any) {
@@ -51,59 +78,72 @@ const VideoAudio = ({
     }
   }
 
-  /* const AudioSlides = () => {
+  const slidesRef = useRef(null);
+
+  const handleVideoAudioChange = (pos: number) => {
+    if (videoRef) {
+      playVideoORAudio(pos, currentPositionMillis);
+    }
+  };
+
+  const AudioSlides = () => {
     //const slidesarray = slides.map((slide) => slide.url);
-    const [slidePosition, setSlidePosition] = useState(0);
 
-    const getCurrentSlide = () => {
-      const newslides = slides
-        ? slides.results
-            .sort(compare)
-            .filter((slide) => slide.timestamp < currentPositionMillis)
-        : [];
-      return newslides.length - 1;
-    };
+    const [playing, setPlaying] = useState(true);
 
-    //? this is very slow
-    const handleSlideChange = () => {
-      if (audioplaying) {
-        setSlidePosition(getCurrentSlide());
+    async function handlePausePlay() {
+      if (playing) {
+        await audioRef.pauseAsync();
+      } else {
+        await audioRef.playAsync();
       }
-    };
+      setPlaying(!playing);
+    }
+
+    const RenderSlide = ({ item }) => (
+      <Image
+        source={{
+          uri: item.image,
+        }}
+        style={videostyle}
+        resizeMode="contain"
+      />
+    );
 
     if (slides) {
-      let intervalid = setInterval(handleSlideChange, 500);
-
-      const [playing, setPlaying] = useState(true);
-      async function handlePausePlay() {
-        if (playing) {
-          await audioRef.pauseAsync();
-        } else {
-          await audioRef.playAsync();
-        }
-        setPlaying(!playing);
-      }
-
-      const slides_imgs = slides.results.map((res) => {
-        return { url: res.image };
+      const slides_results = slides.results.map((res) => {
+        return { image: res.image, id: res.id };
       });
 
       return (
         //! write this by hand
         <TouchableHighlight onPress={handlePausePlay}>
-          <Slideshow
+          {/*  <Slideshow
             //! SLIDESHOW REQUIRES NAME URL, CURRENTLY IS IMAGE
             dataSource={slides_imgs}
-            position={slidePosition}
-            style={styles.video}
+            position={currentSlide}
+            style={videostyle}
             scrollEnabled={false}
             arrowSize={0}
             height={videoHeight}
+          /> */}
+          <FlatList
+            ref={slidesRef}
+            data={slides_results}
+            renderItem={RenderSlide}
+            keyExtractor={(item) => item.image + item.id}
+            //horizontal
+            // ItemSeparatorComponent={Separator}
+            //snapToInterval
+            snapToAlignment="start"
+            decelerationRate={0}
           />
         </TouchableHighlight>
       );
-    } else return null;
-  }; */
+    } else {
+      return null;
+    }
+  };
 
   return (
     <Animated.View
@@ -118,12 +158,10 @@ const VideoAudio = ({
         }}
         pageMargin={100}
         //! this line causes the error which reloades on every state change
-        /*         onPageSelected={(e) => {
-          currentPager = e.nativeEvent.position;
-          if (videoRef) {
-            playVideoORAudio(e.nativeEvent.position);
-          }
-        }} */
+        onPageSelected={(e) => {
+          //currentPager = e.nativeEvent.position;
+          handleVideoAudioChange(e.nativeEvent.position);
+        }}
       >
         <View key="0">
           <Video
@@ -144,7 +182,12 @@ const VideoAudio = ({
             useNativeControls={true}
           />
         </View>
-        {/* <AudioSlides key="1" /> */}
+        <AudioSlides
+          slides={slides}
+          videoHeight={videoHeight}
+          videostyle={videostyle}
+          key="1"
+        />
       </ViewPager>
     </Animated.View>
   );
@@ -160,6 +203,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   setVidID: (num: number) => dispatch(setVideoID(num)),
   setVidRef: (data: any) => dispatch(setVideoRef(data)),
+  setCurrSlide: (num: number) => dispatch(setCurrentSlide(num)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps, null, {

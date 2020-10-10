@@ -41,12 +41,7 @@ const videoHeight = (width / 16) * 9;
 
 //? using let because we don't want the screen to re-render because of video
 
-let videoIsLoaded: boolean;
-let videoplaying: boolean;
-let audioplaying: boolean;
-
 const initPager = 0;
-let currentPager = initPager;
 
 //TODO BUGS
 // - when going to audio and opening notes the continuity breakes
@@ -71,14 +66,12 @@ function VideoScreen({
 
   useEffect(() => {
     if (videoID && videoRef) {
-      playVideoORAudio(currentPager, 0);
+      playVideoORAudio(initPager, 0);
     }
   }, [videoRef]);
 
   // currently 0 is video 1 is audio but this might change
   async function playVideoORAudio(page: number, currentPositionMillis: number) {
-    console.log("calling video");
-
     const initStatus = {
       //! MAKE THIS YES
       shouldPlay: true,
@@ -87,8 +80,8 @@ function VideoScreen({
       shouldCorrectPitch: true,
     };
 
-    const audioplaying = await audioRef.getStatusAsync();
-    const videoplaying = await audioRef.getStatusAsync();
+    const audioplaying = (await audioRef.getStatusAsync()).isLoaded;
+    const videoplaying = (await videoRef.getStatusAsync()).isLoaded;
 
     if (page === 0) {
       if (audioplaying) {
@@ -110,6 +103,7 @@ function VideoScreen({
       if (videoplaying) {
         await videoRef.unloadAsync();
       }
+      console.log("loading audio");
       if (!audioplaying) {
         await audioRef.loadAsync(
           {
@@ -117,6 +111,7 @@ function VideoScreen({
           },
           initStatus
         );
+        console.log("audio loaded");
       }
     }
   }
@@ -132,16 +127,23 @@ function VideoScreen({
       setOrientation(isPortrait());
     }
   });
-  useEffect(() => {
-    console.log("orientation changed to " + isPortrait());
-    //console.log(videoIsLoaded);
-    if (videoIsLoaded) {
-      if (isPortrait()) {
-        videoRef.dismissFullscreenPlayer();
-      } else {
-        videoRef.presentFullscreenPlayer();
+
+  const handleOrientation = async () => {
+    if (videoRef) {
+      console.log("orientation changed to " + isPortrait());
+      const videoplaying = (await videoRef.getStatusAsync()).isLoaded;
+      console.log(videoplaying);
+      if (videoplaying) {
+        if (isPortrait()) {
+          videoRef.dismissFullscreenPlayer();
+        } else {
+          videoRef.presentFullscreenPlayer();
+        }
       }
     }
+  };
+  useEffect(() => {
+    handleOrientation();
   }, [orientation]);
 
   const [showNotes, setShowNotes] = useState(false);
@@ -536,11 +538,11 @@ function VideoScreen({
         videoHeight={videoHeight}
         videostyle={styles.video}
         playVideoORAudio={playVideoORAudio}
+        slides={slides}
       />
 
       {showNotes ? (
         <Notes
-          currentPager={currentPager}
           styles={styles}
           padding={padding}
           quitNotes={quitNotes}
