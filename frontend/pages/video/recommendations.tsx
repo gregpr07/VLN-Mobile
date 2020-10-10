@@ -75,7 +75,7 @@ const RecommendedVids = ({
         }) => (
           <TouchableOpacity
             onPress={() => handleAcceptRecc(recc.id)}
-            key={recc.title}
+            key={recc.id}
             style={styles.recommendation}
           >
             <Image

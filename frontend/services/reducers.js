@@ -30,6 +30,7 @@ const videoReducer = (
     videoID: null,
     videoRef: null,
     audioRef: new Audio.Sound(),
+    showNotes: false,
   },
   action
 ) => {

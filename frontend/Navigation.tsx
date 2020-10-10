@@ -222,8 +222,6 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
 
             if (route.name === "Home") {
               iconName = focused ? "ios-home" : "ios-home";
-            } else if (route.name === "Video") {
-              iconName = focused ? "ios-videocam" : "ios-videocam";
             } else if (route.name === "Profile") {
               iconName = focused ? "ios-person" : "ios-person";
             } else if (route.name == "Search") {
@@ -232,6 +230,8 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
               iconName = "ios-bug";
             } else if (route.name == "Player") {
               iconName = "ios-play-circle";
+            } else if (route.name === "Video") {
+              iconName = focused ? "ios-videocam" : "ios-videocam";
             }
 
             // You can return any component that you like here!

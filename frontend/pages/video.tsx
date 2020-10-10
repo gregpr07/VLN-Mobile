@@ -6,13 +6,8 @@ import {
   View,
   Image,
   Dimensions,
-  Button,
   TouchableOpacity,
   FlatList,
-  SafeAreaView,
-  TouchableHighlight,
-  TextInput,
-  Keyboard,
   ActivityIndicator,
   // Pressable,
   Animated,
@@ -24,13 +19,7 @@ import Constants from "expo-constants";
 
 import { Ionicons } from "@expo/vector-icons";
 
-// @ts-ignore
-import Slideshow from "react-native-image-slider-show";
-
-// functions
-import { YoutubeTime, shorterText, compare } from "../services/functions";
-
-import { fetcher, API } from "../services/fetcher";
+import { fetcher } from "../services/fetcher";
 
 // fetching
 import useSWR from "swr";
@@ -42,10 +31,10 @@ import { setVideoID } from "../services/actions";
 const { width, height } = Dimensions.get("window");
 
 import { useTheme } from "@react-navigation/native";
-import { color } from "react-native-reanimated";
 
 import VideoAudioComponent from "./video/video_audio_component";
 import RecommendedVids from "./video/recommendations";
+import Notes from "./video/Notes";
 
 const videoHeight = (width / 16) * 9;
 
@@ -57,8 +46,6 @@ let audioplaying: boolean;
 
 const initPager = 0;
 let currentPager = initPager;
-
-let shouldUpdate: boolean;
 
 //TODO BUGS
 // - when going to audio and opening notes the continuity breakes
@@ -155,299 +142,7 @@ function VideoScreen({
     }
   }, [orientation]);
 
-  const handleTimestamp = (timestamp: number) => {
-    if (currentPager === 0) {
-      videoRef.setPositionAsync(timestamp);
-    }
-    if (currentPager === 1) {
-      audioRef.setPositionAsync(timestamp);
-    }
-    //console.log(videoRef);
-  };
-
-  const AudioSlides = () => {
-    //const slidesarray = slides.map((slide) => slide.url);
-    const [slidePosition, setSlidePosition] = useState(0);
-
-    const getCurrentSlide = () => {
-      const newslides = slides
-        ? slides.results
-            .sort(compare)
-            .filter((slide) => slide.timestamp < currentPositionMillis)
-        : [];
-      return newslides.length - 1;
-    };
-
-    //? this is very slow
-    const handleSlideChange = () => {
-      if (audioplaying) {
-        setSlidePosition(getCurrentSlide());
-        //console.log(newslides.length);
-      }
-    };
-
-    if (slides) {
-      let intervalid = setInterval(handleSlideChange, 500);
-
-      const [playing, setPlaying] = useState(true);
-      async function handlePausePlay() {
-        if (playing) {
-          await audioRef.pauseAsync();
-        } else {
-          await audioRef.playAsync();
-        }
-        setPlaying(!playing);
-      }
-
-      const slides_imgs = slides.results.map((res) => {
-        return { url: res.image };
-      });
-
-      return (
-        //! write this by hand
-        <TouchableHighlight onPress={handlePausePlay}>
-          <Slideshow
-            //! SLIDESHOW REQUIRES NAME URL, CURRENTLY IS IMAGE
-            dataSource={slides_imgs}
-            position={slidePosition}
-            style={styles.video}
-            scrollEnabled={false}
-            arrowSize={0}
-            height={videoHeight}
-          />
-        </TouchableHighlight>
-      );
-    } else return null;
-  };
-
   const [showNotes, setShowNotes] = useState(false);
-
-  const parent = navigation.dangerouslyGetParent();
-  parent.setOptions({
-    tabBarVisible: !showNotes,
-  });
-
-  const Notes = () => {
-    const ITEM_SIZE = 200;
-    const SEPARATOR_SIZE = 10;
-
-    const [notes, setNotes] = useState([]);
-
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", `Token ${token}`);
-
-    const requestOptions: any = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
-
-    const getNotes = () => {
-      fetch(API + "note/lecture/1/", requestOptions)
-        .then((r) => {
-          if (r.status === 200) {
-            return r.json();
-          } else return null;
-        })
-        .then((json) => {
-          if (json) {
-            setNotes(json.results);
-          }
-        })
-        .catch((error) => console.log("error", error));
-    };
-
-    useEffect(() => {
-      getNotes();
-    }, []);
-
-    const RenderNote = ({ item, index }: any) => {
-      return (
-        <View
-          style={{
-            paddingVertical: 6,
-          }}
-        >
-          <TouchableHighlight onPress={() => handleTimestamp(item.timestamp)}>
-            <View style={{ flex: 1, flexDirection: "row" }}>
-              <Text style={{ color: colors.secondary }}>
-                {YoutubeTime(item.timestamp)}
-              </Text>
-              <Ionicons
-                name={"ios-play-circle"}
-                size={16}
-                color={colors.secondary}
-                style={{ marginLeft: 5 }}
-              />
-            </View>
-          </TouchableHighlight>
-
-          <Text style={styles.note_text}>{item.text}</Text>
-        </View>
-      );
-    };
-
-    const Separator = () => (
-      <View
-        style={{
-          //marginHorizontal: SEPARATOR_SIZE,
-          borderColor: "#E8E8E8",
-          borderWidth: 0.5,
-        }}
-      ></View>
-    );
-
-    const NoteHeader = () => {
-      const [noteText, setNoteText] = useState("");
-      const [timestamp, setTimestamp] = useState(0);
-      const output_obj = {
-        text: noteText,
-        timestamp: timestamp,
-      };
-      const handleChangeText = (text: string) => {
-        setNoteText(text);
-        if (text.length === 1 && currentPositionMillis) {
-          setTimestamp(currentPositionMillis);
-          console.log(currentPositionMillis);
-        }
-      };
-      const handleNoteSubmit = () => {
-        if (noteText) {
-          let newnotes: any = [...notes, output_obj].sort(compare);
-          setNotes(newnotes);
-        }
-        Keyboard.dismiss();
-        setNoteText("");
-        console.log(output_obj);
-      };
-      return (
-        <View
-        /* keyboardShouldPersistTaps="handled" */
-        >
-          <View style={{}}>
-            <View style={{ flex: 1, flexDirection: "row" }}>
-              <TextInput
-                style={{
-                  marginBottom: 5,
-
-                  paddingBottom: 5,
-                  flex: 9,
-
-                  color: colors.text,
-                }}
-                onChangeText={handleChangeText}
-                value={noteText}
-                autoFocus={true}
-                //onSubmitEditing={handleSubmit}
-                clearButtonMode={"always"}
-                multiline
-                placeholder={"Add new note here"}
-                placeholderTextColor="#BDBDBD"
-                keyboardAppearance={dark ? "dark" : "light"}
-              />
-              <TouchableOpacity onPress={() => quitNotes()}>
-                <Ionicons name={"ios-close"} size={30} color={colors.primary} />
-              </TouchableOpacity>
-            </View>
-            {noteText ? (
-              <TouchableHighlight
-                style={{
-                  paddingVertical: 10,
-                  marginBottom: 6,
-                  borderRadius: 10,
-                  backgroundColor: "#5468fe",
-
-                  width: 200,
-
-                  shadowColor: colors.shadow,
-                  shadowOffset: {
-                    width: 0,
-                    height: 10,
-                  },
-                  shadowRadius: 25,
-                  shadowOpacity: 1,
-                }}
-                onPress={handleNoteSubmit}
-                accessible={false}
-              >
-                <Text
-                  style={{
-                    fontSize: 16,
-                    fontFamily: "SF-UI-medium",
-                    color: "white",
-                    textAlign: "center",
-                  }}
-                >
-                  Create note
-                </Text>
-              </TouchableHighlight>
-            ) : null}
-          </View>
-        </View>
-      );
-    };
-    const EmptyComponent = () => (
-      <View
-        style={{
-          paddingVertical: 12,
-        }}
-      >
-        <Text
-          style={[
-            styles.h4,
-            { color: "gray", marginVertical: 20, textAlign: "center" },
-          ]}
-        >
-          Swipe down to dismiss the notes
-        </Text>
-      </View>
-    );
-
-    const quitNotes = () => {
-      setShowNotes(false);
-      SpringIn();
-      FadeIn();
-    };
-    const handleQuit = (props: any) => {
-      const offset = 75;
-      const currentY = props.nativeEvent.contentOffset.y;
-      // || currentX > ITEM_SIZE + SEPARATOR_SIZE
-      // ALSO NEED TO IMPLEMENT RIGHT SIDE
-      if (currentY < -offset) {
-        quitNotes();
-      }
-    };
-
-    return (
-      <View
-        style={[
-          styles.default_card,
-          {
-            margin: padding,
-          },
-        ]}
-      >
-        <SafeAreaView style={styles.your_notes}>
-          <FlatList
-            data={notes}
-            renderItem={RenderNote}
-            keyExtractor={(item) => item.text}
-            //horizontal
-            ItemSeparatorComponent={Separator}
-            ListHeaderComponent={NoteHeader}
-            ListEmptyComponent={EmptyComponent}
-            //snapToInterval
-            snapToAlignment="start"
-            decelerationRate={0}
-            showsVerticalScrollIndicator={false}
-            onScroll={handleQuit}
-            keyboardShouldPersistTaps="handled"
-            keyboardDismissMode="on-drag"
-          />
-        </SafeAreaView>
-      </View>
-    );
-  };
 
   const Description = () => (
     <View style={styles.default_card}>
@@ -491,6 +186,16 @@ function VideoScreen({
     </View>
   );
 
+  //* NOTES STUFF
+  const parent = navigation.dangerouslyGetParent();
+  parent.setOptions({
+    tabBarVisible: !showNotes,
+  });
+  const quitNotes = () => {
+    setShowNotes(false);
+    SpringIn();
+    FadeIn();
+  };
   // when press it switches to notes, on long press it goes to add new note screen
   const SwitchToNotes = () => {
     const handleSwitch = () => {
@@ -534,7 +239,7 @@ function VideoScreen({
 
   // ANIMATIONS
 
-  const [titleHeight, setTitlteHeight] = useState(0);
+  const [titleHeight, setTitleHeight] = useState(0);
 
   const SpringAnim = useRef(new Animated.Value(0)).current;
   const OpacityAnim = useRef(new Animated.Value(1)).current;
@@ -569,13 +274,8 @@ function VideoScreen({
     }).start();
   };
 
-  const SpeedControll = () => {
-    //const speeds = [1, 1.25, 1.5, 2];
-    const speeds = [
-      "machine learning",
-      "support vector machine",
-      "mathematics",
-    ];
+  const Categories = () => {
+    const cats = ["machine learning", "support vector machine", "mathematics"];
 
     const Cat = ({ item }) => (
       <TouchableOpacity
@@ -610,7 +310,7 @@ function VideoScreen({
     );
     return (
       <FlatList
-        data={speeds}
+        data={cats}
         renderItem={Cat}
         keyExtractor={(item) => item}
         ItemSeparatorComponent={() => <View style={{ marginLeft: padding }} />}
@@ -624,6 +324,58 @@ function VideoScreen({
 
   const VideoHeader = () => {
     const [modalVisible, setModalVisible] = useState(false);
+
+    const SettingsModal = () => (
+      <Modal
+        isVisible={modalVisible}
+        onSwipeComplete={() => setModalVisible(false)}
+        onBackButtonPress={() => setModalVisible(false)}
+        onBackdropPress={() => setModalVisible(false)}
+        swipeDirection={["left", "down"]}
+        animationIn="bounceInLeft"
+        animationOut="bounceOutLeft"
+      >
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <View
+            style={[
+              { height: 100, maxWidth: 250, margin: 0 },
+              styles.default_card,
+            ]}
+          >
+            <View
+              style={{
+                width: "100%",
+                flexDirection: "row",
+                paddingBottom: padding,
+              }}
+            >
+              <Text
+                style={[
+                  styles.h4,
+                  {
+                    color: colors.secondary,
+                    textAlign: "center",
+                    flex: 1,
+                    paddingTop: 2,
+                  },
+                ]}
+              >
+                Video settings
+              </Text>
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <Ionicons name={"md-close"} size={20} color={colors.primary} />
+              </TouchableOpacity>
+            </View>
+            <Text style={{ color: colors.text }}>Playback speed</Text>
+          </View>
+        </View>
+      </Modal>
+    );
 
     return (
       <View style={{ flexDirection: "row" }}>
@@ -652,60 +404,7 @@ function VideoScreen({
         >
           <Ionicons name={"ios-options"} size={20} color={colors.text} />
         </TouchableOpacity>
-
-        <Modal
-          isVisible={modalVisible}
-          onSwipeComplete={() => setModalVisible(false)}
-          onBackButtonPress={() => setModalVisible(false)}
-          onBackdropPress={() => setModalVisible(false)}
-          swipeDirection={["left", "down"]}
-          animationIn="bounceInLeft"
-          animationOut="bounceOutLeft"
-        >
-          <View
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <View
-              style={[
-                { height: 100, maxWidth: 250, margin: 0 },
-                styles.default_card,
-              ]}
-            >
-              <View
-                style={{
-                  width: "100%",
-                  flexDirection: "row",
-                  paddingBottom: padding,
-                }}
-              >
-                <Text
-                  style={[
-                    styles.h4,
-                    {
-                      color: colors.secondary,
-                      textAlign: "center",
-                      flex: 1,
-                      paddingTop: 2,
-                    },
-                  ]}
-                >
-                  Video settings
-                </Text>
-                <TouchableOpacity onPress={() => setModalVisible(false)}>
-                  <Ionicons
-                    name={"md-close"}
-                    size={20}
-                    color={colors.primary}
-                  />
-                </TouchableOpacity>
-              </View>
-              <Text style={{ color: colors.text }}>Playback speed</Text>
-            </View>
-          </View>
-        </Modal>
+        <SettingsModal />
       </View>
     );
   };
@@ -723,6 +422,7 @@ function VideoScreen({
       fontSize: 36,
       textAlign: "center",
       fontFamily: "SF-UI-semibold",
+      color: colors.text,
     },
 
     h3: {
@@ -785,6 +485,20 @@ function VideoScreen({
     },
   });
 
+  const WarningModal = () => (
+    <Modal
+      isVisible={!videoID}
+      //swipeDirection={["left", "down"]}
+      animationIn="bounceInLeft"
+      animationOut="bounceOutLeft"
+      coverScreen={false}
+      backdropOpacity={0.97}
+      backdropColor={colors.card}
+    >
+      <Text style={styles.h1}>No lecture playing</Text>
+    </Modal>
+  );
+
   if (!lecture) {
     return (
       <ActivityIndicator
@@ -801,10 +515,11 @@ function VideoScreen({
 
   return (
     <View style={styles.container}>
+      <WarningModal />
       {showNotes ? null : (
         <Animated.View
           onLayout={(event) => {
-            setTitlteHeight(event.nativeEvent.layout.height);
+            setTitleHeight(event.nativeEvent.layout.height);
           }}
           style={{
             opacity: OpacityAnim,
@@ -823,13 +538,21 @@ function VideoScreen({
       />
 
       {showNotes ? (
-        <Notes />
+        <Notes
+          navigation={navigation}
+          currentPager={currentPager}
+          styles={styles}
+          padding={padding}
+          quitNotes={quitNotes}
+          showNotes={showNotes}
+          setShowNotes={setShowNotes}
+        />
       ) : (
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={{ paddingHorizontal: padding }}
         >
-          <SpeedControll />
+          <Categories />
 
           <Description />
 

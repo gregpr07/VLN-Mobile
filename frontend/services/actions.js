@@ -61,6 +61,8 @@ export const removeUserToken = () => (dispatch) =>
       dispatch(error(err.message || "ERROR"));
     });
 
+//* VIDEO
+
 export const videoID = (videoID) => ({
   type: "VIDEO_ID",
   videoID,
