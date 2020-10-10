@@ -103,7 +103,7 @@ const SearchScreen = ({
 
   //! only for faster dev
   useEffect(() => {
-    onChangeText("machine");
+    onChangeText("support vector machine");
   }, []);
 
   async function loadMoreLecs() {

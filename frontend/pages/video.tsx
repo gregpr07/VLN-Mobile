@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   // Pressable,
   Animated,
+  Button,
 } from "react-native";
 
 import Modal from "react-native-modal";
@@ -39,7 +40,7 @@ import Notes from "./video/Notes";
 const videoHeight = (width / 16) * 9;
 
 //? using let because we don't want the screen to re-render because of video
-let currentPositionMillis: number;
+
 let videoIsLoaded: boolean;
 let videoplaying: boolean;
 let audioplaying: boolean;
@@ -70,12 +71,12 @@ function VideoScreen({
 
   useEffect(() => {
     if (videoID && videoRef) {
-      playVideoORAudio(currentPager);
+      playVideoORAudio(currentPager, 0);
     }
   }, [videoRef]);
 
   // currently 0 is video 1 is audio but this might change
-  async function playVideoORAudio(page: number) {
+  async function playVideoORAudio(page: number, currentPositionMillis: number) {
     console.log("calling video");
 
     const initStatus = {
@@ -86,26 +87,28 @@ function VideoScreen({
       shouldCorrectPitch: true,
     };
 
+    const audioplaying = await audioRef.getStatusAsync();
+    const videoplaying = await audioRef.getStatusAsync();
+
     if (page === 0) {
       if (audioplaying) {
         await audioRef.unloadAsync();
-        audioplaying = false;
       }
       console.log("loading video");
 
-      await videoRef.loadAsync(
-        {
-          uri: lecture.video,
-        },
-        initStatus
-      );
-      console.log("video loaded");
-      videoplaying = true;
+      if (!videoplaying) {
+        await videoRef.loadAsync(
+          {
+            uri: lecture.video,
+          },
+          initStatus
+        );
+        console.log("video loaded");
+      }
     }
     if (page === 1) {
       if (videoplaying) {
         await videoRef.unloadAsync();
-        videoplaying = false;
       }
       if (!audioplaying) {
         await audioRef.loadAsync(
@@ -114,7 +117,6 @@ function VideoScreen({
           },
           initStatus
         );
-        audioplaying = true;
       }
     }
   }
@@ -132,7 +134,7 @@ function VideoScreen({
   });
   useEffect(() => {
     console.log("orientation changed to " + isPortrait());
-    console.log(videoIsLoaded);
+    //console.log(videoIsLoaded);
     if (videoIsLoaded) {
       if (isPortrait()) {
         videoRef.dismissFullscreenPlayer();
@@ -200,7 +202,6 @@ function VideoScreen({
   const SwitchToNotes = () => {
     const handleSwitch = () => {
       if (token) {
-        console.log(token);
         setShowNotes(true);
         SpringOut();
       } else navigation.navigate("login");
@@ -246,7 +247,6 @@ function VideoScreen({
 
   const SPRING_VAL = titleHeight;
   const SpringIn = () => {
-    // Will change fadeAnim value to 0 in 5 seconds
     SpringAnim.setValue(-SPRING_VAL);
     Animated.spring(SpringAnim, {
       toValue: 0,
@@ -535,11 +535,11 @@ function VideoScreen({
         initPager={initPager}
         videoHeight={videoHeight}
         videostyle={styles.video}
+        playVideoORAudio={playVideoORAudio}
       />
 
       {showNotes ? (
         <Notes
-          navigation={navigation}
           currentPager={currentPager}
           styles={styles}
           padding={padding}

@@ -15,6 +15,8 @@ import { setVideoID, setVideoRef } from "../../services/actions";
 
 let component: any;
 
+let currentPositionMillis: number;
+
 const VideoAudio = ({
   SpringAnim,
   initPager,
@@ -23,11 +25,12 @@ const VideoAudio = ({
   videoRef,
   setVidRef,
   audioRef,
+  playVideoORAudio,
 }: any) => {
   // this is set when dealing with video
   const onPlaybackStatusUpdate = (status: any) => {
     //console.log(status.positionMillis);
-    const currentPositionMillis = status.positionMillis;
+    currentPositionMillis = status.positionMillis;
     //videoIsLoaded = status.isLoaded;
     //console.log(currentPositionMillis);
 
@@ -41,6 +44,9 @@ const VideoAudio = ({
       ref.getStatusAsync().then((res) => {
         component = ref;
         setVidRef(ref);
+
+        ref.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
+        audioRef.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
       });
     }
   }

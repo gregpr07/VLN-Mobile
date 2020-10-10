@@ -140,7 +140,7 @@ const Notes = ({
       }
       Keyboard.dismiss();
       setNoteText("");
-      console.log(output_obj);
+      //console.log(output_obj);
     };
     return (
       <View
