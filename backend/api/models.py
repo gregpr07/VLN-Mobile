@@ -17,7 +17,7 @@ class Author(models.Model):
         UserModel, on_delete=models.SET_NULL, blank=True, null=True)
 
     name = models.CharField(max_length=100, null=True)
-    #last_name = models.CharField(max_length=100, null=True)
+    # last_name = models.CharField(max_length=100, null=True)
 
     image = models.ImageField(null=True, blank=True, upload_to="image/author")
 
@@ -57,7 +57,7 @@ class Lecture(models.Model):
 
     categories = models.ManyToManyField(to=Category, blank=True)
 
-    stargazers = models.ManyToManyField(to=UserModel)
+    stargazers = models.ManyToManyField(to=UserModel, blank=True)
 
     def __str__(self):
         return self.title
@@ -81,10 +81,27 @@ class Event(models.Model):
     description = models.CharField(max_length=1028)  # size!
     image = models.ImageField(null=True, blank=True, upload_to="image/event")
 
-    # lecture order, manytomany
-    lectures = ArrayField(models.IntegerField(), null=True, blank=True)
+    lectures = models.ManyToManyField(to=Lecture, blank=True)
+    lectures_order = ArrayField(models.IntegerField(), null=True, blank=True)
 
-    # categories, authors, videos
+    def get_categories(self):  # this works, but should be improved
+        category_id_set = set()
+
+        for lecture in self.lectures.all():
+            for category in lecture.categories.all():
+                if category.id not in category_id_set:
+                    category_id_set.add(category.id)
+
+        return category_id_set
+
+    def get_authors(self):  # this works, but should be improved
+        author_id_set = set()
+
+        for lecture in self.lectures.all():
+            if lecture.author.id not in author_id_set:
+                author_id_set.add(lecture.author.id)
+
+        return author_id_set
 
     def __str__(self):
         return self.title

@@ -73,6 +73,14 @@ class SlideSerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        serialized_data = super().to_representation(instance)
+        serialized_data["categories"] = instance.get_categories()
+        serialized_data["authors"] = instance.get_authors()
+
+        return serialized_data
+
     class Meta:
         model = Event
         fields = '__all__'
