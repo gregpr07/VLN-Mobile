@@ -10,6 +10,7 @@ import {
   Image,
   ActivityIndicator,
   Dimensions,
+  Button,
 } from "react-native";
 import {
   YoutubeTime,
@@ -27,10 +28,19 @@ import { useTheme } from "@react-navigation/native";
 
 import { BASEURL } from "../services/fetcher";
 
+import { connect } from "react-redux";
+import { setVideoID } from "../services/actions";
+
 let CURRENT_PAGE_LEC: number;
 let LOADED_ALL_LEC: boolean;
 
-const SearchScreen = ({ navigation }: any) => {
+const SearchScreen = ({
+  navigation,
+  videoID,
+  setVidID,
+  videoRef,
+  audioRef,
+}: any) => {
   const { colors, dark } = useTheme();
 
   const [lecture, setLectures] = useState([]);
@@ -44,8 +54,6 @@ const SearchScreen = ({ navigation }: any) => {
   // BASEURL + "esearch/search/lecture/erik%20novak/0/"
 
   async function getData(append_array: boolean) {
-    console.log(CURRENT_PAGE_LEC);
-    //console.log(inputValue);
     setPreviousValue(inputValue);
 
     const search_link = `${BASEURL}esearch/search/lecture/${inputValue}/${CURRENT_PAGE_LEC}/`;
@@ -57,7 +65,6 @@ const SearchScreen = ({ navigation }: any) => {
         const new_arr = append_array
           ? lecture.concat(json.lectures)
           : json.lectures;
-        //console.log(new_arr.length);
         setLectures(new_arr);
         setLoading(false);
         if (json.lectures === []) {
@@ -77,7 +84,6 @@ const SearchScreen = ({ navigation }: any) => {
           const new_arr = append_array
             ? authors.concat(json.authors)
             : json.authors;
-          //console.log(new_arr.length);
           setAuthors(new_arr);
           setLoading(false);
         });
@@ -97,16 +103,27 @@ const SearchScreen = ({ navigation }: any) => {
 
   //! only for faster dev
   useEffect(() => {
-    onChangeText("machine");
+    onChangeText("support vector machine");
   }, []);
 
   async function loadMoreLecs() {
     if (!LOADED_ALL_LEC) {
-      //console.log(nextPage);
       CURRENT_PAGE_LEC++;
       getData(true);
     }
   }
+
+  const _handleResultsClick = async (item) => {
+    if (videoRef) {
+      await videoRef.unloadAsync();
+      await audioRef.unloadAsync();
+    }
+
+    setVidID(item.id);
+    navigation.navigate("Player", {
+      screen: "Video",
+    });
+  };
 
   const Separator = () => (
     <Text
@@ -121,15 +138,7 @@ const SearchScreen = ({ navigation }: any) => {
   const renderItem = ({ item }: any) => (
     <View style={styles.default_card}>
       <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("Player", {
-            screen: "Video",
-            params: {
-              videoID: item.id,
-            },
-          });
-          //videoRef.stopAsync();
-        }}
+        onPress={() => _handleResultsClick(item)}
         //key={item.title}
         style={styles.recommendation}
       >
@@ -234,6 +243,9 @@ const SearchScreen = ({ navigation }: any) => {
             ListHeaderComponent={() => (
               <View style={{ paddingLeft: padding }} />
             )}
+            ListFooterComponent={() => (
+              <View style={{ paddingRight: padding }} />
+            )}
             renderItem={RenderAuthor}
             keyExtractor={(item) => item.name}
             ItemSeparatorComponent={AuthorSeparator}
@@ -264,7 +276,7 @@ const SearchScreen = ({ navigation }: any) => {
 
     h3: {
       fontSize: 14,
-      fontFamily: "SF-UI-medium",
+      fontFamily: "SF-UI-semibold",
       textAlign: "center",
     },
     h4: {
@@ -373,21 +385,24 @@ const SearchScreen = ({ navigation }: any) => {
           </View>
         </TouchableOpacity>
       </View>
-      <Authors />
-      {lecture ? (
-        <SafeAreaView>
-          <FlatList
-            ref={(ref) => (listflat = ref)}
-            data={lecture}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id.toString()}
-            onEndReached={loadMoreLecs}
-            ListFooterComponent={() => <View style={{ marginBottom: 100 }} />}
-            //getNativeScrollRef={(ref) => (flatlistRef = ref)}
-            keyboardDismissMode={"on-drag"}
-          />
-        </SafeAreaView>
-      ) : null}
+
+      {/* <Authors /> */}
+      {/* {lecture ? ( */}
+      <View style={{ flex: 1 }}>
+        <FlatList
+          ref={(ref) => (listflat = ref)}
+          data={lecture}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+          onEndReached={loadMoreLecs}
+          ListHeaderComponent={<Authors />}
+          ListFooterComponent={() => <View style={{ marginBottom: padding }} />}
+          //getNativeScrollRef={(ref) => (flatlistRef = ref)}
+          keyboardDismissMode={"on-drag"}
+        />
+      </View>
+      {/* ) : null} */}
+
       {loading ? (
         <ActivityIndicator
           //? 15 is for centering - very hacky!!
@@ -403,4 +418,14 @@ const SearchScreen = ({ navigation }: any) => {
   );
 };
 
-export default SearchScreen;
+const mapStateToProps = (state) => ({
+  videoID: state.video.videoID,
+  videoRef: state.video.videoRef,
+  audioRef: state.video.audioRef,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  setVidID: (num: number) => dispatch(setVideoID(num)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SearchScreen);

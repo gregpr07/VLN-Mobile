@@ -7,7 +7,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
 
 import { Ionicons } from "@expo/vector-icons";
-import VideoScreen from "./pages/video/index";
+import VideoScreen from "./pages/video";
 import SearchScreen from "./pages/search";
 //import ModalScreen from "./pages/video_new_note_deprecated";
 import HomeScreen from "./pages/homescreen";
@@ -37,8 +37,6 @@ const VideoStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
 const PlayerStack = createStackNavigator();
 
-//const VideoModal = createStackNavigator();
-
 const VideoStackScreen = () => {
   return (
     <VideoStack.Navigator
@@ -62,25 +60,18 @@ const PlayerStackScreen = () => {
         name="Video"
         component={VideoScreen}
         initialParams={{
-          videoID: 1,
-          title: 1,
-          video_url: {
-            uri:
-              "https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_1920_18MG.mp4",
-          },
+          lectureID: false,
         }}
       />
     </PlayerStack.Navigator>
   );
 };
 
-const App = ({ token, getUserToken }: any) => {
+const App = ({ token, getUserToken, videoID, videoRef }: any) => {
   // fonts
   /*   let [fontsLoaded] = useFonts({
     SF_UI_BLACK: require("./assets/fonts/HKGrotesk-black.otf"),
   }); */
-
-  console.log(token);
 
   useEffect(() => {
     getUserToken();
@@ -121,6 +112,7 @@ const App = ({ token, getUserToken }: any) => {
   const HeaderOptions = {
     headerStyle: {
       backgroundColor: themeIsDark ? "black" : colors.whiteBackground,
+      shadowColor: "transparent",
     },
     //headerTintColor: themeIsDark ? colors.dark : colors.darkGreyBlue,
     headerTitleStyle: {
@@ -230,8 +222,6 @@ const App = ({ token, getUserToken }: any) => {
 
             if (route.name === "Home") {
               iconName = focused ? "ios-home" : "ios-home";
-            } else if (route.name === "Video") {
-              iconName = focused ? "ios-videocam" : "ios-videocam";
             } else if (route.name === "Profile") {
               iconName = focused ? "ios-person" : "ios-person";
             } else if (route.name == "Search") {
@@ -240,18 +230,8 @@ const App = ({ token, getUserToken }: any) => {
               iconName = "ios-bug";
             } else if (route.name == "Player") {
               iconName = "ios-play-circle";
-              /* return (
-                <Image
-                  source={{
-                    uri:
-                      "https://static.videolectures.net/r.1483388978//custom/vln-touch-icon-precomposed.png",
-                  }}
-                  style={{
-                    height: size,
-                    width: size,
-                  }}
-                />
-              ); */
+            } else if (route.name === "Video") {
+              iconName = focused ? "ios-videocam" : "ios-videocam";
             }
 
             // You can return any component that you like here!
@@ -264,7 +244,7 @@ const App = ({ token, getUserToken }: any) => {
           showLabel: false,
           style: {
             borderTopWidth: 0,
-            //backgroundColor: "white",
+
             shadowOffset: {
               width: 5,
               height: 10,
@@ -276,7 +256,10 @@ const App = ({ token, getUserToken }: any) => {
       >
         <Tabs.Screen name="Home" component={HomeStackScreen} />
         <Tabs.Screen name="Video" component={VideoStackScreen} />
+        {/*    {videoID || !videoRef ? ( */}
         <Tabs.Screen name="Player" component={PlayerStackScreen} />
+        {/*      ) : null} */}
+
         <Tabs.Screen name="Search" component={SearchScreen} />
         <Tabs.Screen name="Profile" component={ProfileStackScreen} />
         <Tabs.Screen name="DEV" component={DevOnlyComp} />
@@ -288,6 +271,8 @@ const App = ({ token, getUserToken }: any) => {
 
 const mapStateToProps = (state) => ({
   token: state.token,
+  videoID: state.video.videoID,
+  videoRef: state.video.videoRef,
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -1,4 +1,5 @@
 import { combineReducers } from "redux";
+import { Audio } from "expo-av";
 
 const rootReducer = (
   state = {
@@ -24,6 +25,26 @@ const rootReducer = (
   }
 };
 
+const videoReducer = (
+  state = {
+    videoID: 687,
+    videoRef: null,
+    audioRef: new Audio.Sound(),
+    showNotes: false,
+  },
+  action
+) => {
+  switch (action.type) {
+    case "VIDEO_ID":
+      return { ...state, videoID: action.videoID };
+    case "VIDEO_REF":
+      return { ...state, videoRef: action.videoRef };
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
   token: rootReducer,
+  video: videoReducer,
 });
