@@ -1,6 +1,9 @@
+from pprint import pprint
+
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from rest_framework.fields import empty
 
 from api.models import UserModel, Lecture, Slide, Note, Author, Event, Playlist
 
@@ -48,6 +51,19 @@ class AuthorSerializer(serializers.ModelSerializer):
 
 
 class LectureSerializer(serializers.ModelSerializer):
+    author = AuthorSerializer()
+
+    def to_representation(self, instance):
+        request = self.context['request']
+        user = request.user
+
+        serialized_data = super().to_representation(instance)
+
+        if user.is_authenticated:
+            serialized_data["starred"] = user.usermodel in instance.stargazers.all()
+
+        return serialized_data
+
     class Meta:
         model = Lecture
         fields = '__all__'
