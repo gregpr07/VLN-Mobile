@@ -1,9 +1,6 @@
-from pprint import pprint
-
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from rest_framework.fields import empty
 
 from api.models import UserModel, Lecture, Slide, Note, Author, Event, Playlist
 
