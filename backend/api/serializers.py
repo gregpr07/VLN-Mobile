@@ -53,8 +53,15 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class SimpleCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ('id', 'name')
+
+
 class LectureSerializer(serializers.ModelSerializer):
     author = AuthorSerializer()
+    categories = SimpleCategorySerializer(many=True, read_only=True)
 
     def to_representation(self, instance):
         request = self.context['request']
