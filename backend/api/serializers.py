@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from api.models import UserModel, Lecture, Slide, Note, Author, Event, Playlist
+from api.models import UserModel, Lecture, Slide, Note, Author, Event, Playlist, Category
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -44,17 +44,32 @@ class UserModelSerializer(serializers.ModelSerializer):
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
+        fields = ('id', 'name', 'image', 'views')
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
         fields = '__all__'
+
+
+class SimpleCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ('id', 'name')
 
 
 class LectureSerializer(serializers.ModelSerializer):
     author = AuthorSerializer()
+    categories = SimpleCategorySerializer(many=True, read_only=True)
 
     def to_representation(self, instance):
         request = self.context['request']
         user = request.user
 
         serialized_data = super().to_representation(instance)
+        serialized_data["published"] = instance.published.strftime("%b %d, %Y")
+        serialized_data["stargazer_count"] = instance.stargazers.all().count()
 
         if user.is_authenticated:
             serialized_data["starred"] = user.usermodel in instance.stargazers.all()

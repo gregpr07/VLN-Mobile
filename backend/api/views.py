@@ -6,9 +6,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from api.models import UserModel, Lecture, Note, Slide, Author, Event, Playlist
+from api.models import UserModel, Lecture, Note, Slide, Author, Event, Playlist, Category
 from api.serializers import UserModelSerializer, LectureSerializer, NoteSerializer, SlideSerializer, AuthorSerializer, \
-    EventSerializer, PlaylistSerializer
+    EventSerializer, PlaylistSerializer, CategorySerializer
 
 
 # Custom ViewSet
@@ -41,6 +41,11 @@ class AuthorViewSet(SimpleViewSet):
     def most_viewed(self, request, *args, **kwargs):
         queryset = self.queryset.order_by("-views")
         return list_mixin(self, queryset)
+
+
+class CategoryViewSet(SimpleViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 
 
 class LectureViewSet(SimpleViewSet):
