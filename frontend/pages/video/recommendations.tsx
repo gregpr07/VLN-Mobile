@@ -16,17 +16,15 @@ import { setVideoID, setVideoRef } from "../../services/actions";
 import { BASEURL } from "../../services/fetcher";
 
 const RecommendedVids = ({
-  SpringAnim,
-  initPager,
-  videoHeight,
-  videostyle,
   videoRef,
-  setVidRef,
+
   audioRef,
   styles,
   colors,
   lecture,
   setVidID,
+  videoID,
+  padding,
 }) => {
   const Separator = () => (
     <Text
@@ -44,14 +42,21 @@ const RecommendedVids = ({
   const getRecommendation = (text) => {
     const search_link = `${BASEURL}esearch/search/lecture/${text}/0/`;
     fetch(search_link)
-      .then((res) => res.json())
+      .then((res) => (res.status === 200 ? res.json() : null))
       .then((json) => {
-        setRecommendations(json.lectures.slice(1, 15));
+        json
+          ? setRecommendations(
+              json.lectures.filter((item) =>
+                item.id !== videoID ? item : null
+              )
+            )
+          : setRecommendations([]);
       });
   };
 
   useEffect(() => {
-    const text = lecture.title + " " + lecture.description;
+    const text =
+      lecture.author.name + " " + lecture.title + " " + lecture.description;
     getRecommendation(text);
   }, [lecture]);
 
@@ -64,19 +69,33 @@ const RecommendedVids = ({
 
   return (
     <View style={[styles.default_card, styles.marginBottom]}>
-      <Text style={styles.h3}>Related videos</Text>
+      <Text
+        style={[
+          styles.h3,
+          { paddingBottom: recommendations.length ? padding : 0 },
+        ]}
+      >
+        Related videos
+      </Text>
       {recommendations.map(
-        (recc: {
-          author: string;
-          id: number;
-          thumbnail: string;
-          title: string;
-          views: number;
-        }) => (
+        (
+          recc: {
+            author: string;
+            id: number;
+            thumbnail: string;
+            title: string;
+            views: number;
+          },
+          index: number
+        ) => (
           <TouchableOpacity
             onPress={() => handleAcceptRecc(recc.id)}
             key={recc.id}
-            style={styles.recommendation}
+            style={{
+              paddingTop: index ? 8 : 0,
+              paddingBottom: index !== recommendations.length - 1 ? 8 : 0,
+              flexDirection: "row",
+            }}
           >
             <Image
               source={{ uri: recc.thumbnail }}

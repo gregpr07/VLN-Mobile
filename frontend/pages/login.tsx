@@ -6,6 +6,8 @@ import {
   Text,
   TextInput,
   TouchableHighlight,
+  Image,
+  Dimensions,
 } from "react-native";
 import { connect } from "react-redux";
 import { saveUserToken } from "../services/actions";
@@ -14,6 +16,8 @@ import Constants from "expo-constants";
 import { API } from "../services/fetcher";
 
 import { useTheme } from "@react-navigation/native";
+
+const { width, height } = Dimensions.get("window");
 
 const SignInScreen = ({ token, saveToken }: any) => {
   const { colors, dark } = useTheme();
@@ -86,13 +90,21 @@ const SignInScreen = ({ token, saveToken }: any) => {
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.h3, styles.bold]}>Log in</Text>
+      <Image
+        source={
+          dark
+            ? require("../assets/icons/videolecture-net-dark.png")
+            : require("../assets/icons/videolecture-net-light.png")
+        }
+        resizeMode="contain"
+        style={{ maxHeight: 100, width: 300 }}
+      />
       <Text
         style={[
           styles.h3,
           {
             maxWidth: 250,
-
+            textAlign: "center",
             marginTop: 3,
           },
         ]}
@@ -167,7 +179,7 @@ const SignInScreen = ({ token, saveToken }: any) => {
             letterSpacing: 1,
           }}
         >
-          CONTINUE
+          LOGIN
         </Text>
       </TouchableHighlight>
     </View>

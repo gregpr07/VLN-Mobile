@@ -7,6 +7,7 @@ import {
   TouchableHighlight,
   FlatList,
   Image,
+  ImageBackground,
   Text,
 } from "react-native";
 
@@ -18,6 +19,7 @@ import { Video, Audio } from "expo-av";
 import { setVideoID, setVideoRef } from "../../services/actions";
 
 import { compare } from "../../services/functions";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 let component: any;
 
@@ -101,7 +103,7 @@ const VideoAudio = ({
     }
 
     const RenderSlide = ({ item }) => (
-      <Image
+      <ImageBackground
         source={{
           uri: item.image,
         }}
@@ -118,25 +120,14 @@ const VideoAudio = ({
       return (
         //! write this by hand
         <TouchableHighlight onPress={handlePausePlay}>
-          {/*  <Slideshow
-            //! SLIDESHOW REQUIRES NAME URL, CURRENTLY IS IMAGE
-            dataSource={slides_imgs}
-            position={currentSlide}
-            style={videostyle}
-            scrollEnabled={false}
-            arrowSize={0}
-            height={videoHeight}
-          /> */}
           <FlatList
             ref={slidesRef}
             data={slides_results}
             renderItem={RenderSlide}
             keyExtractor={(item) => item.image + item.id}
-            //horizontal
-            // ItemSeparatorComponent={Separator}
-            //snapToInterval
-            snapToAlignment="start"
-            decelerationRate={0}
+            onScrollToIndexFailed={(index) =>
+              console.log("failed to scroll to " + index)
+            }
           />
         </TouchableHighlight>
       );
@@ -182,12 +173,7 @@ const VideoAudio = ({
             useNativeControls={true}
           />
         </View>
-        <AudioSlides
-          slides={slides}
-          videoHeight={videoHeight}
-          videostyle={videostyle}
-          key="1"
-        />
+        <AudioSlides key="1" />
       </ViewPager>
     </Animated.View>
   );

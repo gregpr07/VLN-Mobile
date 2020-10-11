@@ -148,6 +148,8 @@ function VideoScreen({
 
   const [showNotes, setShowNotes] = useState(false);
 
+  console.log(lecture);
+
   const Description = () => (
     <View style={styles.default_card}>
       <View style={{ flex: 1, flexDirection: "row" }}>
@@ -177,7 +179,7 @@ function VideoScreen({
             <Text style={styles.gray}>views:</Text> {lecture.views}
           </Text>
           <Text style={styles.h5}>
-            <Text style={styles.gray}>author:</Text> {lecture.author}
+            <Text style={styles.gray}>author:</Text> {lecture.author.name}
           </Text>
           <Text style={styles.h5}>
             <Text style={styles.gray}>published:</Text> {lecture.published}
@@ -451,11 +453,6 @@ function VideoScreen({
       height: videoHeight, //- 2 * padding
       width: width, // - 2 * padding,
     },
-
-    recommendation: {
-      paddingVertical: 8,
-      flexDirection: "row",
-    },
     your_notes: {
       paddingHorizontal: 8,
       marginVertical: 8,
@@ -560,7 +557,12 @@ function VideoScreen({
 
           {/* recommendations */}
 
-          <RecommendedVids styles={styles} colors={colors} lecture={lecture} />
+          <RecommendedVids
+            styles={styles}
+            colors={colors}
+            lecture={lecture}
+            padding={padding}
+          />
         </ScrollView>
       )}
 
