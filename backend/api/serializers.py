@@ -68,6 +68,7 @@ class LectureSerializer(serializers.ModelSerializer):
         user = request.user
 
         serialized_data = super().to_representation(instance)
+        serialized_data["published"] = instance.published.strftime("%b %d, %Y")
         serialized_data["stargazer_count"] = instance.stargazers.all().count()
 
         if user.is_authenticated:
