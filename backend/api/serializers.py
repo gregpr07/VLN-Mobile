@@ -44,7 +44,7 @@ class UserModelSerializer(serializers.ModelSerializer):
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
-        fields = '__all__'
+        fields = ('id', 'name', 'image', 'views')
 
 
 class LectureSerializer(serializers.ModelSerializer):
@@ -55,6 +55,7 @@ class LectureSerializer(serializers.ModelSerializer):
         user = request.user
 
         serialized_data = super().to_representation(instance)
+        serialized_data["stargazer_count"] = instance.stargazers.all().count()
 
         if user.is_authenticated:
             serialized_data["starred"] = user.usermodel in instance.stargazers.all()
