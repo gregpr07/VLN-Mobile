@@ -5,15 +5,18 @@ import {
   Text,
   TouchableOpacity,
   Image,
+  Dimensions,
 } from "react-native";
 
 import { connect } from "react-redux";
 
-import { shorterText } from "../../services/functions";
+import { shorterText, numberWithCommas } from "../../services/functions";
 
 import { setVideoID, setVideoRef } from "../../services/actions";
 
 import { BASEURL } from "../../services/fetcher";
+
+const { width, height } = Dimensions.get("window");
 
 const RecommendedVids = ({
   videoRef,
@@ -55,9 +58,11 @@ const RecommendedVids = ({
   };
 
   useEffect(() => {
-    const text =
-      lecture.author.name + " " + lecture.title + " " + lecture.description;
-    getRecommendation(text);
+    if (lecture.title) {
+      const text =
+        lecture.author.name + " " + lecture.title + " " + lecture.description;
+      getRecommendation(text);
+    }
   }, [lecture]);
 
   const handleAcceptRecc = async (id: number) => {
@@ -114,14 +119,16 @@ const RecommendedVids = ({
                 //justifyContent: "center",
               }}
             >
-              <Text style={styles.h5}>{shorterText(recc.title, 50)}</Text>
+              <Text style={styles.h5}>
+                {shorterText(recc.title, width / 6)}
+              </Text>
               <View>
                 <Text style={[styles.h5, { color: colors.secondary }]}>
                   {/* {recc.views}
                       <Separator /> */}
                   {recc.author}
                   <Separator />
-                  {recc.views}
+                  {numberWithCommas(recc.views)}
                 </Text>
               </View>
             </View>

@@ -50,7 +50,6 @@ const Notes = ({
     if (audioplaying) {
       audioRef.setPositionAsync(timestamp);
     }
-    //console.log(videoRef);
   };
 
   const [notes, setNotes] = useState([]);
@@ -129,7 +128,13 @@ const Notes = ({
     const handleChangeText = async (text: string) => {
       setNoteText(text);
       if (text.length === 1) {
-        const { positionMillis } = await videoRef.getStatusAsync();
+        const videoStatus = await videoRef.getStatusAsync();
+        const audioStatus = await audioRef.getStatusAsync();
+        //positionMillis
+
+        const positionMillis = videoStatus.isLoaded
+          ? videoStatus.positionMillis
+          : audioStatus.positionMillis;
 
         setTimestamp(positionMillis);
         // console.log(positionMillis);
@@ -228,7 +233,7 @@ const Notes = ({
   );
 
   const handleQuit = (props: any) => {
-    const offset = 75;
+    const offset = 25;
     const currentY = props.nativeEvent.contentOffset.y;
     // || currentX > ITEM_SIZE + SEPARATOR_SIZE
     // ALSO NEED TO IMPLEMENT RIGHT SIDE
