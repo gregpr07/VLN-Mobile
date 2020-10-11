@@ -37,7 +37,8 @@ def lectureCall(query, page=0):
 
           should=[Q('match', title=query),
                   Q('match', description=query),
-                  Q('match', author__name=query)
+                  Q('match', author__name=query),
+                  Q('match', event__title=query)
                   ],
           #must=[Q('match', author__name=query)],
           minimum_should_match=1
@@ -61,7 +62,8 @@ def formatLectureResp(resp):
             'views': hit.views,
             'thumbnail': hit.thumbnail,
             'author': hit.author.name,
-            'id': hit.id
+            'id': hit.id,
+            'event': hit.event.title
         }
         results.append(obj)
     return results

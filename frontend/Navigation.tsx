@@ -143,7 +143,11 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
         options={{ headerShown: false }}
         component={HomeScreen}
       />
-      <HomeStack.Screen name="event" component={Event} />
+      <HomeStack.Screen
+        name="event"
+        component={Event}
+        options={({ route }) => ({ title: route.params.eventTitle })}
+      />
       <HomeStack.Screen
         name="category"
         component={Category}
@@ -255,7 +259,7 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
         }}
       >
         <Tabs.Screen name="Home" component={HomeStackScreen} />
-        <Tabs.Screen name="Video" component={VideoStackScreen} />
+        {/*  <Tabs.Screen name="Video" component={VideoStackScreen} /> */}
         {/*    {videoID || !videoRef ? ( */}
         <Tabs.Screen name="Player" component={PlayerStackScreen} />
         {/*      ) : null} */}

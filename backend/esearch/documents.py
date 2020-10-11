@@ -1,6 +1,6 @@
 from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
-from api.models import Lecture, Author, UserModel
+from api.models import Lecture, Author, UserModel, Event
 
 
 @registry.register_document
@@ -10,12 +10,17 @@ class LectureDocument(Document):
         'views': fields.IntegerField(),
     })
 
+    event = fields.ObjectField(properties={
+        'title': fields.TextField(),
+        'description': fields.TextField(),
+    })
+
     class Index:
         # Name of the Elasticsearch index
         name = 'lectures'
         # See Elasticsearch Indices API reference for available settings
-        settings = {'number_of_shards': 1,
-                    'number_of_replicas': 0}
+        settings = {'number_of_shards': 2,
+                    'number_of_replicas': 1}
 
     class Django:
         model = Lecture  # The model associated with this Document
@@ -32,7 +37,7 @@ class LectureDocument(Document):
             'id'
         ]
         # Optional: to ensure the Car will be re-saved when Manufacturer or Ad is updated
-        related_models = [Author]
+        related_models = [Author, Event]
 
         # Ignore auto updating of Elasticsearch when a model is saved
         # or deleted:
@@ -58,6 +63,8 @@ class LectureDocument(Document):
         """
         if isinstance(related_instance, Author):
             return related_instance.lectures_author.all()
+        elif isinstance(related_instance, Event):
+            return related_instance.lectures.all()
 
 
 @registry.register_document

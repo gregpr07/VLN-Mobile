@@ -34,8 +34,8 @@ const Notes = ({
   styles,
   padding,
   quitNotes,
-}) => {
-  const { colors, dark } = useTheme();
+}: any) => {
+  const { colors, dark }: any = useTheme();
 
   const ITEM_SIZE = 200;
   const SEPARATOR_SIZE = 10;
@@ -60,7 +60,6 @@ const Notes = ({
   const requestOptions: any = {
     method: "GET",
     headers: myHeaders,
-    redirect: "follow",
   };
 
   const getNotes = () => {
@@ -136,7 +135,7 @@ const Notes = ({
           ? videoStatus.positionMillis
           : audioStatus.positionMillis;
 
-        setTimestamp(positionMillis);
+        setTimestamp(positionMillis ? positionMillis : 0);
         // console.log(positionMillis);
       }
     };
@@ -255,7 +254,7 @@ const Notes = ({
         <FlatList
           data={notes}
           renderItem={RenderNote}
-          keyExtractor={(item) => item.text}
+          keyExtractor={(item: { text: string }) => item.text}
           //horizontal
           ItemSeparatorComponent={Separator}
           ListHeaderComponent={NoteHeader}

@@ -26,7 +26,8 @@ class LoginUserSerializer(serializers.Serializer):
         user = authenticate(**data)
         if user and user.is_active:
             return user
-        raise serializers.ValidationError("Unable to log in with provided credentials.")
+        raise serializers.ValidationError(
+            "Unable to log in with provided credentials.")
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -45,7 +46,8 @@ class AuthorSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         serialized_data = super().to_representation(instance)
-        serialized_data["categories"] = SimpleCategorySerializer(instance.get_categories(), many=True).data
+        serialized_data["categories"] = SimpleCategorySerializer(
+            instance.get_categories(), many=True).data
         serialized_data["lectures"] = SimpleLectureSerializer(instance.get_lectures(), many=True,
                                                               context={'request': self.context['request']}).data
 
@@ -59,14 +61,15 @@ class AuthorSerializer(serializers.ModelSerializer):
 class SimpleAuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'image')
 
 
 class CategorySerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         serialized_data = super().to_representation(instance)
-        serialized_data["children"] = SimpleCategorySerializer(instance.get_children(), many=True, read_only=True).data
+        serialized_data["children"] = SimpleCategorySerializer(
+            instance.get_children(), many=True, read_only=True).data
         serialized_data["authors"] = SimpleAuthorSerializer(instance.get_authors(), many=True,
                                                             context={'request': self.context['request']}).data
         serialized_data["lectures"] = SimpleLectureSerializer(instance.get_lectures(), many=True,
@@ -113,7 +116,7 @@ class LectureSerializer(serializers.ModelSerializer):
 class SimpleLectureSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lecture
-        fields = ('id', 'title')
+        fields = ('id', 'title', 'thumbnail', 'views')
 
 
 class SlideSerializer(serializers.ModelSerializer):

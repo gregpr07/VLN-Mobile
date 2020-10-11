@@ -6,12 +6,11 @@ import {
   TouchableOpacity,
   TextInput,
   StyleSheet,
-  Dimensions,
+  useWindowDimensions,
   Image,
   SafeAreaView,
   FlatList,
 } from "react-native";
-const { width, height } = Dimensions.get("window");
 
 // expo
 import Constants from "expo-constants";
@@ -25,13 +24,25 @@ import { ScrollView } from "react-native-gesture-handler";
 
 import { useTheme } from "@react-navigation/native";
 
+import { noHeadFetcher } from "../services/fetcher";
+import useSWR from "swr";
+
 //import { color } from "react-native-reanimated";
 
 const padding = 24;
 export default function HomeScreen({ navigation }: any) {
   const { colors, dark } = useTheme();
 
-  type events = Array<{ id: string; image: string }>;
+  const { data: events } = useSWR("event/", noHeadFetcher);
+  const { data: authors_most_viewd } = useSWR(
+    "author/most_viewed/",
+    noHeadFetcher
+  );
+
+  const { width, height } = useWindowDimensions();
+  const eventHeight = 190;
+
+  /*  type events = Array<{ id: string; image: string }>;
   const events: events = [
     {
       id: "1",
@@ -46,18 +57,15 @@ export default function HomeScreen({ navigation }: any) {
       id: "3",
       image: "http://hydro.ijs.si/v00a/c3/ynn57ohwub3ifoj6heyav2akwjxy5m27.jpg",
     },
-  ];
-
-  const eventHeight = (width / 16) * 7;
+  ]; */
 
   const EventCard = ({ item, index }: any) => (
     <View key={index}>
       <TouchableOpacity
         onPress={() =>
           navigation.push("event", {
-            videoID: 10,
-            title:
-              "How Machine Learning has Finally Solved Wanamaker’s Dilemma",
+            eventID: item.id,
+            eventTitle: item.title,
           })
         }
         activeOpacity={0.75}
@@ -68,7 +76,7 @@ export default function HomeScreen({ navigation }: any) {
           }}
           style={{
             height: eventHeight, // - 2 * padding
-            maxHeight: 400,
+            //maxHeight: 400,
             borderRadius: 12,
             resizeMode: "cover",
             //marginVertical: 24,
@@ -78,49 +86,38 @@ export default function HomeScreen({ navigation }: any) {
     </View>
   );
 
-  const Header = () => (
-    <View>
-      <Text
-        style={[
-          styles.h1,
-          { paddingHorizontal: padding, paddingBottom: 10, color: colors.text },
-        ]}
-      >
-        Events
-      </Text>
-      <SafeAreaView>
-        <Carousel
-          data={events}
-          renderItem={EventCard}
-          sliderWidth={width}
-          itemWidth={width - 2 * padding}
-          //layout={"stack"}
-        />
-      </SafeAreaView>
-    </View>
-  );
+  const Header = () =>
+    events ? (
+      <View>
+        <Text
+          style={[
+            styles.h1,
+            {
+              paddingHorizontal: padding,
+              paddingBottom: 10,
+              color: colors.text,
+            },
+          ]}
+        >
+          Events
+        </Text>
+        <SafeAreaView>
+          <Carousel
+            data={events.results}
+            renderItem={EventCard}
+            sliderWidth={width}
+            itemWidth={width > 350 + 2 * padding ? 350 : width - 2 * padding}
+            //layout={"stack"}
+            activeSlideAlignment="start"
+            containerCustomStyle={{
+              paddingStart: padding,
+            }}
+          />
+        </SafeAreaView>
+      </View>
+    ) : null;
 
   const Authors = () => {
-    const authors = [
-      {
-        name: "Walter Lewin",
-        views: 3813440,
-        image:
-          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2F4a0FbQdH3dY%2Fmaxresdefault.jpg&f=1&nofb=1",
-      },
-      {
-        name: "Gilbert Strang",
-        views: 1020442,
-        image:
-          "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.maths.unsw.edu.au%2Fsites%2Fdefault%2Ffiles%2Fgilbert_strang.jpg&f=1&nofb=1",
-      },
-      {
-        name: "Erik Novak",
-        views: 12314155,
-        image: "",
-      },
-    ];
-
     const AUTHOR_WIDTH = 100;
     const SEPARATOR_WIDTH = 10;
     const RenderAuthor = ({ item, index }) => (
@@ -173,6 +170,11 @@ export default function HomeScreen({ navigation }: any) {
     const AuthorSeparator = () => (
       <View style={{ paddingRight: SEPARATOR_WIDTH }} />
     );
+
+    if (!authors_most_viewd) {
+      return null;
+    }
+
     return (
       <View
         style={{
@@ -190,7 +192,7 @@ export default function HomeScreen({ navigation }: any) {
 
         <SafeAreaView>
           <FlatList
-            data={authors}
+            data={authors_most_viewd.results}
             ListHeaderComponent={() => (
               <View style={{ paddingLeft: padding }} />
             )}

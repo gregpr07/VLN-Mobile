@@ -5,10 +5,6 @@ import Modal from "react-native-modal";
 
 import { connect } from "react-redux";
 
-import { setVideoID, setVideoRef } from "../../services/actions";
-
-import { API } from "../../services/fetcher";
-
 import { Ionicons } from "@expo/vector-icons";
 
 import { useTheme } from "@react-navigation/native";
@@ -26,6 +22,7 @@ const VideoHeader = ({
 
   useEffect(() => {
     console.log(playbackSpeed);
+    console.log(lecture);
   }, [playbackSpeed]);
 
   const [modalVisible, setModalVisible] = useState(false);

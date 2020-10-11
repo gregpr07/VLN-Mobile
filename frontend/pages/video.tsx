@@ -5,13 +5,14 @@ import {
   ScrollView,
   View,
   Image,
-  Dimensions,
+  useWindowDimensions,
   TouchableOpacity,
   FlatList,
   ActivityIndicator,
   // Pressable,
   Animated,
   Button,
+  Dimensions,
 } from "react-native";
 
 import Modal from "react-native-modal";
@@ -23,15 +24,10 @@ import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
 
 import { fetcher } from "../services/fetcher";
-
-// fetching
 import useSWR from "swr";
 
 import { connect } from "react-redux";
 import { setVideoID } from "../services/actions";
-
-// dimensions
-const { width, height } = Dimensions.get("window");
 
 import { useTheme } from "@react-navigation/native";
 
@@ -42,11 +38,11 @@ import VideoHeader from "./video/VideoHeader";
 
 import { numberWithCommas } from "../services/functions";
 
-const videoHeight = (width / 16) * 9;
-
 //? using let because we don't want the screen to re-render because of video
 
 const initPager = 0;
+
+const TABLET_WIDTH = 700;
 
 //TODO BUGS
 // - when going to audio and opening notes the continuity breakes
@@ -66,6 +62,10 @@ function VideoScreen({
   const { data: slides } = useSWR("slide/lecture/" + videoID, fetcher);
 
   //* constants
+  const { width, height } = useWindowDimensions();
+  const videoHeight = (width / 16) * 9;
+
+  const isTablet = width > TABLET_WIDTH;
 
   //* VIDEO AND AUDIO REFERENCES
 
@@ -165,15 +165,17 @@ function VideoScreen({
 
   // HANDLE FULLSCREEN ON ROTATION
   const isPortrait = () => {
-    const dim = Dimensions.get("screen");
-    return dim.height >= dim.width;
+    return height >= width;
   };
   const [orientation, setOrientation] = useState(isPortrait());
-  Dimensions.addEventListener("change", () => {
-    if (isPortrait() !== orientation) {
-      setOrientation(isPortrait());
-    }
-  });
+  //! TABLETS NOT SUPPORT FULLSCREEN
+  if (!isTablet) {
+    Dimensions.addEventListener("change", () => {
+      if (isPortrait() !== orientation) {
+        setOrientation(isPortrait());
+      }
+    });
+  }
 
   const handleOrientation = async () => {
     if (videoRef) {
@@ -189,7 +191,9 @@ function VideoScreen({
     }
   };
   useEffect(() => {
-    handleOrientation();
+    if (!isTablet) {
+      handleOrientation();
+    }
   }, [orientation]);
 
   const [showNotes, setShowNotes] = useState(false);
@@ -235,9 +239,11 @@ function VideoScreen({
           <Text style={styles.h5}>
             <Text style={styles.gray}>published:</Text> {lecture.published}
           </Text>
-          <Text style={[styles.h5, { paddingTop: 4, color: colors.primary }]}>
-            SiKDD2019
-          </Text>
+          {lecture.events ? (
+            <Text style={[styles.h5, { paddingTop: 4, color: colors.primary }]}>
+              NOT WORKING CORRECTLY
+            </Text>
+          ) : null}
         </View>
       </View>
     </View>
@@ -416,6 +422,7 @@ function VideoScreen({
       //borderRadius: 32,
       height: videoHeight, //- 2 * padding
       width: width, // - 2 * padding,
+      maxWidth: "100%",
     },
     your_notes: {
       paddingHorizontal: 8,
@@ -492,44 +499,48 @@ function VideoScreen({
           <VideoHeader styles={styles} padding={padding} lecture={lecture} />
         </Animated.View>
       )}
-      {/* VideoAudio */}
-      <VideoAudioComponent
-        SpringAnim={SpringAnim}
-        initPager={initPager}
-        videoHeight={videoHeight}
-        videostyle={styles.video}
-        playVideoORAudio={playVideoORAudio}
-        slides={slides}
-        lecture={lecture}
-      />
 
-      {showNotes ? (
-        <Notes
-          styles={styles}
-          padding={padding}
-          quitNotes={quitNotes}
-          showNotes={showNotes}
-          setShowNotes={setShowNotes}
+      <View style={{}}>
+        {/* VideoAudio */}
+
+        <VideoAudioComponent
+          SpringAnim={SpringAnim}
+          initPager={initPager}
+          videoHeight={videoHeight}
+          videostyle={styles.video}
+          playVideoORAudio={playVideoORAudio}
+          slides={slides}
+          lecture={lecture}
         />
-      ) : (
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={{ paddingHorizontal: padding }}
-        >
-          <Categories />
 
-          <Description />
-
-          {/* recommendations */}
-
-          <RecommendedVids
+        {showNotes ? (
+          <Notes
             styles={styles}
-            colors={colors}
-            lecture={lecture}
             padding={padding}
+            quitNotes={quitNotes}
+            showNotes={showNotes}
+            setShowNotes={setShowNotes}
           />
-        </ScrollView>
-      )}
+        ) : (
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={{ paddingHorizontal: padding }}
+          >
+            <Categories />
+
+            <Description />
+
+            {/* recommendations */}
+
+            <RecommendedVids
+              styles={styles}
+              colors={colors}
+              lecture={lecture}
+              padding={padding}
+            />
+          </ScrollView>
+        )}
+      </View>
 
       {showNotes ? null : <SwitchToNotes />}
     </View>

@@ -38,6 +38,9 @@ const SearchScreen = ({
 }: any) => {
   const { colors, dark } = useTheme();
 
+  //! NOT USING BECAUSE FLATLIST DOESN'T SUPPORT CHANGING ON THE FLY
+  //const { width, height } = useWindowDimensions();
+
   const [lecture, setLectures] = useState([]);
   const [authors, setAuthors] = useState([]);
 

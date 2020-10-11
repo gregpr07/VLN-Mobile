@@ -42,8 +42,10 @@ class Author(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=150)
-    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
-    image = models.ImageField(null=True, blank=True, upload_to="image/category")
+    parent = models.ForeignKey(
+        'self', null=True, blank=True, on_delete=models.CASCADE)
+    image = models.ImageField(null=True, blank=True,
+                              upload_to="image/category")
 
     def get_children(self):
         return Category.objects.filter(parent=self).all()
@@ -67,52 +69,11 @@ class Category(models.Model):
         return self.name
 
 
-class Lecture(models.Model):
-    title = models.CharField(max_length=500)
-
-    description = models.TextField(max_length=1000, blank=True)
-
-    views = models.IntegerField()  # ! to je treba narest da sam skalkulera nekak
-    author = models.ForeignKey(
-        Author, on_delete=models.CASCADE, related_name='lectures_author')
-
-    published = models.DateField()
-
-    thumbnail = models.URLField()
-
-    video = models.URLField()
-    audio = models.URLField()
-
-    categories = models.ManyToManyField(to=Category, blank=True)
-
-    stargazers = models.ManyToManyField(to=UserModel, blank=True)
-
-    def get_events(self):
-        return Event.objects.filter(lectures=self)
-
-    def __str__(self):
-        return self.title
-
-
-class Slide(models.Model):
-    lecture = models.ForeignKey(
-        Lecture, on_delete=models.CASCADE, related_name='slides')
-    timestamp = models.IntegerField()
-    image = models.URLField(null=True)
-
-    class Meta:
-        ordering = ['lecture', 'timestamp']
-
-    def __str__(self):
-        return str(self.lecture.title) + ' at ' + str(self.timestamp)
-
-
 class Event(models.Model):
     title = models.CharField(max_length=256)
     description = models.CharField(max_length=1028)  # size!
     image = models.ImageField(null=True, blank=True, upload_to="image/event")
 
-    lectures = models.ManyToManyField(to=Lecture, blank=True)
     lectures_order = ArrayField(models.IntegerField(), null=True, blank=True)
 
     def get_categories(self):  # this works, but should be improved
@@ -136,6 +97,49 @@ class Event(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Lecture(models.Model):
+    title = models.CharField(max_length=500)
+
+    description = models.TextField(max_length=5000, blank=True)
+
+    views = models.IntegerField()  # ! to je treba narest da sam skalkulera nekak
+    author = models.ForeignKey(
+        Author, on_delete=models.CASCADE, related_name='lectures_author')
+
+    published = models.DateField()
+
+    thumbnail = models.URLField()
+
+    video = models.URLField()
+    audio = models.URLField()
+
+    categories = models.ManyToManyField(to=Category, blank=True)
+
+    stargazers = models.ManyToManyField(to=UserModel, blank=True)
+
+    event = models.ForeignKey(
+        Event, blank=True, null=True, related_name='lectures', on_delete=models.SET_NULL)
+
+    def get_events(self):
+        return Event.objects.filter(lectures=self)
+
+    def __str__(self):
+        return self.title
+
+
+class Slide(models.Model):
+    lecture = models.ForeignKey(
+        Lecture, on_delete=models.CASCADE, related_name='slides')
+    timestamp = models.IntegerField()
+    image = models.URLField(null=True)
+
+    class Meta:
+        ordering = ['lecture', 'timestamp']
+
+    def __str__(self):
+        return str(self.lecture.title) + ' at ' + str(self.timestamp)
 
 
 class Playlist(models.Model):
