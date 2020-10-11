@@ -32,6 +32,21 @@ class Category(models.Model):
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
     image = models.ImageField(null=True, blank=True, upload_to="image/category")
 
+    def get_children(self):
+        return Category.objects.filter(parent=self).all()
+
+    def get_authors(self):  # this works, but should be improved
+        authors = set()
+
+        for lecture in Lecture.objects.filter(categories=self):
+            if lecture.author not in authors:
+                authors.add(lecture.author)
+
+        return authors
+
+    def get_lectures(self):
+        return Lecture.objects.filter(categories=self).all()
+
     class Meta:
         verbose_name_plural = "categories"
 

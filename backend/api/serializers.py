@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from rest_framework.serializers import ListSerializer
 
 from api.models import UserModel, Lecture, Slide, Note, Author, Event, Playlist, Category
 
@@ -48,6 +49,16 @@ class AuthorSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        serialized_data = super().to_representation(instance)
+        serialized_data["children"] = SimpleCategorySerializer(instance.get_children(), many=True, read_only=True).data
+        serialized_data["authors"] = AuthorSerializer(instance.get_authors(), many=True).data
+        serialized_data["lectures"] = SimpleLectureSerializer(instance.get_lectures(), many=True,
+                                                              context={'request': self.context['request']}).data
+
+        return serialized_data
+
     class Meta:
         model = Category
         fields = '__all__'
@@ -80,6 +91,12 @@ class LectureSerializer(serializers.ModelSerializer):
         model = Lecture
         fields = ('id', 'author', 'title', 'description', 'views', 'published', 'thumbnail',
                   'video', 'audio', 'categories')
+
+
+class SimpleLectureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Lecture
+        fields = ('id', 'title')
 
 
 class SlideSerializer(serializers.ModelSerializer):
