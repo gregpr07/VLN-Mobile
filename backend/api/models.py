@@ -23,6 +23,25 @@ class Author(models.Model):
 
     views = models.IntegerField()
 
+    def get_lectures(self):
+        return Lecture.objects.filter(author=self).all()
+
+    def get_categories(self):
+        print("called")
+
+        categories = set()
+
+        for lecture in Lecture.objects.filter(author=self).all():
+            print(self.name + "->" + str(lecture))
+
+            for category in lecture.categories.all():
+                print(category)
+
+                if category not in categories:
+                    categories.add(category)
+
+        return categories
+
     def __str__(self):
         return f'{self.name}'
 
