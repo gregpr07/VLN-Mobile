@@ -27,16 +27,10 @@ class Author(models.Model):
         return Lecture.objects.filter(author=self).all()
 
     def get_categories(self):
-        print("called")
-
         categories = set()
 
         for lecture in Lecture.objects.filter(author=self).all():
-            print(self.name + "->" + str(lecture))
-
             for category in lecture.categories.all():
-                print(category)
-
                 if category not in categories:
                     categories.add(category)
 
@@ -92,6 +86,9 @@ class Lecture(models.Model):
     categories = models.ManyToManyField(to=Category, blank=True)
 
     stargazers = models.ManyToManyField(to=UserModel, blank=True)
+
+    def get_events(self):
+        return Event.objects.filter(lectures=self)
 
     def __str__(self):
         return self.title
