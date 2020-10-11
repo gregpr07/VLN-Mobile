@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from api.models import UserModel, Lecture, Slide, Note, Author, Event, Playlist
+from api.models import UserModel, Lecture, Slide, Note, Author, Event, Playlist, Category
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -45,6 +45,12 @@ class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
         fields = ('id', 'name', 'image', 'views')
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'
 
 
 class LectureSerializer(serializers.ModelSerializer):
