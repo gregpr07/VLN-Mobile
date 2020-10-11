@@ -31,6 +31,7 @@ const videoReducer = (
     videoRef: null,
     audioRef: new Audio.Sound(),
     showNotes: false,
+    playbackSpeed: 1,
   },
   action
 ) => {
@@ -39,6 +40,8 @@ const videoReducer = (
       return { ...state, videoID: action.videoID };
     case "VIDEO_REF":
       return { ...state, videoRef: action.videoRef };
+    case "PLAYBACK_SPEED":
+      return { ...state, playbackSpeed: action.playbackSpeed };
     default:
       return state;
   }

@@ -94,7 +94,6 @@ const SignOutScreen = ({ token, removeUserToken }: any) => {
           Sign out
         </Text>
       </TouchableOpacity>
-      <Text style={{ color: colors.text }}>{token.token}</Text>
     </View>
   );
 };

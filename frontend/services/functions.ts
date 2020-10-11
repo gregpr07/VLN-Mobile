@@ -57,6 +57,10 @@ interface note {
   timestamp: number;
 }
 
+export function numberWithCommas(x: number) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 export function compare(a: note, b: note) {
   // Use toUpperCase() to ignore character casing
   const bandA = a.timestamp;

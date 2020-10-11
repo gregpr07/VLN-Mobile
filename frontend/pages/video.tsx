@@ -16,6 +16,8 @@ import {
 
 import Modal from "react-native-modal";
 
+import { Audio } from "expo-av";
+
 import Constants from "expo-constants";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -33,9 +35,12 @@ const { width, height } = Dimensions.get("window");
 
 import { useTheme } from "@react-navigation/native";
 
-import VideoAudioComponent from "./video/video_audio_component";
-import RecommendedVids from "./video/recommendations";
+import VideoAudioComponent from "./video/Video_audio_component";
+import RecommendedVids from "./video/Recommendations";
 import Notes from "./video/Notes";
+import VideoHeader from "./video/VideoHeader";
+
+import { numberWithCommas } from "../services/functions";
 
 const videoHeight = (width / 16) * 9;
 
@@ -52,8 +57,8 @@ function VideoScreen({
   token,
   audioRef,
   videoID,
-  setVidID,
   videoRef,
+  playbackSpeed,
 }: any) {
   const { colors, dark } = useTheme();
 
@@ -66,19 +71,61 @@ function VideoScreen({
 
   useEffect(() => {
     if (videoID && videoRef) {
-      playVideoORAudio(initPager, 0);
+      playVideoORAudio(initPager, initPager);
     }
   }, [videoRef]);
 
+  useEffect(() => {
+    if (videoID && videoRef) {
+      setVideoAudioPreferences();
+    }
+  }, [playbackSpeed]);
+
+  async function setVideoAudioPreferences() {
+    let preferences = {
+      shouldPlay: true,
+      staysActiveInBackground: true,
+      shouldCorrectPitch: true,
+      pitchCorrectionQuality: Audio.PitchCorrectionQuality.Medium,
+      rate: playbackSpeed,
+    };
+
+    if (playbackSpeed !== 1) {
+      preferences = {
+        ...preferences,
+        shouldCorrectPitch: true,
+        pitchCorrectionQuality: Audio.PitchCorrectionQuality.Medium,
+      };
+    }
+
+    const audioplaying = (await audioRef.getStatusAsync()).isLoaded;
+    const videoplaying = (await videoRef.getStatusAsync()).isLoaded;
+
+    if (audioplaying) {
+      audioRef.setStatusAsync(preferences);
+    }
+    if (videoplaying) {
+      videoRef.setStatusAsync(preferences);
+    }
+  }
+
   // currently 0 is video 1 is audio but this might change
   async function playVideoORAudio(page: number, currentPositionMillis: number) {
-    const initStatus = {
+    let initStatus = {
       //! MAKE THIS YES
       shouldPlay: true,
       positionMillis: currentPositionMillis,
       staysActiveInBackground: true,
-      shouldCorrectPitch: true,
+      rate: playbackSpeed,
     };
+
+    if (playbackSpeed !== 1) {
+      initStatus = {
+        ...initStatus,
+        shouldCorrectPitch: true,
+        pitchCorrectionQuality: Audio.PitchCorrectionQuality.Medium,
+      };
+    }
 
     const audioplaying = (await audioRef.getStatusAsync()).isLoaded;
     const videoplaying = (await videoRef.getStatusAsync()).isLoaded;
@@ -132,7 +179,6 @@ function VideoScreen({
     if (videoRef) {
       console.log("orientation changed to " + isPortrait());
       const videoplaying = (await videoRef.getStatusAsync()).isLoaded;
-      console.log(videoplaying);
       if (videoplaying) {
         if (isPortrait()) {
           videoRef.dismissFullscreenPlayer();
@@ -148,14 +194,18 @@ function VideoScreen({
 
   const [showNotes, setShowNotes] = useState(false);
 
-  console.log(lecture);
-
   const Description = () => (
     <View style={styles.default_card}>
       <View style={{ flex: 1, flexDirection: "row" }}>
         <View>
           <Image
-            source={{ uri: "https://platform.x5gon.org/imgs/team/john.jpg" }}
+            //? Shows author image otherwise thumbhnail of the video
+            //? --> good because video thumbnails are mostly author heads
+            source={{
+              uri: lecture.author.image
+                ? lecture.author.image
+                : lecture.thumbnail,
+            }}
             style={{
               height: 75,
               width: 75,
@@ -176,7 +226,8 @@ function VideoScreen({
         </View>
         <View style={{ justifyContent: "center" }}>
           <Text style={styles.h5}>
-            <Text style={styles.gray}>views:</Text> {lecture.views}
+            <Text style={styles.gray}>views:</Text>{" "}
+            {numberWithCommas(lecture.views)}
           </Text>
           <Text style={styles.h5}>
             <Text style={styles.gray}>author:</Text> {lecture.author.name}
@@ -326,93 +377,6 @@ function VideoScreen({
     );
   };
 
-  const VideoHeader = () => {
-    const [modalVisible, setModalVisible] = useState(false);
-
-    const SettingsModal = () => (
-      <Modal
-        isVisible={modalVisible}
-        onSwipeComplete={() => setModalVisible(false)}
-        onBackButtonPress={() => setModalVisible(false)}
-        onBackdropPress={() => setModalVisible(false)}
-        swipeDirection={["left", "down"]}
-        animationIn="bounceInLeft"
-        animationOut="bounceOutLeft"
-      >
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <View
-            style={[
-              { height: 100, maxWidth: 250, margin: 0 },
-              styles.default_card,
-            ]}
-          >
-            <View
-              style={{
-                width: "100%",
-                flexDirection: "row",
-                paddingBottom: padding,
-              }}
-            >
-              <Text
-                style={[
-                  styles.h4,
-                  {
-                    color: colors.secondary,
-                    textAlign: "center",
-                    flex: 1,
-                    paddingTop: 2,
-                  },
-                ]}
-              >
-                Video settings
-              </Text>
-              <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <Ionicons name={"md-close"} size={20} color={colors.primary} />
-              </TouchableOpacity>
-            </View>
-            <Text style={{ color: colors.text }}>Playback speed</Text>
-          </View>
-        </View>
-      </Modal>
-    );
-
-    return (
-      <View style={{ flexDirection: "row" }}>
-        <Text
-          style={{
-            flex: 1,
-            fontSize: 18,
-
-            fontFamily: "SF-UI-regular",
-
-            color: colors.text,
-
-            paddingVertical: padding,
-          }}
-        >
-          {lecture.title}
-        </Text>
-        <TouchableOpacity
-          style={{ paddingHorizontal: padding / 2, paddingVertical: padding }}
-        >
-          <Ionicons name={"ios-star"} size={20} color={colors.text} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => setModalVisible(!modalVisible)}
-          style={{ paddingHorizontal: padding / 2, paddingVertical: padding }}
-        >
-          <Ionicons name={"ios-options"} size={20} color={colors.text} />
-        </TouchableOpacity>
-        <SettingsModal />
-      </View>
-    );
-  };
-
   const padding = 12;
   const styles = StyleSheet.create({
     container: {
@@ -525,7 +489,7 @@ function VideoScreen({
             paddingHorizontal: padding,
           }}
         >
-          <VideoHeader />
+          <VideoHeader styles={styles} padding={padding} lecture={lecture} />
         </Animated.View>
       )}
       {/* VideoAudio */}
@@ -536,6 +500,7 @@ function VideoScreen({
         videostyle={styles.video}
         playVideoORAudio={playVideoORAudio}
         slides={slides}
+        lecture={lecture}
       />
 
       {showNotes ? (
@@ -576,6 +541,7 @@ const mapStateToProps = (state) => ({
   videoID: state.video.videoID,
   audioRef: state.video.audioRef,
   videoRef: state.video.videoRef,
+  playbackSpeed: state.video.playbackSpeed,
 });
 
 const mapDispatchToProps = (dispatch) => ({

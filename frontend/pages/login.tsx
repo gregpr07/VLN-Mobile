@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import {
-  Button,
   StyleSheet,
   View,
   Text,
   TextInput,
   TouchableHighlight,
-  Image,
   Dimensions,
 } from "react-native";
 import { connect } from "react-redux";
@@ -90,15 +88,6 @@ const SignInScreen = ({ token, saveToken }: any) => {
 
   return (
     <View style={styles.container}>
-      <Image
-        source={
-          dark
-            ? require("../assets/icons/videolecture-net-dark.png")
-            : require("../assets/icons/videolecture-net-light.png")
-        }
-        resizeMode="contain"
-        style={{ maxHeight: 100, width: 300 }}
-      />
       <Text
         style={[
           styles.h3,

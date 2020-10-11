@@ -12,12 +12,7 @@ import {
   Dimensions,
   Button,
 } from "react-native";
-import {
-  YoutubeTime,
-  isoFormatDMY,
-  parseISOString,
-  shorterText,
-} from "../services/functions";
+import { shorterText, numberWithCommas } from "../services/functions";
 import Constants from "expo-constants";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -157,12 +152,12 @@ const SearchScreen = ({
           }}
         />
         <View style={{ flex: 4, padding: 6, alignContent: "center" }}>
-          <Text style={[styles.h4]}>{shorterText(item.title, 60)}</Text>
+          <Text style={[styles.h4]}>{shorterText(item.title, 75)}</Text>
           <View>
-            <Text style={[styles.h5, { color: colors.primary }]}>
+            <Text style={[styles.h5, { color: colors.secondary }]}>
               {item.author}
               <Separator />
-              {item.views}
+              {numberWithCommas(item.views)}
             </Text>
           </View>
         </View>
@@ -358,7 +353,9 @@ const SearchScreen = ({
       borderRadius: 15,
 
       marginHorizontal: padding,
-      maxWidth: 400,
+      maxWidth: 500,
+
+      flex: 1,
     },
   });
 
@@ -399,6 +396,7 @@ const SearchScreen = ({
           ListFooterComponent={() => <View style={{ marginBottom: padding }} />}
           //getNativeScrollRef={(ref) => (flatlistRef = ref)}
           keyboardDismissMode={"on-drag"}
+          numColumns={width / 600 > 1 ? 2 : 1}
         />
       </View>
       {/* ) : null} */}

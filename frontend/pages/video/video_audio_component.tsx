@@ -3,23 +3,20 @@ import {
   View,
   // Pressable,
   Animated,
-  Button,
   TouchableHighlight,
   FlatList,
-  Image,
   ImageBackground,
-  Text,
 } from "react-native";
 
 import { connect } from "react-redux";
 
 import ViewPager from "@react-native-community/viewpager";
-import { Video, Audio } from "expo-av";
+import { Video } from "expo-av";
 
 import { setVideoID, setVideoRef } from "../../services/actions";
 
 import { compare } from "../../services/functions";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { useTheme } from "@react-navigation/native";
 
 let component: any;
 
@@ -37,7 +34,10 @@ const VideoAudio = ({
   audioRef,
   playVideoORAudio,
   slides,
+  lecture,
 }: any) => {
+  const { colors, dark } = useTheme();
+
   const getCurrentSlide = () => {
     const newslides = slides
       ? slides.results
@@ -45,7 +45,7 @@ const VideoAudio = ({
           .filter((slide) => slide.timestamp < currentPositionMillis)
       : [];
     if (!newslides.length) {
-      return 0;
+      return null;
     }
     return newslides.length - 1;
   };
@@ -57,7 +57,7 @@ const VideoAudio = ({
     //! change timestamp
     //handleSlideChange();
     const gotSlide = getCurrentSlide();
-    if (gotSlide !== currentSlide && slidesRef) {
+    if (gotSlide !== currentSlide && gotSlide !== null && slidesRef) {
       //setCurrSlide(gotSlide);
 
       console.log("slide should change to: " + gotSlide);
@@ -107,7 +107,7 @@ const VideoAudio = ({
         source={{
           uri: item.image,
         }}
-        style={videostyle}
+        style={[videostyle, { backgroundColor: colors.background }]}
         resizeMode="contain"
       />
     );
@@ -154,26 +154,33 @@ const VideoAudio = ({
           handleVideoAudioChange(e.nativeEvent.position);
         }}
       >
-        <View key="0">
+        <ImageBackground
+          key="0"
+          source={
+            dark
+              ? require("../../assets/icons/videolecture-net-dark.png")
+              : require("../../assets/icons/videolecture-net-light.png")
+          }
+          resizeMode="contain"
+        >
           <Video
             ref={(component) => _handleVideoRef(component)}
-            /*             source={{
-              uri:
-                "http://hydro.ijs.si/v017/1e/dzsgmwtdhya3gbrgyuw4sgjltupqziev.mp4",
-            }} */
-            /*             posterSource={{
-              uri:
-                "http://hydro.ijs.si/v017/26/ezjkw3457s667gha3tjyoun647iwbqqu.jpg",
-            }} */
-            resizeMode={Video.RESIZE_MODE_COVER}
-            usePoster={true}
-            shouldPlay={true}
             //isLooping={false}
             style={videostyle}
             useNativeControls={true}
           />
-        </View>
-        <AudioSlides key="1" />
+        </ImageBackground>
+        <ImageBackground
+          key="1"
+          source={
+            dark
+              ? require("../../assets/icons/videolecture-net-dark.png")
+              : require("../../assets/icons/videolecture-net-light.png")
+          }
+          resizeMode="contain"
+        >
+          <AudioSlides />
+        </ImageBackground>
       </ViewPager>
     </Animated.View>
   );

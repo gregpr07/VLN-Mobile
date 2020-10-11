@@ -73,6 +73,14 @@ export const videoRef = (videoRef) => ({
   videoRef,
 });
 
+export const playbackSpeed = (playbackSpeed) => ({
+  type: "PLAYBACK_SPEED",
+  playbackSpeed,
+});
+
 export const setVideoID = (data) => (dispatch) => dispatch(videoID(data));
 
 export const setVideoRef = (ref) => (dispatch) => dispatch(videoRef(ref));
+
+export const setPlaybackSpeed = (speed) => (dispatch) =>
+  dispatch(playbackSpeed(speed));
