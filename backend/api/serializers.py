@@ -63,7 +63,8 @@ class LectureSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lecture
-        fields = '__all__'
+        fields = ('id', 'author', 'title', 'description', 'views', 'published', 'thumbnail',
+                  'video', 'audio', 'categories')
 
 
 class SlideSerializer(serializers.ModelSerializer):
