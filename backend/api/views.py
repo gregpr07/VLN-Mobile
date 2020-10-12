@@ -8,13 +8,21 @@ from rest_framework.viewsets import ModelViewSet
 
 from api.models import UserModel, Lecture, Note, Slide, Author, Event, Playlist, Category
 from api.serializers import UserModelSerializer, LectureSerializer, NoteSerializer, SlideSerializer, AuthorSerializer, \
-    EventSerializer, PlaylistSerializer, CategorySerializer
+    EventSerializer, PlaylistSerializer, CategorySerializer, SimpleAuthorSerializer, SimpleCategorySerializer, \
+    SimpleLectureSerializer, SimpleEventSerializer
 
 
 # Custom ViewSet
 class SimpleViewSet(mixins.RetrieveModelMixin,
                     mixins.ListModelMixin,
                     viewsets.GenericViewSet):
+
+    def get_serializer_class(self):
+        if hasattr(self, 'action_serializers'):
+            return self.action_serializers.get(self.action, self.serializer_class)
+
+        return super(SimpleViewSet, self).get_serializer_class()
+
     pass
 
 
@@ -37,6 +45,11 @@ class AuthorViewSet(SimpleViewSet):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
 
+    action_serializers = {
+        'retrieve': AuthorSerializer,
+        'list': SimpleAuthorSerializer,
+    }
+
     @action(detail=False)
     def most_viewed(self, request, *args, **kwargs):
         queryset = self.queryset.order_by("-views")
@@ -47,10 +60,20 @@ class CategoryViewSet(SimpleViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
+    action_serializers = {
+        'retrieve': CategorySerializer,
+        'list': SimpleCategorySerializer,
+    }
+
 
 class LectureViewSet(SimpleViewSet):
     queryset = Lecture.objects.all()
     serializer_class = LectureSerializer
+
+    action_serializers = {
+        'retrieve': LectureSerializer,
+        'list': SimpleLectureSerializer,
+    }
 
     @action(detail=False)
     def most_viewed(self, request, *args, **kwargs):
@@ -81,6 +104,11 @@ class SlideViewSet(SimpleViewSet):
 class EventViewSet(SimpleViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+
+    action_serializers = {
+        'retrieve': EventSerializer,
+        'list': SimpleEventSerializer,
+    }
 
 
 class PlaylistViewSet(ModelViewSet):
