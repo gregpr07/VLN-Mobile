@@ -64,8 +64,11 @@ fetch("http://127.0.0.1:8000/api/note/lecture/1/", requestOptions)
 1. Detail (http://127.0.0.1:8000/api/lecture/lecture_id/)
 1. Most viewed lectures (http://127.0.0.1:8000/api/lecture/most_viewed/)
 1. Most starred lectures (http://127.0.0.1:8000/api/lecture/most_starred/)
+1. Latest lectures (http://127.0.0.1:8000/api/lecture/latest/)
 1. :warning: Star (http://127.0.0.1:8000/api/star/lecture_id/)
 1. :warning: Unstar (http://127.0.0.1:8000/api/unstar/lecture_id/)
+
+:warning: If you're logged in List & Detail will also return 'starred' boolean field, which let's you know if the user starred the lecture.
 
 ### Slide
 1. List (http://127.0.0.1:8000/api/slide/)

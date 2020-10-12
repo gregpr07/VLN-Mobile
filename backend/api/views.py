@@ -62,6 +62,11 @@ class LectureViewSet(SimpleViewSet):
         queryset = self.queryset.annotate(count=Count("stargazers")).order_by("-count")
         return list_mixin(self, queryset)
 
+    @action(detail=False)
+    def latest(self, request, *args, **kwargs):
+        queryset = self.queryset.order_by("-published")
+        return list_mixin(self, queryset)
+
 
 class SlideViewSet(SimpleViewSet):
     queryset = Slide.objects.all()
