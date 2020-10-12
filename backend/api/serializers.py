@@ -88,8 +88,29 @@ class SimpleCategorySerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
+class EventSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        serialized_data = super().to_representation(instance)
+        serialized_data["categories"] = instance.get_categories()
+        serialized_data["authors"] = instance.get_authors()
+
+        return serialized_data
+
+    class Meta:
+        model = Event
+        fields = '__all__'
+
+
+class SimpleEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ('id', 'title')
+
+
 class LectureSerializer(serializers.ModelSerializer):
     author = AuthorSerializer()
+    event = SimpleEventSerializer()
     categories = SimpleCategorySerializer(many=True, read_only=True)
 
     def to_representation(self, instance):
@@ -121,26 +142,6 @@ class SlideSerializer(serializers.ModelSerializer):
     class Meta:
         model = Slide
         fields = '__all__'
-
-
-class EventSerializer(serializers.ModelSerializer):
-
-    def to_representation(self, instance):
-        serialized_data = super().to_representation(instance)
-        serialized_data["categories"] = instance.get_categories()
-        serialized_data["authors"] = instance.get_authors()
-
-        return serialized_data
-
-    class Meta:
-        model = Event
-        fields = '__all__'
-
-
-class SimpleEventSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Event
-        fields = ('id', 'title')
 
 
 class PlaylistSerializer(serializers.ModelSerializer):
