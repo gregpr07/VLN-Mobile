@@ -97,8 +97,6 @@ class LectureSerializer(serializers.ModelSerializer):
         user = request.user
 
         serialized_data = super().to_representation(instance)
-        serialized_data["events"] = SimpleEventSerializer(instance.get_events(), many=True,
-                                                          context={'request': self.context['request']}).data
         serialized_data["published"] = instance.published.strftime("%b %d, %Y")
         serialized_data["stargazer_count"] = instance.stargazers.all().count()
 
@@ -110,7 +108,7 @@ class LectureSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lecture
         fields = ('id', 'author', 'title', 'description', 'views', 'published', 'thumbnail',
-                  'video', 'audio', 'categories')
+                  'video', 'audio', 'categories', 'event')
 
 
 class SimpleLectureSerializer(serializers.ModelSerializer):
