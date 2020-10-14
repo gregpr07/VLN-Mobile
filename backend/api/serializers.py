@@ -105,7 +105,7 @@ class EventSerializer(serializers.ModelSerializer):
 class SimpleEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
-        fields = ('id', 'title')
+        fields = ('id', 'title', 'image')
 
 
 class LectureSerializer(serializers.ModelSerializer):
