@@ -137,6 +137,7 @@ const VideoAudio = ({
     }
   };
 
+  //console.log(SpringAnim)
   return (
     <Animated.View
       style={{
