@@ -198,7 +198,7 @@ function VideoScreen({
 
   const [showNotes, setShowNotes] = useState(false);
 
-  const Description = () => (
+  const Description = () => lecture.author ? (
     <View style={styles.default_card}>
       <View style={{ flex: 1, flexDirection: "row" }}>
         <View>
@@ -247,7 +247,7 @@ function VideoScreen({
         </View>
       </View>
     </View>
-  );
+  ): null;
 
   //* NOTES STUFF
   const parent = navigation.dangerouslyGetParent();

@@ -34,6 +34,7 @@ const VideoAudio = ({
   audioRef,
   playVideoORAudio,
   slides,
+  videoID,
   lecture,
 }: any) => {
   const { colors, dark } = useTheme();
@@ -83,7 +84,7 @@ const VideoAudio = ({
   const slidesRef = useRef(null);
 
   const handleVideoAudioChange = (pos: number) => {
-    if (videoRef) {
+    if (videoRef && videoID) {
       playVideoORAudio(pos, currentPositionMillis);
     }
   };

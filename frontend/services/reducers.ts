@@ -35,7 +35,7 @@ export interface videoState {
 
 const videoReducer = (
   state = {
-    videoID: 10252,
+    videoID: null,
     videoRef: null,
     audioRef: new Audio.Sound(),
     showNotes: false,

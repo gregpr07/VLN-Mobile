@@ -86,5 +86,3 @@ class AuthorDocument(Document):
             'id',
             'name',
         ]
-
-        related_models = [UserModel]
