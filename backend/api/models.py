@@ -18,6 +18,7 @@ class Author(models.Model):
 
     name = models.CharField(max_length=100, null=True)
     # last_name = models.CharField(max_length=100, null=True)
+    description = models.TextField(max_length=1000, blank=True, null=True)
 
     image = models.ImageField(null=True, blank=True, upload_to="image/author")
 

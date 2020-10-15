@@ -500,7 +500,6 @@ function VideoScreen({
         </Animated.View>
       )}
 
-      <View style={{}}>
         {/* VideoAudio */}
 
         <VideoAudioComponent
@@ -540,7 +539,7 @@ function VideoScreen({
             />
           </ScrollView>
         )}
-      </View>
+
 
       {showNotes ? null : <SwitchToNotes />}
     </View>

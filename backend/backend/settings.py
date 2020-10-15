@@ -110,6 +110,10 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20,
 }
 
+REST_KNOX = {
+    'TOKEN_TTL': None,
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/

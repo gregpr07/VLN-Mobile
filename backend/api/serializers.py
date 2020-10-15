@@ -55,7 +55,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Author
-        fields = ('id', 'name', 'image', 'views')
+        fields = ('id', 'name', 'description', 'image', 'views')
 
 
 class SimpleAuthorSerializer(serializers.ModelSerializer):
