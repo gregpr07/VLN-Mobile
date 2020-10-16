@@ -104,7 +104,8 @@ class Command(BaseCommand):
     def get_lecture_video(self, slug):
 
         cursor.execute(
-            f"SELECT * FROM storage_file WHERE path::TEXT LIKE '%{slug}_01%' AND path::TEXT LIKE '%_h264_%' ORDER BY size DESC")
+            # only select hydro server
+            f"SELECT * FROM storage_file WHERE ((path::TEXT LIKE '/mnt/hydro/video/scratch/{slug}_01%' AND path::TEXT LIKE '%_h264_%') OR LOWER(path)::TEXT LIKE LOWER('%{slug}_01.mp4%')) AND server_id = '8' ORDER BY size DESC")
 
         video = cursor.fetchone()
 
@@ -113,7 +114,7 @@ class Command(BaseCommand):
     def get_lecture_thumbnail(self, slug):
         """ try: """
         cursor.execute(
-            f"SELECT * FROM storage_file WHERE path::TEXT LIKE '%{slug}%' AND ext::TEXT LIKE 'jpg' ORDER BY size")
+            f"SELECT * FROM storage_file WHERE path::TEXT LIKE '%{slug}%' AND ext::TEXT LIKE 'jpg' AND server_id = '8' ORDER BY size")
         img = cursor.fetchone()
 
         return self.makeurl(img)
@@ -281,8 +282,8 @@ class Command(BaseCommand):
 
         # print('test')
 
-        """ lec = 'fin_grobelnik_uvod_v_velike_podatke'
+        """lec = 'eswc09_munoz_ess'
         print(self.get_lecture_video(lec))
-        print(self.get_lecture_thumbnail(lec)) """
+        print(self.get_lecture_thumbnail(lec))"""
 
         server.stop()
