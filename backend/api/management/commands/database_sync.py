@@ -76,7 +76,7 @@ class Command(BaseCommand):
         return Author.objects.get(id=author_id)
 
     def makeurl(self, video):
-        url = server_host + '/' + \
+        url = 'http://' + server_host + '/' + \
             storage_volumes[video[-2]] + '/' + \
             str(video[-4]) + '/' + video[2] + '.' + video[-3]
 
@@ -103,13 +103,15 @@ class Command(BaseCommand):
             "SELECT * FROM vl_lecture WHERE (\"enabled\" = 'true') AND (\"type\" = 'vl') AND (\"public\" = 'true')")
         lectures = cursor.fetchall()
 
+        added = 0
+        already_there = 0
+
         for lecture in tqdm(lectures):
             lec_id = lecture[0]
 
-            print(lec_id)
-
             try:
                 Lecture.objects.get(id=lec_id)
+                already_there += 1
             except:
                 slug = lecture[1]
                 title = lecture[2]
@@ -128,8 +130,12 @@ class Command(BaseCommand):
                                            author=author, video=video_url, published=published,
                                            thumbnail=thumbnail, views=666, audio='https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3'
                                            )
+
+                    added += 1
+
                 except Exception as e:
                     pass
+        print(f'Added {added} lectures and updated {already_there} lectures')
 
     def get_authors(self):
         cursor.execute("SELECT * FROM vl_author")
