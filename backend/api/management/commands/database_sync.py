@@ -232,6 +232,40 @@ class Command(BaseCommand):
 
         return True
 
+    def connect_categories_lectures(self):
+        cursor.execute("Select * FROM categories_member LIMIT 0")
+        cols = [desc[0] for desc in cursor.description]
+
+        print(cols)
+
+        connected = 0
+        error = 0
+
+        cursor.execute(
+            "SELECT * FROM categories_member WHERE visible = 'true' ")
+
+        print('Connecting categories to lectures')
+
+        for member in tqdm(cursor.fetchall()):
+            lec_id = member[cols.index('lecture_id')]
+            cat_id = member[cols.index('category_id')]
+
+            try:
+                lec = Lecture.objects.get(id=lec_id)
+                cat = Category.objects.get(id=cat_id)
+
+                lec.categories.add(cat)
+
+                tqdm.write(f'Linked {lec_id} and {cat}')
+
+                connected += 1
+
+            except Exception as e:
+                error += 1
+                pass
+
+        print(f'Done connecting. Connected {connected}, errored {error}')
+
     def get_users(self,):
         cursor.execute(
             "SELECT * FROM auth_user WHERE (\"is_active\" = 'true') AND (\"password\"::TEXT LIKE '%pbkdf2_sha256%')")
@@ -274,11 +308,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        self.process_categories()
-        self.get_authors()
-        self.get_users()
+        # self.process_categories()
+        # self.get_authors()
+        # self.get_users()
 
-        self.get_lectures()
+        # self.get_lectures()
+
+        self.connect_categories_lectures()
 
         # print('test')
 

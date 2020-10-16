@@ -1,25 +1,45 @@
-import React, { useState } from "react";
-import { StyleSheet, View, Text, Image, FlatList } from "react-native";
+import React, { useState,useLayoutEffect,useEffect } from "react";
+import { StyleSheet, View, Text, Image, FlatList,TouchableOpacity } from "react-native";
 import { useTheme } from "@react-navigation/native";
 
-const Category = ({ navigation }: any) => {
+
+
+import { noHeadFetcher } from "../services/fetcher";
+
+
+const Category = ({ navigation,route }: any) => {
   const { colors, dark } = useTheme();
 
+  const {categoryID} = route.params
+
   const padding: number = 12;
-  const [eventinfo, setEventInfo] = useState();
+
+  const [category,setCategory] = useState(null)
+
+  //const { data: category } = useSWR(`category/${categoryID}/`, noHeadFetcher);
+  
+  useEffect(() => {
+    noHeadFetcher(`category/${categoryID}/`).then(json => setCategory(json))
+  }, [categoryID]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: category ? category.name : '',
+    });
+  }, [category])
 
   const SubCats = () => {
     //const speeds = [1, 1.25, 1.5, 2];
-    const subcats = ["big data", "machine learning", "programming"];
+    const subcats = category.children
 
     const Cat = ({ item }) => (
-      <View
+
+      <TouchableOpacity
+        onPress={() => navigation.push("category", { categoryID: item.id })}
         style={[
           styles.default_card,
           {
             flex: 1,
-            //maxWidth: 150,
-            //marginRight: index !== speeds.length - 1 ? padding : 0,
           },
         ]}
       >
@@ -30,15 +50,15 @@ const Category = ({ navigation }: any) => {
             fontFamily: "SF-UI-medium",
           }}
         >
-          {item}
+          {item.name}
         </Text>
-      </View>
+      </TouchableOpacity>
     );
     return (
       <FlatList
         data={subcats}
         renderItem={Cat}
-        keyExtractor={(item) => item}
+        keyExtractor={(item) => item.id.toString()}
         ItemSeparatorComponent={() => <View style={{ marginLeft: padding }} />}
         horizontal
         //snapToInterval={AUTHOR_WIDTH + SEPARATOR_WIDTH}
@@ -74,6 +94,8 @@ const Category = ({ navigation }: any) => {
       borderRadius: 12,
     },
   });
+
+  if (!category) return null
 
   return (
     <View>

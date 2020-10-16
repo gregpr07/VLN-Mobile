@@ -42,7 +42,7 @@ import { numberWithCommas } from "../services/functions";
 
 const initPager = 0;
 
-const TABLET_WIDTH = 700;
+const TABLET_WIDTH = 800;
 
 //TODO BUGS
 // - when going to audio and opening notes the continuity breakes
@@ -336,7 +336,7 @@ function VideoScreen({
   };
 
   const Categories = () => {
-    const cats = ["machine learning", "support vector machine", "mathematics"];
+    const cats = lecture.categories;
 
     const Cat = ({ item }) => (
       <TouchableOpacity
@@ -344,7 +344,7 @@ function VideoScreen({
           navigation.navigate("Home", {
             screen: "category",
             params: {
-              category: item,
+              categoryID: item.id,
             },
           })
         }
@@ -364,7 +364,7 @@ function VideoScreen({
               fontFamily: "SF-UI-medium",
             }}
           >
-            {item}
+            {item.name}
           </Text>
         </View>
       </TouchableOpacity>
@@ -373,7 +373,7 @@ function VideoScreen({
       <FlatList
         data={cats}
         renderItem={Cat}
-        keyExtractor={(item) => item}
+        keyExtractor={(item) => item.id.toString()}
         ItemSeparatorComponent={() => <View style={{ marginLeft: padding }} />}
         horizontal
         //snapToInterval={AUTHOR_WIDTH + SEPARATOR_WIDTH}

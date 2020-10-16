@@ -42,22 +42,7 @@ export default function HomeScreen({ navigation }: any) {
   const { width, height } = useWindowDimensions();
   const eventHeight = 190;
 
-  /*  type events = Array<{ id: string; image: string }>;
-  const events: events = [
-    {
-      id: "1",
-      image:
-        "https://www.tp-lj.si/imagine_cache/news_figure/uploads/open-data_600x315.jpg",
-    },
-    {
-      id: "2",
-      image: "http://hydro.ijs.si/v00a/5e/lyuqcgce6wrwiu3c2mxu3ont3jtte6fe.jpg",
-    },
-    {
-      id: "3",
-      image: "http://hydro.ijs.si/v00a/c3/ynn57ohwub3ifoj6heyav2akwjxy5m27.jpg",
-    },
-  ]; */
+
 
   const EventCard = ({ item, index }: any) => (
     <View key={index}>
@@ -215,21 +200,25 @@ export default function HomeScreen({ navigation }: any) {
         name: "computer science",
         image:
           "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F000%2F385%2F812%2Foriginal%2Fillustration-of-characters-and-computer-science-concept-vector.jpg&f=1&nofb=1",
+        id: 13
       },
       {
         name: "mathematics",
         image:
           "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F000%2F155%2F609%2Fnon_2x%2Ffree-vector-illustration-about-mathematics.jpg&f=1&nofb=1",
+        id:23
       },
       {
         name: "physics",
         image:
           "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmedia.istockphoto.com%2Fvectors%2Fsymbols-of-physics-vector-id174160850%3Fk%3D6%26m%3D174160850%26s%3D612x612%26w%3D0%26h%3D_VZkZAhx6MHcnXQkJZwrsTZf2Pbp42ThxybIogrFDCQ%3D&f=1&nofb=1",
+        id: 58
       },
       {
         name: "social sciences",
         image:
           "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fst.depositphotos.com%2F1845839%2F4823%2Fv%2F950%2Fdepositphotos_48230925-stock-illustration-word-cloud-social-science.jpg&f=1&nofb=1",
+        id: 611
       },
     ];
 
@@ -254,7 +243,7 @@ export default function HomeScreen({ navigation }: any) {
         }}
       >
         <TouchableOpacity
-          onPress={() => navigation.push("category", { category: item.name })}
+          onPress={() => navigation.push("category", { categoryID: item.id })}
         >
           <>
             <Image

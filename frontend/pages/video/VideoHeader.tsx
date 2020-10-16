@@ -20,10 +20,10 @@ const VideoHeader = ({
 }) => {
   const { colors, dark } = useTheme();
 
-  useEffect(() => {
+/*   useEffect(() => {
     console.log(playbackSpeed);
     console.log(lecture);
-  }, [playbackSpeed]);
+  }, [playbackSpeed]); */
 
   const [modalVisible, setModalVisible] = useState(false);
 

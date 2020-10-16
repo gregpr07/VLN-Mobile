@@ -266,7 +266,7 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
 
         <Tabs.Screen name="Search" component={SearchScreen} />
         <Tabs.Screen name="Profile" component={ProfileStackScreen} />
-        <Tabs.Screen name="DEV" component={DevOnlyComp} />
+        {/* <Tabs.Screen name="DEV" component={DevOnlyComp} /> */}
       </Tabs.Navigator>
       <StatusBar style={themeIsDark ? "light" : "dark"} />
     </NavigationContainer>

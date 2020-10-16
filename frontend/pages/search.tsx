@@ -101,7 +101,7 @@ const SearchScreen = ({
 
   //! only for faster dev
   useEffect(() => {
-    onChangeText("support vector machine");
+    onChangeText("complex");
   }, []);
 
   async function loadMoreLecs() {
@@ -141,9 +141,11 @@ const SearchScreen = ({
         style={styles.recommendation}
       >
         <Image
-          source={{
+          source={item.thumbnail ? {
             uri: item.thumbnail,
-          }}
+          } :  dark
+              ? require("../assets/icons/videolecture-net-dark.png")
+              : require("../assets/icons/videolecture-net-light.png")}
           style={{
             height: 80,
             maxWidth: (80 / 9) * 16,
@@ -151,7 +153,7 @@ const SearchScreen = ({
 
             borderBottomLeftRadius: 12,
             borderTopLeftRadius: 12,
-            resizeMode: "cover",
+            resizeMode: item.thumbnail ? "cover" : 'contain',
           }}
         />
         <View style={{ flex: 4, padding: 6, alignContent: "center" }}>
@@ -388,6 +390,7 @@ const SearchScreen = ({
 
       {/* <Authors /> */}
       {/* {lecture ? ( */}
+      
       <View style={{ flex: 1 }}>
         <FlatList
           ref={(ref) => (listflat = ref)}

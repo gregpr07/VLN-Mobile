@@ -18,17 +18,21 @@ import { BASEURL } from "../../services/fetcher";
 
 const { width, height } = Dimensions.get("window");
 
+import { useTheme } from "@react-navigation/native";
+
+
 const RecommendedVids = ({
   videoRef,
 
   audioRef,
   styles,
-  colors,
   lecture,
   setVidID,
   videoID,
   padding,
 }) => {
+const { colors, dark } = useTheme();
+
   const Separator = () => (
     <Text
       style={{
@@ -103,13 +107,17 @@ const RecommendedVids = ({
             }}
           >
             <Image
-              source={{ uri: recc.thumbnail }}
+                        source={recc.thumbnail ? {
+            uri: recc.thumbnail,
+          } :  dark
+              ? require("../../assets/icons/videolecture-net-dark.png")
+              : require("../../assets/icons/videolecture-net-light.png")}
               style={{
                 height: 60,
                 maxWidth: (60 / 9) * 16,
                 flex: 2,
                 borderRadius: 8,
-                resizeMode: "cover",
+                resizeMode: recc.thumbnail ? "cover" : 'contain',
               }}
             />
             <View
