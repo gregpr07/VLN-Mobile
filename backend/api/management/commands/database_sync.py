@@ -273,9 +273,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        # self.process_categories()
-        # self.get_authors()
-        # self.get_users()
+        self.process_categories()
+        self.get_authors()
+        self.get_users()
 
         self.get_lectures()
 
