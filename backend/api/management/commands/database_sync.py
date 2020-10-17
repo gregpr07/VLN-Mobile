@@ -74,7 +74,36 @@ class Command(BaseCommand):
     help = 'Sync database from VLN server'
 
     def add_arguments(self, parser):
-        pass
+        parser.add_argument(
+            '--all',
+            action='store_true',
+            help='Update/create everything in the database -> takes couple of hours (because of lecture updates)',
+        )
+        parser.add_argument(
+            '--users',
+            action='store_true',
+            help='Update/create users -> super fast',
+        )
+        parser.add_argument(
+            '--categories',
+            action='store_true',
+            help='Update/create categories -> super fast',
+        )
+        parser.add_argument(
+            '--authors',
+            action='store_true',
+            help='Update/create authors -> super fast',
+        )
+        parser.add_argument(
+            '--lectures',
+            action='store_true',
+            help='Update/create lectures -> insanely slow (couple of hours)',
+        )
+        parser.add_argument(
+            '--connectCategories',
+            action='store_true',
+            help='Connect categories ot existing lectures -> fast',
+        )
 
     def ToInt(self, num):
         try:
@@ -244,7 +273,8 @@ class Command(BaseCommand):
         cursor.execute(
             "SELECT * FROM categories_member WHERE visible = 'true' ")
 
-        print('Connecting categories to lectures')
+        self.stdout.write(self.style.SUCCESS(
+            'Connecting categories to lectures'))
 
         for member in tqdm(cursor.fetchall()):
             lec_id = member[cols.index('lecture_id')]
@@ -252,6 +282,10 @@ class Command(BaseCommand):
 
             try:
                 lec = Lecture.objects.get(id=lec_id)
+
+                if lec.categories.filter(id=cat_id).exists():
+                    continue
+
                 cat = Category.objects.get(id=cat_id)
 
                 lec.categories.add(cat)
@@ -264,14 +298,15 @@ class Command(BaseCommand):
                 error += 1
                 pass
 
-        print(f'Done connecting. Connected {connected}, errored {error}')
+        self.stdout.write('Done connecting. '+self.style.SUCCESS(
+            f'Connected {connected}. ')+self.style.ERROR(f'Errored {error}.'))
 
     def get_users(self,):
+        self.stdout.write(self.style.SUCCESS('Adding users'))
         cursor.execute(
             "SELECT * FROM auth_user WHERE (\"is_active\" = 'true') AND (\"password\"::TEXT LIKE '%pbkdf2_sha256%')")
         users = cursor.fetchall()
 
-        print('Adding users')
         updated = 0
         created = 0
 
@@ -304,20 +339,27 @@ class Command(BaseCommand):
 
         # first_name=user[2], last_name=user[3], email = user[4], last_login=user[9], date_joined=user[10]
 
-        print(f'Added {created} users and updated {updated} users')
+        self.stdout.write(self.style.SUCCESS(
+            f'Added {created} users and updated {updated} users'))
 
     def handle(self, *args, **options):
 
-        # self.process_categories()
-        # self.get_authors()
-        # self.get_users()
+        if options['categories'] or options['all']:
+            self.process_categories()
 
-        # self.get_lectures()
+        if options['authors'] or options['all']:
+            self.get_authors()
 
-        self.connect_categories_lectures()
+        if options['users'] or options['all']:
+            self.get_users()
 
-        # print('test')
+        if options['lectures'] or options['all']:
+            self.get_lectures()
 
+        if options['connectCategories'] or options['all']:
+            self.connect_categories_lectures()
+
+        print('Done')
         """lec = 'eswc09_munoz_ess'
         print(self.get_lecture_video(lec))
         print(self.get_lecture_thumbnail(lec))"""
