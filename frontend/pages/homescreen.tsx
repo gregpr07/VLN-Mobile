@@ -165,7 +165,7 @@ export default function HomeScreen({ navigation }: any) {
         style={{
           marginTop: 30,
 
-          marginBottom: 30,
+         
         }}
       >
         <View style={{ flexDirection: "row", marginHorizontal: padding }}>
@@ -282,6 +282,7 @@ export default function HomeScreen({ navigation }: any) {
         style={
           {
             //paddingHorizontal: padding,
+             marginTop: 30,
           }
         }
       >

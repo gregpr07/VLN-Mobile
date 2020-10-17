@@ -250,10 +250,11 @@ function VideoScreen({
   ): null;
 
   //* NOTES STUFF
-  const parent = navigation.dangerouslyGetParent();
+  //? this function doesn't work with latest expo
+/*   const parent = navigation.dangerouslyGetParent();
   parent.setOptions({
     tabBarVisible: !showNotes,
-  });
+  }); */
   const quitNotes = () => {
     setShowNotes(false);
     SpringIn();
