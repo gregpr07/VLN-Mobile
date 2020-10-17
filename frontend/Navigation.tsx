@@ -18,6 +18,8 @@ import LoginScreen from "./pages/login";
 import SettingScreen from "./pages/settings";
 import Category from "./pages/category";
 
+import DevOnlyComponent from "./pages/devcomponents";
+
 
 import { AppLoading } from "expo";
 
@@ -265,7 +267,7 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
 
         <Tabs.Screen name="Search" component={SearchScreen} />
         <Tabs.Screen name="Profile" component={ProfileStackScreen} />
-        {/* <Tabs.Screen name="DEV" component={DevOnlyComp} /> */}
+         <Tabs.Screen name="DEV" component={DevOnlyComponent} /> 
       </Tabs.Navigator>
       <StatusBar style={themeIsDark ? "light" : "dark"} />
     </NavigationContainer>
