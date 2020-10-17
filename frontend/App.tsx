@@ -8,5 +8,6 @@ import store from "./services/store";
 export default () => (
   <Provider store={store}>
     <App />
+
   </Provider>
-);
+); 

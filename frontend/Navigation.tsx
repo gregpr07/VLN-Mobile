@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, Button, TouchableOpacity, Image } from "react-native";
+import { TouchableOpacity} from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -18,7 +18,6 @@ import LoginScreen from "./pages/login";
 import SettingScreen from "./pages/settings";
 import Category from "./pages/category";
 
-import DevOnlyComp from "./pages/devcomponents";
 
 import { AppLoading } from "expo";
 
@@ -272,6 +271,8 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
     </NavigationContainer>
   );
 };
+
+
 
 const mapStateToProps = (state) => ({
   token: state.token,

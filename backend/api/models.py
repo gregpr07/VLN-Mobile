@@ -72,8 +72,11 @@ class Category(models.Model):
 
 class Event(models.Model):
     title = models.CharField(max_length=256)
-    description = models.CharField(max_length=1028)  # size!
-    image = models.ImageField(null=True, blank=True, upload_to="image/event")
+    description = models.CharField(max_length=2048)  # size!
+    #image = models.ImageField(null=True, blank=True, upload_to="image/event")
+    image = models.URLField(null=True, blank=True)
+    date = models.DateTimeField(null=True, blank=True)
+    caption = models.CharField(max_length=256, null=True, blank=True)
 
     lectures_order = ArrayField(models.IntegerField(), null=True, blank=True)
 
@@ -111,7 +114,7 @@ class Lecture(models.Model):
 
     published = models.DateField()
 
-    thumbnail = models.URLField()
+    thumbnail = models.URLField(blank=True, null=True,)
 
     video = models.URLField()
     audio = models.URLField()

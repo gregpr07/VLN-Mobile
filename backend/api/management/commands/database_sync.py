@@ -8,7 +8,7 @@ import pandas as pd
 
 from tqdm import tqdm
 
-from api.models import Category, Author, Lecture
+from api.models import Category, Author, Lecture, Event
 from django.contrib.auth.models import User
 
 
@@ -100,9 +100,19 @@ class Command(BaseCommand):
             help='Update/create lectures -> insanely slow (couple of hours)',
         )
         parser.add_argument(
+            '--events',
+            action='store_true',
+            help='Update/create events -> fast',
+        )
+        parser.add_argument(
+            '--connectEvents',
+            action='store_true',
+            help='Connect lectures to existing events -> fast',
+        )
+        parser.add_argument(
             '--connectCategories',
             action='store_true',
-            help='Connect categories ot existing lectures -> fast',
+            help='Connect categories to existing lectures -> fast',
         )
 
     def ToInt(self, num):
@@ -179,12 +189,12 @@ class Command(BaseCommand):
 
                     video_url = self.get_lecture_video(slug)
 
-                    thumbnail = self.get_lecture_thumbnail(slug)
-
                     try:
                         author = self.get_lecture_author_id(lec_id)
+                        thumbnail = self.get_lecture_thumbnail(slug)
                     except:
                         author = Author.objects.get(id=1)
+                        thumbnail = None
 
                     author.views += views
                     author.save()
@@ -226,13 +236,14 @@ class Command(BaseCommand):
 
         print('Adding authors')
         for author in tqdm(authors):
+
             aut_id = author[cols.index('id')]
             # print(author)
             try:
                 Author.objects.get(id=aut_id)
             except:
                 Author.objects.create(
-                    id=aut_id, name=author[cols.index('name')], views=0, description=descriptions[author[aut_id]])
+                    id=aut_id, name=author[cols.index('name')], views=0, description=descriptions[aut_id])
         print('Added all authors')
 
     def process_categories(self):
@@ -242,7 +253,6 @@ class Command(BaseCommand):
         df = pd.DataFrame(categories)
 
         cursor.execute("Select * FROM categories_category LIMIT 0")
-
         cols = [desc[0] for desc in cursor.description]
 
         # ? sort by url_path -> can create straight away
@@ -260,6 +270,78 @@ class Command(BaseCommand):
         print('Added all categories')
 
         return True
+
+    def getEventImage(self, slug):
+        cursor.execute(
+            f"SELECT * FROM storage_file WHERE server_id = '8' AND path:: TEXT LIKE '%{slug}'")
+        return self.makeurl(cursor.fetchone())
+
+    def get_events(self):
+
+        cursor.execute("Select * FROM vl_lecture LIMIT 0")
+        cols = [desc[0] for desc in cursor.description]
+
+        cursor.execute(
+            "SELECT * FROM vl_lecture WHERE public = 'true' AND type = 'evt' AND enabled = 'true'")
+
+        print('Adding events')
+        for event in tqdm(cursor.fetchall()):
+            title = event[cols.index('title')]
+            evt_id = event[cols.index('id')]
+            description = event[cols.index('desc')]
+            time = event[cols.index('time')]
+            caption = event[cols.index('caption')]
+
+            if not caption:
+                caption = title
+
+            """ try:
+                image = event[cols.index('thumb')]
+                self.getEventImage(image)
+            except: """
+            image = None
+
+            try:
+                Event.objects.get(id=evt_id)
+            except:
+                try:
+                    Event.objects.create(id=evt_id, title=title, description=description,
+                                         date=time, caption=caption, image=image)
+                except:
+                    pass
+
+        print('Added all events')
+
+    def connect_events_lectures(self):
+        cursor.execute("Select * FROM vl_ref LIMIT 0")
+        cols = [desc[0] for desc in cursor.description]
+
+        cursor.execute("SELECT * FROM vl_ref")
+        vl_refs = {}
+        for x in cursor.fetchall():
+            vl_refs[x[cols.index('id')]] = x[cols.index('parent_id')]
+
+        cursor.execute("Select * FROM vl_lecref LIMIT 0")
+        cols = [desc[0] for desc in cursor.description]
+
+        cursor.execute("SELECT * FROM vl_lecref")
+        vl_lec_refs = {}
+        for lec_ref in cursor.fetchall():
+            ref_ptr_id = lec_ref[cols.index('ref_ptr_id')]
+            vl_lec_refs[lec_ref[cols.index(
+                'lecture_id')]] = vl_refs[ref_ptr_id]
+
+        # print(vl_lec_refs[30518])
+
+        for lecture in Lecture.objects.all():
+            lec_evt_id = vl_lec_refs[lecture.id]
+            if not lecture.event:
+                try:
+                    evt = Event.objects.get(id=lec_evt_id)
+                    lecture.event = evt
+                    lecture.save()
+                except:
+                    pass
 
     def connect_categories_lectures(self):
         cursor.execute("Select * FROM categories_member LIMIT 0")
@@ -356,6 +438,12 @@ class Command(BaseCommand):
         if options['lectures'] or options['all']:
             self.get_lectures()
 
+        if options['events'] or options['all']:
+            self.get_events()
+
+        if options['connectEvents'] or options['all']:
+            self.connect_events_lectures()
+
         if options['connectCategories'] or options['all']:
             self.connect_categories_lectures()
 
@@ -363,5 +451,8 @@ class Command(BaseCommand):
         """lec = 'eswc09_munoz_ess'
         print(self.get_lecture_video(lec))
         print(self.get_lecture_thumbnail(lec))"""
+
+        # print(self.getEventImage('fmf_predavanja_seminarji.jpg'))
+        # self.connect_events_lectures()
 
         server.stop()
