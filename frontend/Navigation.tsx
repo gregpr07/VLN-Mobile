@@ -17,6 +17,7 @@ import Event from "./pages/event";
 import LoginScreen from "./pages/login";
 import SettingScreen from "./pages/settings";
 import Category from "./pages/category";
+import Author from "./pages/author";
 
 import DevOnlyComponent from "./pages/devcomponents";
 
@@ -31,6 +32,7 @@ import { getUserToken } from "./services/actions";
 import { colors, LightTheme, DarkTheme } from "./services/themes";
 
 import { useColorScheme } from "react-native-appearance";
+
 
 const Tabs = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -153,6 +155,10 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
         name="category"
         component={Category}
         options={({ route }) => ({ title: route.params.category })}
+      />
+            <HomeStack.Screen
+        name="author"
+        component={Author}
       />
     </HomeStack.Navigator>
   );

@@ -106,7 +106,12 @@ export default function HomeScreen({ navigation }: any) {
     const AUTHOR_WIDTH = 100;
     const SEPARATOR_WIDTH = 10;
     const RenderAuthor = ({ item, index }) => (
-      <View
+      <TouchableOpacity
+        onPress={() =>
+          navigation.push("author", {
+            authorID: item.id,
+          })
+        }
         style={{
           //paddingVertical: 6,
           width: AUTHOR_WIDTH,
@@ -149,7 +154,7 @@ export default function HomeScreen({ navigation }: any) {
           />
         </View>
         <Text style={[styles.h5, { color: colors.text }]}>{item.name}</Text>
-      </View>
+      </TouchableOpacity>
     );
 
     const AuthorSeparator = () => (

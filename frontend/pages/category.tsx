@@ -2,9 +2,9 @@ import React, { useState,useLayoutEffect,useEffect } from "react";
 import { StyleSheet, View, Text, Image, FlatList,TouchableOpacity } from "react-native";
 import { useTheme } from "@react-navigation/native";
 
-
-
 import { noHeadFetcher } from "../services/fetcher";
+
+import { ActivityView } from '../components/Components'
 
 
 const Category = ({ navigation,route }: any) => {
@@ -95,7 +95,7 @@ const Category = ({ navigation,route }: any) => {
     },
   });
 
-  if (!category) return null
+  if (!category) return <ActivityView color={colors.primary}/>
 
   return (
     <View>

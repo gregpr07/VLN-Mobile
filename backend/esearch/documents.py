@@ -8,6 +8,7 @@ class LectureDocument(Document):
     author = fields.ObjectField(properties={
         'name': fields.TextField(),
         'views': fields.IntegerField(),
+        'id': fields.IntegerField(),
     })
 
     event = fields.ObjectField(properties={

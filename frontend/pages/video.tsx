@@ -38,6 +38,8 @@ import VideoHeader from "./video/VideoHeader";
 
 import { numberWithCommas } from "../services/functions";
 
+import {Categories} from '../components/Components'
+
 //? using let because we don't want the screen to re-render because of video
 
 const initPager = 0;
@@ -336,53 +338,7 @@ function VideoScreen({
     }).start();
   };
 
-  const Categories = () => {
-    const cats = lecture.categories;
-
-    const Cat = ({ item }) => (
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate("Home", {
-            screen: "category",
-            params: {
-              categoryID: item.id,
-            },
-          })
-        }
-      >
-        <View
-          style={[
-            styles.default_card,
-            {
-              flex: 1,
-            },
-          ]}
-        >
-          <Text
-            style={{
-              textAlign: "center",
-              color: colors.secondary,
-              fontFamily: "SF-UI-medium",
-            }}
-          >
-            {item.name}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-    return (
-      <FlatList
-        data={cats}
-        renderItem={Cat}
-        keyExtractor={(item) => item.id.toString()}
-        ItemSeparatorComponent={() => <View style={{ marginLeft: padding }} />}
-        horizontal
-        //snapToInterval={AUTHOR_WIDTH + SEPARATOR_WIDTH}
-        showsHorizontalScrollIndicator={false}
-        decelerationRate={0}
-      />
-    );
-  };
+ 
 
   const padding = 12;
   const styles = StyleSheet.create({
@@ -526,7 +482,12 @@ function VideoScreen({
             showsVerticalScrollIndicator={false}
             style={{ paddingHorizontal: padding }}
           >
-            <Categories />
+            <Categories
+              cats={lecture.categories}
+              navigation={navigation}
+              colors={colors}
+              padding={padding}
+            />
 
             <Description />
 

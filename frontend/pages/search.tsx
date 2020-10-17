@@ -174,7 +174,15 @@ const SearchScreen = ({
     const AUTHOR_WIDTH = 100;
     const SEPARATOR_WIDTH = 10;
     const RenderAuthor = ({ item, index }) => (
-      <View
+      <TouchableOpacity
+         onPress={() =>
+          navigation.navigate("Home", {
+            screen: "author",
+            params: {
+              authorID: item.id,
+            },
+          })
+        }
         style={{
           //paddingVertical: 6,
           width: AUTHOR_WIDTH,
@@ -219,7 +227,7 @@ const SearchScreen = ({
         <Text style={[styles.h3, { color: colors.text, height: 34 }]}>
           {item.name}
         </Text>
-      </View>
+      </TouchableOpacity>
     );
 
     const AuthorSeparator = () => (

@@ -26,7 +26,8 @@ def formatAuthorResp(resp):
     for hit in resp:
         obj = {
             'name': hit.name,
-            'views': hit.views
+            'views': hit.views,
+            'id': hit.id
         }
         results.append(obj)
     return results
