@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from api.models import UserModel, Lecture, Slide, Note, Author, Event, Playlist, Category
+from api.models import Lecture, Slide, Note, Author, Event, Playlist, Category
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -34,12 +34,6 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'first_name', 'last_name')
-
-
-class UserModelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserModel
-        fields = '__all__'
 
 
 class AuthorSerializer(serializers.ModelSerializer):
@@ -122,7 +116,7 @@ class LectureSerializer(serializers.ModelSerializer):
         serialized_data["stargazer_count"] = instance.stargazers.all().count()
 
         if user.is_authenticated:
-            serialized_data["starred"] = user.usermodel in instance.stargazers.all()
+            serialized_data["starred"] = user in instance.stargazers.all()
 
         return serialized_data
 

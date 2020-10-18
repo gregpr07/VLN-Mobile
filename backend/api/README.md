@@ -50,10 +50,6 @@ fetch("http://127.0.0.1:8000/api/note/lecture/1/", requestOptions)
 
 ## Endpoints
 
-### UserModel
-1. List (http://127.0.0.1:8000/api/user/)
-1. Detail (http://127.0.0.1:8000/api/user/user_id/)
-
 ### Author
 1. List (http://127.0.0.1:8000/api/author/)
 1. Detail (http://127.0.0.1:8000/api/author/author_id/)
