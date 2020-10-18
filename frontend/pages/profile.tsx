@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
   Text,
   View,
@@ -18,21 +18,45 @@ import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 
 import { useTheme } from "@react-navigation/native";
+import {useSelector} from "react-redux";
 
 const padding = 24;
 export default function ProfileScreen({ navigation }) {
+
   const { colors, dark } = useTheme();
-  interface profileStats {
-    profileImage: string;
-    name: string;
-    title: string;
-  }
-  const profileStats: profileStats = {
-    profileImage:
-      "https://blogs.bmj.com/ebn/files/2015/11/Professor-Brendan-McCormack-low-res-2-683x1024.jpg",
-    name: "Stanko Novaković",
-    title: "M.I.T Professor",
-  };
+
+  const tokenState = useSelector(state => state.token);
+  const [userData, setUserData] = useState({
+      profileImage: "https://blogs.bmj.com/ebn/files/2015/11/Professor-Brendan-McCormack-low-res-2-683x1024.jpg",
+      name: "",
+      title: "",
+    }
+  );
+
+  useEffect(() => {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", `Token ${tokenState.token}`);
+
+    const requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+
+    fetch("http://vln-mobile.ijs.si/api/auth/user/", requestOptions)
+        .then(response => response.json())
+        .then(json => {
+          console.log("Fetching user data.");
+          console.log(json);
+          setUserData({
+            ...userData,
+            name: json.first_name + " " + json.last_name,
+            title: "@" + json.username,
+          })
+
+        })
+        .catch(error => console.log('error', error));
+  }, []);
 
   const Header = () => {
     const ProfileImage = () => (
@@ -48,7 +72,7 @@ export default function ProfileScreen({ navigation }) {
         }}
       >
         <Image
-          source={{ uri: profileStats.profileImage }}
+          source={{ uri: userData.profileImage }}
           style={{
             height: 150,
             width: 150,
@@ -155,8 +179,8 @@ export default function ProfileScreen({ navigation }) {
     <View>
       <Header />
       <View style={{ paddingTop: 15 }}>
-        <Text style={styles.h2}>{profileStats.name}</Text>
-        <Text style={[styles.h4]}>{profileStats.title}</Text>
+        <Text style={styles.h2}>{userData.name}</Text>
+        <Text style={[styles.h4]}>{userData.title}</Text>
       </View>
     </View>
   );
