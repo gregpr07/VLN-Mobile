@@ -24,7 +24,7 @@ import { useTheme } from "@react-navigation/native";
 import { BASEURL } from "../services/fetcher";
 
 import { connect } from "react-redux";
-import { setVideoID } from "../services/actions";
+import { setVideoID } from "../services/storage/actions";
 
 let CURRENT_PAGE_LEC: number;
 let LOADED_ALL_LEC: boolean;
@@ -390,7 +390,7 @@ const SearchScreen = ({
 
       {/* <Authors /> */}
       {/* {lecture ? ( */}
-      
+
       <View style={{ flex: 1 }}>
         <FlatList
           ref={(ref) => (listflat = ref)}

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, StyleSheet, View, Text } from "react-native";
 import { connect } from "react-redux";
-import { removeUserToken } from "../services/actions";
+import { removeUserToken } from "../services/storage/actions";
 import Constants from "expo-constants";
 import {
   TouchableHighlight,

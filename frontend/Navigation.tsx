@@ -26,7 +26,7 @@ import { AppLoading } from "expo";
 import * as Font from "expo-font";
 
 import { connect } from "react-redux";
-import { getUserToken } from "./services/actions";
+import { getUserToken } from "./services/storage/actions";
 
 import { colors, LightTheme, DarkTheme } from "./services/themes";
 
@@ -267,7 +267,7 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
 
         <Tabs.Screen name="Search" component={SearchScreen} />
         <Tabs.Screen name="Profile" component={ProfileStackScreen} />
-         <Tabs.Screen name="DEV" component={DevOnlyComponent} /> 
+         <Tabs.Screen name="DEV" component={DevOnlyComponent} />
       </Tabs.Navigator>
       <StatusBar style={themeIsDark ? "light" : "dark"} />
     </NavigationContainer>

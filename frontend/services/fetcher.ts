@@ -1,4 +1,4 @@
-import store from "./store";
+import store from "./storage/store";
 
 //export const BASEURL = "http://localhost:8000/";
 //export const BASEURL = "http://192.168.1.115:8000/";

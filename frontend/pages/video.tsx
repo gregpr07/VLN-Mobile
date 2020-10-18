@@ -27,7 +27,7 @@ import { fetcher } from "../services/fetcher";
 import useSWR from "swr";
 
 import { connect } from "react-redux";
-import { setVideoID } from "../services/actions";
+import { setVideoID } from "../services/storage/actions";
 
 import { useTheme } from "@react-navigation/native";
 
