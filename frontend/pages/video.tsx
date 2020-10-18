@@ -23,7 +23,7 @@ import Constants from "expo-constants";
 
 import { Ionicons } from "@expo/vector-icons";
 
-import { fetcher } from "../services/fetcher";
+import { fetcher, noHeadFetcher } from "../services/fetcher";
 import useSWR from "swr";
 
 import { connect } from "react-redux";
@@ -69,11 +69,11 @@ function VideoScreen({
   useEffect(() => {
     if (videoID) {
       setLoading(true);
-      fetcher("lecture/" + videoID).then((json) => {
+      noHeadFetcher("lecture/" + videoID).then((json) => {
         setLecture(json);
         setLoading(false);
       });
-      fetcher("slide/lecture/" + videoID).then((json) => setSlides(json));
+      noHeadFetcher("slide/lecture/" + videoID).then((json) => setSlides(json));
     }
   }, [videoID]);
 
@@ -98,84 +98,95 @@ function VideoScreen({
   }, [playbackSpeed]);
 
   async function setVideoAudioPreferences() {
-    let preferences = {
-      shouldPlay: true,
-      staysActiveInBackground: true,
-      shouldCorrectPitch: true,
-      pitchCorrectionQuality: Audio.PitchCorrectionQuality.Medium,
-      rate: playbackSpeed,
-    };
+    try {
+      console.log("cakked preferences");
 
-    if (playbackSpeed !== 1) {
-      preferences = {
-        ...preferences,
+      let preferences = {
+        shouldPlay: true,
+        staysActiveInBackground: true,
         shouldCorrectPitch: true,
         pitchCorrectionQuality: Audio.PitchCorrectionQuality.Medium,
+        rate: playbackSpeed,
       };
-    }
 
-    const audioplaying = (await audioRef.getStatusAsync()).isLoaded;
-    const videoplaying = (await videoRef.getStatusAsync()).isLoaded;
+      if (playbackSpeed !== 1) {
+        preferences = {
+          ...preferences,
+          shouldCorrectPitch: true,
+          pitchCorrectionQuality: Audio.PitchCorrectionQuality.Medium,
+        };
+      }
 
-    if (audioplaying) {
-      audioRef.setStatusAsync(preferences);
-    }
-    if (videoplaying) {
-      videoRef.setStatusAsync(preferences);
+      const audioplaying = (await audioRef.getStatusAsync()).isLoaded;
+      const videoplaying = (await videoRef.getStatusAsync()).isLoaded;
+
+      if (audioplaying) {
+        audioRef.setStatusAsync(preferences);
+      }
+      if (videoplaying) {
+        videoRef.setStatusAsync(preferences);
+      }
+    } catch (e) {
+      console.log("cant play");
     }
   }
 
   // currently 0 is video 1 is audio but this might change
   async function playVideoORAudio(page: number, currentPositionMillis: number) {
-    let initStatus = {
-      //! MAKE THIS YES
-      shouldPlay: true,
-      positionMillis: currentPositionMillis,
-      staysActiveInBackground: true,
-      rate: playbackSpeed,
-    };
-
-    if (playbackSpeed !== 1) {
-      initStatus = {
-        ...initStatus,
-        shouldCorrectPitch: true,
-        pitchCorrectionQuality: Audio.PitchCorrectionQuality.Medium,
+    console.log("playvideooraudio called");
+    try {
+      let initStatus = {
+        //! MAKE THIS YES
+        shouldPlay: true,
+        positionMillis: currentPositionMillis,
+        staysActiveInBackground: true,
+        rate: playbackSpeed,
       };
-    }
 
-    const audioplaying = (await audioRef.getStatusAsync()).isLoaded;
-    const videoplaying = (await videoRef.getStatusAsync()).isLoaded;
+      if (playbackSpeed !== 1) {
+        initStatus = {
+          ...initStatus,
+          shouldCorrectPitch: true,
+          pitchCorrectionQuality: Audio.PitchCorrectionQuality.Medium,
+        };
+      }
 
-    if (page === 0) {
-      if (audioplaying) {
-        await audioRef.unloadAsync();
-      }
-      console.log("loading video");
+      const audioplaying = (await audioRef.getStatusAsync()).isLoaded;
+      const videoplaying = (await videoRef.getStatusAsync()).isLoaded;
 
-      if (!videoplaying) {
-        await videoRef.loadAsync(
-          {
-            uri: lecture.video,
-          },
-          initStatus
-        );
-        console.log("video loaded");
+      if (page === 0) {
+        if (audioplaying) {
+          await audioRef.unloadAsync();
+        }
+        console.log("loading video");
+
+        if (!videoplaying) {
+          await videoRef.loadAsync(
+            {
+              uri: lecture.video,
+            },
+            initStatus
+          );
+          console.log("video loaded");
+        }
       }
-    }
-    if (page === 1) {
-      if (videoplaying) {
-        await videoRef.unloadAsync();
+      if (page === 1) {
+        if (videoplaying) {
+          await videoRef.unloadAsync();
+        }
+        console.log("loading audio");
+        if (!audioplaying) {
+          await audioRef.loadAsync(
+            {
+              uri: lecture.audio,
+            },
+            initStatus
+          );
+          console.log("audio loaded");
+        }
       }
-      console.log("loading audio");
-      if (!audioplaying) {
-        await audioRef.loadAsync(
-          {
-            uri: lecture.audio,
-          },
-          initStatus
-        );
-        console.log("audio loaded");
-      }
+    } catch (e) {
+      console.log("cant play");
     }
   }
 
@@ -196,21 +207,25 @@ function VideoScreen({
   const handleOrientation = async () => {
     if (videoRef) {
       console.log("orientation changed to " + isPortrait());
-      const videoplaying = (await videoRef.getStatusAsync()).isLoaded;
-      if (videoplaying) {
-        if (isPortrait()) {
-          videoRef.dismissFullscreenPlayer();
-        } else {
-          videoRef.presentFullscreenPlayer();
+      try {
+        const videoplaying = (await videoRef.getStatusAsync()).isLoaded;
+        if (videoplaying) {
+          if (isPortrait()) {
+            videoRef.dismissFullscreenPlayer();
+          } else {
+            videoRef.presentFullscreenPlayer();
+          }
         }
+      } catch (e) {
+        console.log("cant orientate");
       }
     }
   };
-  useEffect(() => {
+  /*   useEffect(() => {
     if (!isTablet) {
       handleOrientation();
     }
-  }, [orientation]);
+  }, [orientation]); */
 
   const [showNotes, setShowNotes] = useState(false);
 
@@ -432,7 +447,8 @@ function VideoScreen({
       isVisible={!videoID}
       //swipeDirection={["left", "down"]}
       animationIn="bounceInLeft"
-      animationOut="bounceOutLeft"
+      animationOut="fadeOut"
+      animationOutTiming={100}
       coverScreen={false}
       backdropOpacity={0.97}
       backdropColor={colors.card}

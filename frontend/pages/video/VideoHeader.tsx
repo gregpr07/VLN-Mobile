@@ -104,6 +104,9 @@ const VideoHeader = ({
 
       return <PlayerController />;
     };
+    /*     if (!modalVisible) {
+      return null;
+    } */
     return (
       <Modal
         isVisible={modalVisible}

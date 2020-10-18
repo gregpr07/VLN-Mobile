@@ -82,7 +82,7 @@ export default function HomeScreen({ navigation }: any) {
         >
           Events
         </Text>
-        <SafeAreaView>
+        {/*  <SafeAreaView>
           <Carousel
             data={events.results}
             renderItem={EventCard}
@@ -95,7 +95,7 @@ export default function HomeScreen({ navigation }: any) {
               paddingStart: padding,
             }}
           />
-        </SafeAreaView>
+        </SafeAreaView> */}
       </View>
     ) : null;
 
@@ -326,7 +326,7 @@ export default function HomeScreen({ navigation }: any) {
       }}
       showsVerticalScrollIndicator={false}
     >
-      {/*  <Header /> */}
+      <Header />
       <Authors />
       <Categories />
     </ScrollView>

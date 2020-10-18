@@ -20,10 +20,8 @@ const { width, height } = Dimensions.get("window");
 
 import { useTheme } from "@react-navigation/native";
 
-
 const RecommendedVids = ({
   videoRef,
-
   audioRef,
   styles,
   lecture,
@@ -31,7 +29,7 @@ const RecommendedVids = ({
   videoID,
   padding,
 }) => {
-const { colors, dark } = useTheme();
+  const { colors, dark } = useTheme();
 
   const Separator = () => (
     <Text
@@ -70,10 +68,14 @@ const { colors, dark } = useTheme();
   }, [lecture]);
 
   const handleAcceptRecc = async (id: number) => {
-    await videoRef.unloadAsync();
-    await audioRef.unloadAsync();
+    try {
+      await videoRef.unloadAsync();
+      await audioRef.unloadAsync();
 
-    setVidID(id);
+      setVidID(id);
+    } catch (e) {
+      console.log("cant accept");
+    }
   };
 
   return (
@@ -107,17 +109,21 @@ const { colors, dark } = useTheme();
             }}
           >
             <Image
-                        source={recc.thumbnail ? {
-            uri: recc.thumbnail,
-          } :  dark
-              ? require("../../assets/icons/videolecture-net-dark.png")
-              : require("../../assets/icons/videolecture-net-light.png")}
+              source={
+                recc.thumbnail
+                  ? {
+                      uri: recc.thumbnail,
+                    }
+                  : dark
+                  ? require("../../assets/icons/videolecture-net-dark.png")
+                  : require("../../assets/icons/videolecture-net-light.png")
+              }
               style={{
                 height: 60,
                 maxWidth: (60 / 9) * 16,
                 flex: 2,
                 borderRadius: 8,
-                resizeMode: recc.thumbnail ? "cover" : 'contain',
+                resizeMode: recc.thumbnail ? "cover" : "contain",
               }}
             />
             <View

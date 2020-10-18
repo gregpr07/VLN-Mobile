@@ -78,13 +78,17 @@ const VideoAudio = ({
   async function _handleVideoRef(ref: any) {
     if (videoRef !== ref && ref) {
       //ref.loadAsync()
-      ref.getStatusAsync().then((res) => {
-        component = ref;
-        setVidRef(ref);
+      try {
+        ref.getStatusAsync().then((res) => {
+          component = ref;
+          setVidRef(ref);
 
-        ref.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-        audioRef.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-      });
+          ref.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
+          audioRef.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
+        });
+      } catch (e) {
+        console.log("cant set video ref");
+      }
     }
   }
 
@@ -120,18 +124,23 @@ const VideoAudio = ({
       />
     );
 
-    if (slides && videoAudioPlay === 1) {
-      const slides_results = slides.results.map((res) => {
+    if (slides) {
+      /*       const slides_results = slides.results.map((res) => {
         return { image: res.image, id: res.id };
-      });
+      }); */
 
       return (
         //! write this by hand
         <TouchableHighlight onPress={handlePausePlay}>
           <FlatList
             ref={slidesRef}
-            data={slides_results}
+            data={slides.results}
             renderItem={RenderSlide}
+            style={[
+              videostyle,
+              videoAudioPlay === 1 ? null : { height: 0 },
+              { backgroundColor: colors.background },
+            ]}
             keyExtractor={(item) => item.image + item.id}
             onScrollToIndexFailed={(index) =>
               console.log("failed to scroll to " + index)
@@ -164,9 +173,13 @@ const VideoAudio = ({
         }}
       > */}
       <View
-        style={{
-          height: videoHeight, // - 2 * padding
-        }}
+        style={
+          videoAudioPlay === 1
+            ? { height: 0 }
+            : {
+                height: videoHeight, // - 2 * padding
+              }
+        }
       >
         {/*  <ImageBackground
           key="0"
@@ -180,10 +193,13 @@ const VideoAudio = ({
         <Video
           ref={(component) => _handleVideoRef(component)}
           //isLooping={false}
-          style={[videostyle, videoAudioPlay === 1 ? { height: 0 } : null]}
+          style={videostyle}
+          source={{ uri: lecture ? lecture.video : "" }}
           useNativeControls={true}
         />
-        {/*   </ImageBackground>
+      </View>
+
+      {/*   </ImageBackground>
         <ImageBackground 
           key="1"
           source={
@@ -193,9 +209,9 @@ const VideoAudio = ({
           }
           resizeMode="contain"
         >  */}
-        <AudioSlides />
-        {/* </ImageBackground> */}
-      </View>
+      <AudioSlides />
+      {/* </ImageBackground> */}
+
       {/* </ViewPager> */}
     </Animated.View>
   );
