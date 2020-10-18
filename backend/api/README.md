@@ -65,6 +65,7 @@ fetch("http://127.0.0.1:8000/api/note/lecture/1/", requestOptions)
 1. Most viewed lectures (http://127.0.0.1:8000/api/lecture/most_viewed/)
 1. Most starred lectures (http://127.0.0.1:8000/api/lecture/most_starred/)
 1. Latest lectures (http://127.0.0.1:8000/api/lecture/latest/)
+1. :warning: Starred (http://127.0.0.1:8000/api/starred/) (returns all user's starred lectures)
 1. :warning: Star (http://127.0.0.1:8000/api/star/lecture_id/)
 1. :warning: Unstar (http://127.0.0.1:8000/api/unstar/lecture_id/)
 
