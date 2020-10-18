@@ -48,5 +48,6 @@
   "private": true,
   "splash": {
     "image": "./assets/splash.png"
-  }
+  },
+  "homepage": "/frontend/"
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TouchableOpacity,Text} from "react-native";
+import { TouchableOpacity, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -20,7 +20,6 @@ import Author from "./pages/author";
 
 import DevOnlyComponent from "./pages/devcomponents";
 
-
 import { AppLoading } from "expo";
 
 import * as Font from "expo-font";
@@ -30,8 +29,7 @@ import { getUserToken } from "./services/actions";
 
 import { colors, LightTheme, DarkTheme } from "./services/themes";
 
-import { useColorScheme } from "react-native-appearance"; 
-
+import { useColorScheme } from "react-native-appearance";
 
 const Tabs = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -155,10 +153,7 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
         component={Category}
         options={({ route }) => ({ title: route.params.category })}
       />
-            <HomeStack.Screen
-        name="author"
-        component={Author}
-      />
+      <HomeStack.Screen name="author" component={Author} />
     </HomeStack.Navigator>
   );
 
@@ -223,8 +218,14 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
     </ProfileStack.Navigator>
   );
 
+  const linking = {
+    prefixes: ["https://localhost:8000/", "localhost:8000/"],
+  };
   return (
-    <NavigationContainer theme={themeIsDark ? DarkTheme : LightTheme}>
+    <NavigationContainer
+      linking={linking}
+      theme={themeIsDark ? DarkTheme : LightTheme}
+    >
       <Tabs.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
@@ -267,19 +268,17 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
         <Tabs.Screen name="Home" component={HomeStackScreen} />
         {/*  <Tabs.Screen name="Video" component={VideoStackScreen} /> */}
         {/*    {videoID || !videoRef ? ( */}
-         <Tabs.Screen name="Player" component={PlayerStackScreen} /> 
+        <Tabs.Screen name="Player" component={PlayerStackScreen} />
         {/*      ) : null} */}
 
         <Tabs.Screen name="Search" component={SearchScreen} />
         <Tabs.Screen name="Profile" component={ProfileStackScreen} />
-         <Tabs.Screen name="DEV" component={DevOnlyComponent} /> 
+        <Tabs.Screen name="DEV" component={DevOnlyComponent} />
       </Tabs.Navigator>
       <StatusBar style={themeIsDark ? "light" : "dark"} />
     </NavigationContainer>
   );
 };
-
-
 
 const mapStateToProps = (state) => ({
   token: state.token,
@@ -292,5 +291,3 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
-
-

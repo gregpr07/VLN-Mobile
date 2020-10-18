@@ -442,20 +442,21 @@ function VideoScreen({
     },
   });
 
-  const WarningModal = () => (
-    <Modal
-      isVisible={!videoID}
-      //swipeDirection={["left", "down"]}
-      animationIn="bounceInLeft"
-      animationOut="fadeOut"
-      animationOutTiming={100}
-      coverScreen={false}
-      backdropOpacity={0.97}
-      backdropColor={colors.card}
-    >
-      <Text style={styles.h1}>No lecture playing</Text>
-    </Modal>
-  );
+  const WarningModal = () =>
+    videoID ? null : (
+      <Modal
+        isVisible={!videoID}
+        //swipeDirection={["left", "down"]}
+        animationIn="bounceInLeft"
+        animationOut="fadeOut"
+        animationOutTiming={100}
+        coverScreen={false}
+        backdropOpacity={0.97}
+        backdropColor={colors.card}
+      >
+        <Text style={styles.h1}>No lecture playing</Text>
+      </Modal>
+    );
 
   if (loading) {
     return (

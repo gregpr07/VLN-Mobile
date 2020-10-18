@@ -10,13 +10,13 @@ import {
   Image,
   SafeAreaView,
   FlatList,
+  Platform,
 } from "react-native";
 
 // expo
 import Constants from "expo-constants";
 
-/* // @ts-ignore
-import Carousel from "react-native-snap-carousel"; */
+import CarouselPlatform from "../components/Carousel";
 
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -40,6 +40,8 @@ export default function HomeScreen({ navigation }: any) {
   const { width, height } = useWindowDimensions();
   const eventHeight = 190;
 
+  const cardWidth = width > 350 + 2 * padding ? 350 : width - 2 * padding;
+
   const EventCard = ({ item, index }: any) => (
     <View key={index}>
       <TouchableOpacity
@@ -49,6 +51,7 @@ export default function HomeScreen({ navigation }: any) {
             eventTitle: item.title,
           })
         }
+        style={{ width: cardWidth }}
         activeOpacity={0.75}
       >
         <Image
@@ -60,6 +63,7 @@ export default function HomeScreen({ navigation }: any) {
             //maxHeight: 400,
             borderRadius: 12,
             resizeMode: "cover",
+
             //marginVertical: 24,
           }}
         />
@@ -82,20 +86,15 @@ export default function HomeScreen({ navigation }: any) {
         >
           Events
         </Text>
-        {/*  <SafeAreaView>
-          <Carousel
-            data={events.results}
-            renderItem={EventCard}
-            sliderWidth={width}
-            itemWidth={width > 350 + 2 * padding ? 350 : width - 2 * padding}
-            //layout={"stack"}
-            layout={"stack"}
-            activeSlideAlignment="start"
-            containerCustomStyle={{
-              paddingStart: padding,
-            }}
+        <SafeAreaView>
+          <CarouselPlatform
+            events={events}
+            EventCard={EventCard}
+            width={width}
+            padding={padding}
+            itemWidth={cardWidth}
           />
-        </SafeAreaView> */}
+        </SafeAreaView>
       </View>
     ) : null;
 
