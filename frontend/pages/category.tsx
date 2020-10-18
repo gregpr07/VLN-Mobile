@@ -1,73 +1,46 @@
-import React, { useState,useLayoutEffect,useEffect } from "react";
-import { StyleSheet, View, Text, Image, FlatList,TouchableOpacity } from "react-native";
+import React, { useState, useLayoutEffect, useEffect } from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import { useTheme } from "@react-navigation/native";
 
 import { noHeadFetcher } from "../services/fetcher";
 
-import { ActivityView } from '../components/Components'
+import { ActivityView, Categories as SubCats } from "../components/Components";
 
+import Lectures from "../components/LecturesList";
+import { loading } from "../services/actions";
 
-const Category = ({ navigation,route }: any) => {
+const Category = ({ navigation, route }: any) => {
   const { colors, dark } = useTheme();
 
-  const {categoryID} = route.params
+  const { categoryID } = route.params;
 
   const padding: number = 12;
 
-  const [category,setCategory] = useState(null)
+  const [category, setCategory] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   //const { data: category } = useSWR(`category/${categoryID}/`, noHeadFetcher);
-  
+
   useEffect(() => {
-    noHeadFetcher(`category/${categoryID}/`).then(json => setCategory(json))
+    setLoading(true);
+    noHeadFetcher(`category/${categoryID}/`).then((json) => {
+      setCategory(json);
+      setLoading(false);
+    });
   }, [categoryID]);
 
   useEffect(() => {
     navigation.setOptions({
-      title: category ? category.name : '',
+      title: category ? category.name : "",
     });
-  }, [category])
-
-  const SubCats = () => {
-    //const speeds = [1, 1.25, 1.5, 2];
-    const subcats = category.children
-
-    const Cat = ({ item }) => (
-
-      <TouchableOpacity
-        onPress={() => navigation.push("category", { categoryID: item.id })}
-        style={[
-          styles.default_card,
-          {
-            flex: 1,
-          },
-        ]}
-      >
-        <Text
-          style={{
-            textAlign: "center",
-            color: colors.text,
-            fontFamily: "SF-UI-medium",
-          }}
-        >
-          {item.name}
-        </Text>
-      </TouchableOpacity>
-    );
-    return (
-      <FlatList
-        data={subcats}
-        renderItem={Cat}
-        keyExtractor={(item) => item.id.toString()}
-        ItemSeparatorComponent={() => <View style={{ marginLeft: padding }} />}
-        horizontal
-        //snapToInterval={AUTHOR_WIDTH + SEPARATOR_WIDTH}
-        showsHorizontalScrollIndicator={false}
-        decelerationRate={0}
-        ListHeaderComponent={() => <View style={{ marginLeft: padding }} />}
-      />
-    );
-  };
+  }, [category]);
 
   const styles = StyleSheet.create({
     viewPager: {
@@ -95,9 +68,9 @@ const Category = ({ navigation,route }: any) => {
     },
   });
 
-  if (!category) return <ActivityView color={colors.primary}/>
+  if (!category || loading) return <ActivityView color={colors.primary} />;
 
-  return (
+  const ListHeaderComponent = () => (
     <View>
       <View
         style={{
@@ -115,9 +88,34 @@ const Category = ({ navigation,route }: any) => {
             resizeMode: "cover",
           }}
         />
-        <SubCats />
+        <SubCats
+          cats={category.children}
+          navigation={navigation}
+          padding={padding}
+        />
+        <Text
+          style={{
+            fontSize: 24,
+            fontFamily: "SF-UI-semibold",
+            color: colors.text,
+            paddingTop: padding,
+            textAlign: "center",
+          }}
+        >
+          Top lectures
+        </Text>
       </View>
     </View>
+  );
+
+  return (
+    <Lectures
+      navigation={navigation}
+      HeaderComponent={ListHeaderComponent}
+      padding={padding}
+      styles={styles}
+      lectures={category.lectures}
+    />
   );
 };
 

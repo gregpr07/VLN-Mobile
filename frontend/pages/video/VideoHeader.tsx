@@ -9,7 +9,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { useTheme } from "@react-navigation/native";
 
-import { setPlaybackSpeed } from "../../services/actions";
+import { setPlaybackSpeed, setVideoAudioPlay } from "../../services/actions";
 
 const VideoHeader = ({
   padding,
@@ -17,10 +17,12 @@ const VideoHeader = ({
   lecture,
   setPlaybackSpd,
   playbackSpeed,
+  setVidAudPlay,
+  videoAudioPlay,
 }) => {
   const { colors, dark } = useTheme();
 
-/*   useEffect(() => {
+  /*   useEffect(() => {
     console.log(playbackSpeed);
     console.log(lecture);
   }, [playbackSpeed]); */
@@ -34,7 +36,7 @@ const VideoHeader = ({
       const miniPadding = (padding / 4) * 3;
 
       return (
-        <View style={{ flexDirection: "row", paddingTop: padding }}>
+        <View style={{ flexDirection: "row", paddingTop: padding / 2 }}>
           {speeds.map((speed) => (
             <TouchableOpacity
               onPress={() => setPlaybackSpd(speed)}
@@ -62,6 +64,46 @@ const VideoHeader = ({
       );
     };
 
+    const ChangeVideoPlayer = () => {
+      const PlayerController = () => {
+        const options = [0, 1];
+
+        const miniPadding = (padding / 4) * 3;
+
+        return (
+          <View style={{ flexDirection: "row", paddingTop: padding / 2 }}>
+            {options.map((option) => (
+              <TouchableOpacity
+                onPress={() => setVidAudPlay(option)}
+                style={{
+                  backgroundColor:
+                    videoAudioPlay === option
+                      ? colors.secondary
+                      : colors.shadow,
+                  padding: miniPadding,
+                  marginRight: miniPadding,
+                  borderRadius: miniPadding,
+                  minWidth: miniPadding * 5,
+                }}
+                key={option}
+              >
+                <Text
+                  style={{
+                    textAlign: "center",
+                    color:
+                      videoAudioPlay === option ? colors.card : colors.text,
+                  }}
+                >
+                  {option === 0 ? "Video" : "Audio/slides"}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        );
+      };
+
+      return <PlayerController />;
+    };
     return (
       <Modal
         isVisible={modalVisible}
@@ -106,6 +148,12 @@ const VideoHeader = ({
               Playback speed
             </Text>
             <SpeedController />
+            <Text
+              style={[styles.h4, { color: colors.text, paddingTop: padding }]}
+            >
+              Player
+            </Text>
+            <ChangeVideoPlayer />
           </View>
         </View>
       </Modal>
@@ -146,10 +194,12 @@ const VideoHeader = ({
 
 const mapStateToProps = (state) => ({
   playbackSpeed: state.video.playbackSpeed,
+  videoAudioPlay: state.video.videoAudioPlay,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   setPlaybackSpd: (num: number) => dispatch(setPlaybackSpeed(num)),
+  setVidAudPlay: (num: number) => dispatch(setVideoAudioPlay(num)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(VideoHeader);

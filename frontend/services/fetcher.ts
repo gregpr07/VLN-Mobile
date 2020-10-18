@@ -1,7 +1,7 @@
 import store from "./store";
 
 //export const BASEURL = "http://localhost:8000/";
-//export const BASEURL = "http://192.168.1.115:8000/";
+
 export const BASEURL = "http://vln-mobile.ijs.si/";
 
 

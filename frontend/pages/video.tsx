@@ -27,7 +27,7 @@ import { fetcher } from "../services/fetcher";
 import useSWR from "swr";
 
 import { connect } from "react-redux";
-import { setVideoID } from "../services/actions";
+import { setVideoID, setVideoAudioPlay } from "../services/actions";
 
 import { useTheme } from "@react-navigation/native";
 
@@ -38,11 +38,9 @@ import VideoHeader from "./video/VideoHeader";
 
 import { numberWithCommas } from "../services/functions";
 
-import {Categories} from '../components/Components'
+import { Categories } from "../components/Components";
 
 //? using let because we don't want the screen to re-render because of video
-
-const initPager = 0;
 
 const TABLET_WIDTH = 800;
 
@@ -57,11 +55,27 @@ function VideoScreen({
   videoID,
   videoRef,
   playbackSpeed,
+  videoAudioPlay,
 }: any) {
   const { colors, dark } = useTheme();
 
-  const { data: lecture } = useSWR("lecture/" + videoID, fetcher);
-  const { data: slides } = useSWR("slide/lecture/" + videoID, fetcher);
+  //const { data: lecture } = useSWR("lecture/" + videoID, fetcher);
+  //const { data: slides } = useSWR("slide/lecture/" + videoID, fetcher);
+
+  const [lecture, setLecture] = useState(null);
+  const [slides, setSlides] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (videoID) {
+      setLoading(true);
+      fetcher("lecture/" + videoID).then((json) => {
+        setLecture(json);
+        setLoading(false);
+      });
+      fetcher("slide/lecture/" + videoID).then((json) => setSlides(json));
+    }
+  }, [videoID]);
 
   //* constants
   const { width, height } = useWindowDimensions();
@@ -73,7 +87,7 @@ function VideoScreen({
 
   useEffect(() => {
     if (videoID && videoRef) {
-      playVideoORAudio(initPager, initPager);
+      playVideoORAudio(videoAudioPlay, 0);
     }
   }, [videoRef]);
 
@@ -200,60 +214,63 @@ function VideoScreen({
 
   const [showNotes, setShowNotes] = useState(false);
 
-  const Description = () => lecture.author ? (
-    <View style={styles.default_card}>
-      <View style={{ flex: 1, flexDirection: "row" }}>
-        <View>
-          <Image
-            //? Shows author image otherwise thumbhnail of the video
-            //? --> good because video thumbnails are mostly author heads
-            source={{
-              uri: lecture.author.image
-                ? lecture.author.image
-                : lecture.thumbnail,
-            }}
-            style={{
-              height: 75,
-              width: 75,
-              borderRadius: 50,
-              borderColor: colors.border,
-              borderWidth: 5,
-              marginRight: 15,
+  const Description = () =>
+    lecture.author ? (
+      <View style={styles.default_card}>
+        <View style={{ flex: 1, flexDirection: "row" }}>
+          <View>
+            <Image
+              //? Shows author image otherwise thumbhnail of the video
+              //? --> good because video thumbnails are mostly author heads
+              source={{
+                uri: lecture.author.image
+                  ? lecture.author.image
+                  : lecture.thumbnail,
+              }}
+              style={{
+                height: 75,
+                width: 75,
+                borderRadius: 50,
+                borderColor: colors.border,
+                borderWidth: 5,
+                marginRight: 15,
 
-              shadowColor: colors.shadow,
-              shadowOffset: {
-                width: 0,
-                height: 10,
-              },
-              shadowRadius: 25,
-              shadowOpacity: 1,
-            }}
-          />
-        </View>
-        <View style={{ justifyContent: "center" }}>
-          <Text style={styles.h5}>
-            <Text style={styles.gray}>views:</Text>{" "}
-            {numberWithCommas(lecture.views)}
-          </Text>
-          <Text style={styles.h5}>
-            <Text style={styles.gray}>author:</Text> {lecture.author.name}
-          </Text>
-          <Text style={styles.h5}>
-            <Text style={styles.gray}>published:</Text> {lecture.published}
-          </Text>
-          {lecture.events ? (
-            <Text style={[styles.h5, { paddingTop: 4, color: colors.primary }]}>
-              NOT WORKING CORRECTLY
+                shadowColor: colors.shadow,
+                shadowOffset: {
+                  width: 0,
+                  height: 10,
+                },
+                shadowRadius: 25,
+                shadowOpacity: 1,
+              }}
+            />
+          </View>
+          <View style={{ justifyContent: "center" }}>
+            <Text style={styles.h5}>
+              <Text style={styles.gray}>views:</Text>{" "}
+              {numberWithCommas(lecture.views)}
             </Text>
-          ) : null}
+            <Text style={styles.h5}>
+              <Text style={styles.gray}>author:</Text> {lecture.author.name}
+            </Text>
+            <Text style={styles.h5}>
+              <Text style={styles.gray}>published:</Text> {lecture.published}
+            </Text>
+            {lecture.events ? (
+              <Text
+                style={[styles.h5, { paddingTop: 4, color: colors.primary }]}
+              >
+                NOT WORKING CORRECTLY
+              </Text>
+            ) : null}
+          </View>
         </View>
       </View>
-    </View>
-  ): null;
+    ) : null;
 
   //* NOTES STUFF
   //? this function doesn't work with latest expo
-/*   const parent = navigation.dangerouslyGetParent();
+  /*   const parent = navigation.dangerouslyGetParent();
   parent.setOptions({
     tabBarVisible: !showNotes,
   }); */
@@ -337,8 +354,6 @@ function VideoScreen({
       useNativeDriver: true,
     }).start();
   };
-
- 
 
   const padding = 12;
   const styles = StyleSheet.create({
@@ -426,7 +441,7 @@ function VideoScreen({
     </Modal>
   );
 
-  if (!lecture) {
+  if (loading) {
     return (
       <ActivityIndicator
         //? 15 is for centering - very hacky!!
@@ -443,33 +458,35 @@ function VideoScreen({
   return (
     <View style={styles.container}>
       <WarningModal />
-      {showNotes ? null : (
-        <Animated.View
-          onLayout={(event) => {
-            setTitleHeight(event.nativeEvent.layout.height);
-          }}
-          style={{
-            opacity: OpacityAnim,
-            paddingHorizontal: padding,
-          }}
-        >
-          <VideoHeader styles={styles} padding={padding} lecture={lecture} />
-        </Animated.View>
-      )}
+      {lecture ? (
+        showNotes ? null : (
+          <Animated.View
+            onLayout={(event) => {
+              setTitleHeight(event.nativeEvent.layout.height);
+            }}
+            style={{
+              opacity: OpacityAnim,
+              paddingHorizontal: padding,
+            }}
+          >
+            <VideoHeader styles={styles} padding={padding} lecture={lecture} />
+          </Animated.View>
+        )
+      ) : null}
 
-        {/* VideoAudio */}
+      {/* VideoAudio */}
 
-        <VideoAudioComponent
-          SpringAnim={SpringAnim}
-          initPager={initPager}
-          videoHeight={videoHeight}
-          videostyle={styles.video}
-          playVideoORAudio={playVideoORAudio}
-          slides={slides}
-          lecture={lecture}
-        />
-
-        {showNotes ? (
+      <VideoAudioComponent
+        SpringAnim={SpringAnim}
+        //initPager={initPager}
+        videoHeight={videoHeight}
+        videostyle={styles.video}
+        playVideoORAudio={playVideoORAudio}
+        slides={slides}
+        lecture={lecture}
+      />
+      {lecture ? (
+        showNotes ? (
           <Notes
             styles={styles}
             padding={padding}
@@ -500,8 +517,8 @@ function VideoScreen({
               padding={padding}
             />
           </ScrollView>
-        )}
-
+        )
+      ) : null}
 
       {showNotes ? null : <SwitchToNotes />}
     </View>
@@ -514,6 +531,7 @@ const mapStateToProps = (state) => ({
   audioRef: state.video.audioRef,
   videoRef: state.video.videoRef,
   playbackSpeed: state.video.playbackSpeed,
+  videoAudioPlay: state.video.videoAudioPlay,
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TouchableOpacity} from "react-native";
+import { TouchableOpacity,Text} from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -9,7 +9,6 @@ import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 import VideoScreen from "./pages/video";
 import SearchScreen from "./pages/search";
-//import ModalScreen from "./pages/video_new_note_deprecated";
 import HomeScreen from "./pages/homescreen";
 import ProfileScreen from "./pages/profile";
 import VideosScreen from "./pages/videoscreen";
@@ -31,7 +30,7 @@ import { getUserToken } from "./services/actions";
 
 import { colors, LightTheme, DarkTheme } from "./services/themes";
 
-import { useColorScheme } from "react-native-appearance";
+import { useColorScheme } from "react-native-appearance"; 
 
 
 const Tabs = createBottomTabNavigator();
@@ -268,7 +267,7 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
         <Tabs.Screen name="Home" component={HomeStackScreen} />
         {/*  <Tabs.Screen name="Video" component={VideoStackScreen} /> */}
         {/*    {videoID || !videoRef ? ( */}
-        <Tabs.Screen name="Player" component={PlayerStackScreen} />
+         <Tabs.Screen name="Player" component={PlayerStackScreen} /> 
         {/*      ) : null} */}
 
         <Tabs.Screen name="Search" component={SearchScreen} />
@@ -293,3 +292,5 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
+
+

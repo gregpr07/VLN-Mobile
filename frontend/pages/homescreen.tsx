@@ -15,10 +15,8 @@ import {
 // expo
 import Constants from "expo-constants";
 
-//import ViewPager from "@react-native-community/viewpager";
-
-// @ts-ignore
-import Carousel from "react-native-snap-carousel";
+/* // @ts-ignore
+import Carousel from "react-native-snap-carousel"; */
 
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -41,8 +39,6 @@ export default function HomeScreen({ navigation }: any) {
 
   const { width, height } = useWindowDimensions();
   const eventHeight = 190;
-
-
 
   const EventCard = ({ item, index }: any) => (
     <View key={index}>
@@ -93,6 +89,7 @@ export default function HomeScreen({ navigation }: any) {
             sliderWidth={width}
             itemWidth={width > 350 + 2 * padding ? 350 : width - 2 * padding}
             //layout={"stack"}
+            layout={"stack"}
             activeSlideAlignment="start"
             containerCustomStyle={{
               paddingStart: padding,
@@ -169,8 +166,6 @@ export default function HomeScreen({ navigation }: any) {
       <View
         style={{
           marginTop: 30,
-
-         
         }}
       >
         <View style={{ flexDirection: "row", marginHorizontal: padding }}>
@@ -205,25 +200,25 @@ export default function HomeScreen({ navigation }: any) {
         name: "computer science",
         image:
           "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F000%2F385%2F812%2Foriginal%2Fillustration-of-characters-and-computer-science-concept-vector.jpg&f=1&nofb=1",
-        id: 13
+        id: 13,
       },
       {
         name: "mathematics",
         image:
           "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F000%2F155%2F609%2Fnon_2x%2Ffree-vector-illustration-about-mathematics.jpg&f=1&nofb=1",
-        id:23
+        id: 23,
       },
       {
         name: "physics",
         image:
           "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmedia.istockphoto.com%2Fvectors%2Fsymbols-of-physics-vector-id174160850%3Fk%3D6%26m%3D174160850%26s%3D612x612%26w%3D0%26h%3D_VZkZAhx6MHcnXQkJZwrsTZf2Pbp42ThxybIogrFDCQ%3D&f=1&nofb=1",
-        id: 58
+        id: 58,
       },
       {
         name: "social sciences",
         image:
           "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fst.depositphotos.com%2F1845839%2F4823%2Fv%2F950%2Fdepositphotos_48230925-stock-illustration-word-cloud-social-science.jpg&f=1&nofb=1",
-        id: 611
+        id: 611,
       },
     ];
 
@@ -284,12 +279,10 @@ export default function HomeScreen({ navigation }: any) {
 
     return (
       <View
-        style={
-          {
-            //paddingHorizontal: padding,
-             marginTop: 30,
-          }
-        }
+        style={{
+          //paddingHorizontal: padding,
+          marginTop: 30,
+        }}
       >
         <View style={{ flexDirection: "row", paddingHorizontal: padding }}>
           <Text style={[styles.h3, { flex: 1, color: colors.text }]}>
@@ -333,7 +326,7 @@ export default function HomeScreen({ navigation }: any) {
       }}
       showsVerticalScrollIndicator={false}
     >
-      <Header />
+      {/*  <Header /> */}
       <Authors />
       <Categories />
     </ScrollView>

@@ -78,9 +78,17 @@ export const playbackSpeed = (playbackSpeed) => ({
   playbackSpeed,
 });
 
+export const videoAudioPlay = (videoAudioPlay) => ({
+  type: "VIDEO_AUDIO_PLAY",
+  videoAudioPlay,
+});
+
 export const setVideoID = (data) => (dispatch) => dispatch(videoID(data));
 
 export const setVideoRef = (ref) => (dispatch) => dispatch(videoRef(ref));
 
 export const setPlaybackSpeed = (speed) => (dispatch) =>
   dispatch(playbackSpeed(speed));
+
+export const setVideoAudioPlay = (num) => (dispatch) =>
+  dispatch(videoAudioPlay(num));
