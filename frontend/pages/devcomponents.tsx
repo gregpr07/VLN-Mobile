@@ -11,12 +11,10 @@ import { setVideoID, setVideoRef } from "../services/storage/actions";
 
 let component: any;
 
-const MyPager = ({ navigation, videoRef, audioRef, videoID, setVidID }) => {
+const MyPager = ({ navigation, audioRef, videoID, setVidID }) => {
   return (
     <View style={{ flex: 1, paddingTop: 50 }}>
       <Button onPress={() => Updates.reloadAsync()} title="reload app" />
-
-      <Button onPress={() => videoRef.playAsync()} title="ref" />
     </View>
   );
 };

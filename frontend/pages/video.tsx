@@ -23,7 +23,7 @@ import Constants from "expo-constants";
 
 import { Ionicons } from "@expo/vector-icons";
 
-import { fetcher } from "../services/fetcher";
+import { fetcher, noHeadFetcher } from "../services/fetcher";
 import useSWR from "swr";
 
 import { connect } from "react-redux";
@@ -38,9 +38,9 @@ import VideoHeader from "./video/VideoHeader";
 
 import { numberWithCommas } from "../services/functions";
 
-//? using let because we don't want the screen to re-render because of video
+import { Categories } from "../components/Components";
 
-const initPager = 0;
+//? using let because we don't want the screen to re-render because of video
 
 const TABLET_WIDTH = 800;
 
@@ -55,11 +55,27 @@ function VideoScreen({
   videoID,
   videoRef,
   playbackSpeed,
+  videoAudioPlay,
 }: any) {
   const { colors, dark } = useTheme();
 
-  const { data: lecture } = useSWR("lecture/" + videoID, fetcher);
-  const { data: slides } = useSWR("slide/lecture/" + videoID, fetcher);
+  //const { data: lecture } = useSWR("lecture/" + videoID, fetcher);
+  //const { data: slides } = useSWR("slide/lecture/" + videoID, fetcher);
+
+  const [lecture, setLecture] = useState(null);
+  const [slides, setSlides] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (videoID) {
+      setLoading(true);
+      noHeadFetcher("lecture/" + videoID).then((json) => {
+        setLecture(json);
+        setLoading(false);
+      });
+      noHeadFetcher("slide/lecture/" + videoID).then((json) => setSlides(json));
+    }
+  }, [videoID]);
 
   //* constants
   const { width, height } = useWindowDimensions();
@@ -71,7 +87,7 @@ function VideoScreen({
 
   useEffect(() => {
     if (videoID && videoRef) {
-      playVideoORAudio(initPager, initPager);
+      playVideoORAudio(videoAudioPlay, 0);
     }
   }, [videoRef]);
 
@@ -82,84 +98,95 @@ function VideoScreen({
   }, [playbackSpeed]);
 
   async function setVideoAudioPreferences() {
-    let preferences = {
-      shouldPlay: true,
-      staysActiveInBackground: true,
-      shouldCorrectPitch: true,
-      pitchCorrectionQuality: Audio.PitchCorrectionQuality.Medium,
-      rate: playbackSpeed,
-    };
+    try {
+      console.log("cakked preferences");
 
-    if (playbackSpeed !== 1) {
-      preferences = {
-        ...preferences,
+      let preferences = {
+        shouldPlay: true,
+        staysActiveInBackground: true,
         shouldCorrectPitch: true,
         pitchCorrectionQuality: Audio.PitchCorrectionQuality.Medium,
+        rate: playbackSpeed,
       };
-    }
 
-    const audioplaying = (await audioRef.getStatusAsync()).isLoaded;
-    const videoplaying = (await videoRef.getStatusAsync()).isLoaded;
+      if (playbackSpeed !== 1) {
+        preferences = {
+          ...preferences,
+          shouldCorrectPitch: true,
+          pitchCorrectionQuality: Audio.PitchCorrectionQuality.Medium,
+        };
+      }
 
-    if (audioplaying) {
-      audioRef.setStatusAsync(preferences);
-    }
-    if (videoplaying) {
-      videoRef.setStatusAsync(preferences);
+      const audioplaying = (await audioRef.getStatusAsync()).isLoaded;
+      const videoplaying = (await videoRef.getStatusAsync()).isLoaded;
+
+      if (audioplaying) {
+        audioRef.setStatusAsync(preferences);
+      }
+      if (videoplaying) {
+        videoRef.setStatusAsync(preferences);
+      }
+    } catch (e) {
+      console.log("cant play");
     }
   }
 
   // currently 0 is video 1 is audio but this might change
   async function playVideoORAudio(page: number, currentPositionMillis: number) {
-    let initStatus = {
-      //! MAKE THIS YES
-      shouldPlay: true,
-      positionMillis: currentPositionMillis,
-      staysActiveInBackground: true,
-      rate: playbackSpeed,
-    };
-
-    if (playbackSpeed !== 1) {
-      initStatus = {
-        ...initStatus,
-        shouldCorrectPitch: true,
-        pitchCorrectionQuality: Audio.PitchCorrectionQuality.Medium,
+    console.log("playvideooraudio called");
+    try {
+      let initStatus = {
+        //! MAKE THIS YES
+        shouldPlay: true,
+        positionMillis: currentPositionMillis,
+        staysActiveInBackground: true,
+        rate: playbackSpeed,
       };
-    }
 
-    const audioplaying = (await audioRef.getStatusAsync()).isLoaded;
-    const videoplaying = (await videoRef.getStatusAsync()).isLoaded;
+      if (playbackSpeed !== 1) {
+        initStatus = {
+          ...initStatus,
+          shouldCorrectPitch: true,
+          pitchCorrectionQuality: Audio.PitchCorrectionQuality.Medium,
+        };
+      }
 
-    if (page === 0) {
-      if (audioplaying) {
-        await audioRef.unloadAsync();
-      }
-      console.log("loading video");
+      const audioplaying = (await audioRef.getStatusAsync()).isLoaded;
+      const videoplaying = (await videoRef.getStatusAsync()).isLoaded;
 
-      if (!videoplaying) {
-        await videoRef.loadAsync(
-          {
-            uri: lecture.video,
-          },
-          initStatus
-        );
-        console.log("video loaded");
+      if (page === 0) {
+        if (audioplaying) {
+          await audioRef.unloadAsync();
+        }
+        console.log("loading video");
+
+        if (!videoplaying) {
+          await videoRef.loadAsync(
+            {
+              uri: lecture.video,
+            },
+            initStatus
+          );
+          console.log("video loaded");
+        }
       }
-    }
-    if (page === 1) {
-      if (videoplaying) {
-        await videoRef.unloadAsync();
+      if (page === 1) {
+        if (videoplaying) {
+          await videoRef.unloadAsync();
+        }
+        console.log("loading audio");
+        if (!audioplaying) {
+          await audioRef.loadAsync(
+            {
+              uri: lecture.audio,
+            },
+            initStatus
+          );
+          console.log("audio loaded");
+        }
       }
-      console.log("loading audio");
-      if (!audioplaying) {
-        await audioRef.loadAsync(
-          {
-            uri: lecture.audio,
-          },
-          initStatus
-        );
-        console.log("audio loaded");
-      }
+    } catch (e) {
+      console.log("cant play");
     }
   }
 
@@ -180,78 +207,85 @@ function VideoScreen({
   const handleOrientation = async () => {
     if (videoRef) {
       console.log("orientation changed to " + isPortrait());
-      const videoplaying = (await videoRef.getStatusAsync()).isLoaded;
-      if (videoplaying) {
-        if (isPortrait()) {
-          videoRef.dismissFullscreenPlayer();
-        } else {
-          videoRef.presentFullscreenPlayer();
+      try {
+        const videoplaying = (await videoRef.getStatusAsync()).isLoaded;
+        if (videoplaying) {
+          if (isPortrait()) {
+            videoRef.dismissFullscreenPlayer();
+          } else {
+            videoRef.presentFullscreenPlayer();
+          }
         }
+      } catch (e) {
+        console.log("cant orientate");
       }
     }
   };
-  useEffect(() => {
+  /*   useEffect(() => {
     if (!isTablet) {
       handleOrientation();
     }
-  }, [orientation]);
+  }, [orientation]); */
 
   const [showNotes, setShowNotes] = useState(false);
 
-  const Description = () => lecture.author ? (
-    <View style={styles.default_card}>
-      <View style={{ flex: 1, flexDirection: "row" }}>
-        <View>
-          <Image
-            //? Shows author image otherwise thumbhnail of the video
-            //? --> good because video thumbnails are mostly author heads
-            source={{
-              uri: lecture.author.image
-                ? lecture.author.image
-                : lecture.thumbnail,
-            }}
-            style={{
-              height: 75,
-              width: 75,
-              borderRadius: 50,
-              borderColor: colors.border,
-              borderWidth: 5,
-              marginRight: 15,
+  const Description = () =>
+    lecture.author ? (
+      <View style={styles.default_card}>
+        <View style={{ flex: 1, flexDirection: "row" }}>
+          <View>
+            <Image
+              //? Shows author image otherwise thumbhnail of the video
+              //? --> good because video thumbnails are mostly author heads
+              source={{
+                uri: lecture.author.image
+                  ? lecture.author.image
+                  : lecture.thumbnail,
+              }}
+              style={{
+                height: 75,
+                width: 75,
+                borderRadius: 50,
+                borderColor: colors.border,
+                borderWidth: 5,
+                marginRight: 15,
 
-              shadowColor: colors.shadow,
-              shadowOffset: {
-                width: 0,
-                height: 10,
-              },
-              shadowRadius: 25,
-              shadowOpacity: 1,
-            }}
-          />
-        </View>
-        <View style={{ justifyContent: "center" }}>
-          <Text style={styles.h5}>
-            <Text style={styles.gray}>views:</Text>{" "}
-            {numberWithCommas(lecture.views)}
-          </Text>
-          <Text style={styles.h5}>
-            <Text style={styles.gray}>author:</Text> {lecture.author.name}
-          </Text>
-          <Text style={styles.h5}>
-            <Text style={styles.gray}>published:</Text> {lecture.published}
-          </Text>
-          {lecture.events ? (
-            <Text style={[styles.h5, { paddingTop: 4, color: colors.primary }]}>
-              NOT WORKING CORRECTLY
+                shadowColor: colors.shadow,
+                shadowOffset: {
+                  width: 0,
+                  height: 10,
+                },
+                shadowRadius: 25,
+                shadowOpacity: 1,
+              }}
+            />
+          </View>
+          <View style={{ justifyContent: "center" }}>
+            <Text style={styles.h5}>
+              <Text style={styles.gray}>views:</Text>{" "}
+              {numberWithCommas(lecture.views)}
             </Text>
-          ) : null}
+            <Text style={styles.h5}>
+              <Text style={styles.gray}>author:</Text> {lecture.author.name}
+            </Text>
+            <Text style={styles.h5}>
+              <Text style={styles.gray}>published:</Text> {lecture.published}
+            </Text>
+            {lecture.events ? (
+              <Text
+                style={[styles.h5, { paddingTop: 4, color: colors.primary }]}
+              >
+                NOT WORKING CORRECTLY
+              </Text>
+            ) : null}
+          </View>
         </View>
       </View>
-    </View>
-  ): null;
+    ) : null;
 
   //* NOTES STUFF
   //? this function doesn't work with latest expo
-/*   const parent = navigation.dangerouslyGetParent();
+  /*   const parent = navigation.dangerouslyGetParent();
   parent.setOptions({
     tabBarVisible: !showNotes,
   }); */
@@ -336,54 +370,6 @@ function VideoScreen({
     }).start();
   };
 
-  const Categories = () => {
-    const cats = lecture.categories;
-
-    const Cat = ({ item }) => (
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate("Home", {
-            screen: "category",
-            params: {
-              categoryID: item.id,
-            },
-          })
-        }
-      >
-        <View
-          style={[
-            styles.default_card,
-            {
-              flex: 1,
-            },
-          ]}
-        >
-          <Text
-            style={{
-              textAlign: "center",
-              color: colors.secondary,
-              fontFamily: "SF-UI-medium",
-            }}
-          >
-            {item.name}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-    return (
-      <FlatList
-        data={cats}
-        renderItem={Cat}
-        keyExtractor={(item) => item.id.toString()}
-        ItemSeparatorComponent={() => <View style={{ marginLeft: padding }} />}
-        horizontal
-        //snapToInterval={AUTHOR_WIDTH + SEPARATOR_WIDTH}
-        showsHorizontalScrollIndicator={false}
-        decelerationRate={0}
-      />
-    );
-  };
-
   const padding = 12;
   const styles = StyleSheet.create({
     container: {
@@ -461,7 +447,8 @@ function VideoScreen({
       isVisible={!videoID}
       //swipeDirection={["left", "down"]}
       animationIn="bounceInLeft"
-      animationOut="bounceOutLeft"
+      animationOut="fadeOut"
+      animationOutTiming={100}
       coverScreen={false}
       backdropOpacity={0.97}
       backdropColor={colors.card}
@@ -470,7 +457,7 @@ function VideoScreen({
     </Modal>
   );
 
-  if (!lecture) {
+  if (loading) {
     return (
       <ActivityIndicator
         //? 15 is for centering - very hacky!!
@@ -487,33 +474,35 @@ function VideoScreen({
   return (
     <View style={styles.container}>
       <WarningModal />
-      {showNotes ? null : (
-        <Animated.View
-          onLayout={(event) => {
-            setTitleHeight(event.nativeEvent.layout.height);
-          }}
-          style={{
-            opacity: OpacityAnim,
-            paddingHorizontal: padding,
-          }}
-        >
-          <VideoHeader styles={styles} padding={padding} lecture={lecture} />
-        </Animated.View>
-      )}
+      {lecture ? (
+        showNotes ? null : (
+          <Animated.View
+            onLayout={(event) => {
+              setTitleHeight(event.nativeEvent.layout.height);
+            }}
+            style={{
+              opacity: OpacityAnim,
+              paddingHorizontal: padding,
+            }}
+          >
+            <VideoHeader styles={styles} padding={padding} lecture={lecture} />
+          </Animated.View>
+        )
+      ) : null}
 
-        {/* VideoAudio */}
+      {/* VideoAudio */}
 
-        <VideoAudioComponent
-          SpringAnim={SpringAnim}
-          initPager={initPager}
-          videoHeight={videoHeight}
-          videostyle={styles.video}
-          playVideoORAudio={playVideoORAudio}
-          slides={slides}
-          lecture={lecture}
-        />
-
-        {showNotes ? (
+      <VideoAudioComponent
+        SpringAnim={SpringAnim}
+        //initPager={initPager}
+        videoHeight={videoHeight}
+        videostyle={styles.video}
+        playVideoORAudio={playVideoORAudio}
+        slides={slides}
+        lecture={lecture}
+      />
+      {lecture ? (
+        showNotes ? (
           <Notes
             styles={styles}
             padding={padding}
@@ -526,7 +515,12 @@ function VideoScreen({
             showsVerticalScrollIndicator={false}
             style={{ paddingHorizontal: padding }}
           >
-            <Categories />
+            <Categories
+              cats={lecture.categories}
+              navigation={navigation}
+              colors={colors}
+              padding={padding}
+            />
 
             <Description />
 
@@ -539,8 +533,8 @@ function VideoScreen({
               padding={padding}
             />
           </ScrollView>
-        )}
-
+        )
+      ) : null}
 
       {showNotes ? null : <SwitchToNotes />}
     </View>
@@ -553,6 +547,7 @@ const mapStateToProps = (state) => ({
   audioRef: state.video.audioRef,
   videoRef: state.video.videoRef,
   playbackSpeed: state.video.playbackSpeed,
+  videoAudioPlay: state.video.videoAudioPlay,
 });
 
 const mapDispatchToProps = (dispatch) => ({

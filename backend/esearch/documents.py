@@ -1,6 +1,6 @@
 from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
-from api.models import Lecture, Author, UserModel, Event
+from api.models import Lecture, Author, Event
 
 
 @registry.register_document
@@ -8,6 +8,7 @@ class LectureDocument(Document):
     author = fields.ObjectField(properties={
         'name': fields.TextField(),
         'views': fields.IntegerField(),
+        'id': fields.IntegerField(),
     })
 
     event = fields.ObjectField(properties={

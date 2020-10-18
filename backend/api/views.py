@@ -6,8 +6,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from api.models import UserModel, Lecture, Note, Slide, Author, Event, Playlist, Category
-from api.serializers import UserModelSerializer, LectureSerializer, NoteSerializer, SlideSerializer, AuthorSerializer, \
+from api.models import Lecture, Note, Slide, Author, Event, Playlist, Category
+from api.serializers import LectureSerializer, NoteSerializer, SlideSerializer, AuthorSerializer, \
     EventSerializer, PlaylistSerializer, CategorySerializer, SimpleAuthorSerializer, SimpleCategorySerializer, \
     SimpleLectureSerializer, SimpleEventSerializer
 
@@ -34,11 +34,6 @@ def list_mixin(obj, queryset):
 
     serializer = obj.get_serializer(queryset, many=True)
     return Response(serializer.data)
-
-
-class UserModelViewSet(SimpleViewSet):
-    queryset = UserModel.objects.all()
-    serializer_class = UserModelSerializer
 
 
 class AuthorViewSet(SimpleViewSet):
@@ -122,13 +117,13 @@ class PlaylistViewSet(ModelViewSet):
         return list_mixin(self, queryset)
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user.usermodel)
+        serializer.save(user=self.request.user)
 
     def perform_update(self, serializer):
-        serializer.save(user=self.request.user.usermodel)
+        serializer.save(user=self.request.user)
 
     def perform_destroy(self, instance):
-        if instance.user != self.request.user.usermodel:
+        if instance.user != self.request.user:
             raise PermissionDenied({
                 "message": "You don't have the permission to delete this object.",
                 "object_id": instance.id
@@ -142,15 +137,14 @@ class NoteViewSet(ModelViewSet):
     serializer_class = NoteSerializer
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user.usermodel)
+        serializer.save(user=self.request.user)
 
     def get_queryset(self):
-        return Note.objects.filter(user=self.request.user.usermodel)
+        return Note.objects.filter(user=self.request.user)
 
     @action(detail=False, url_path='lecture/(?P<lecture_pk>[^/.]+)')
     def user(self, request, lecture_pk):
-        user_model = UserModel.objects.get(user=self.request.user)
-        queryset = Note.objects.filter(lecture_id=lecture_pk, user=user_model)
+        queryset = Note.objects.filter(lecture_id=lecture_pk, user=request.user)
 
         return list_mixin(self, queryset)
 
@@ -175,7 +169,7 @@ class StarLectureView(APIView):
             })
 
         lecture = Lecture.objects.get(id=lecture_id)
-        lecture.stargazers.add(request.user.usermodel)
+        lecture.stargazers.add(request.user)
 
         return Response({
             "starred": "true"
@@ -193,7 +187,7 @@ class UnstarLectureView(APIView):
             })
 
         lecture = Lecture.objects.get(id=lecture_id)
-        lecture.stargazers.remove(request.user.usermodel)
+        lecture.stargazers.remove(request.user)
 
         return Response({
             "starred": "false"

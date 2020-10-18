@@ -3,18 +3,9 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 
-class UserModel(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100, null=True)
-    last_name = models.CharField(max_length=100, null=True)
-
-    def __str__(self):
-        return f'{self.name + " " + self.last_name}\'s profile'
-
-
 class Author(models.Model):
     user_model = models.ForeignKey(
-        UserModel, on_delete=models.SET_NULL, blank=True, null=True)
+        User, on_delete=models.SET_NULL, blank=True, null=True)
 
     name = models.CharField(max_length=100, null=True)
     # last_name = models.CharField(max_length=100, null=True)
@@ -121,7 +112,7 @@ class Lecture(models.Model):
 
     categories = models.ManyToManyField(to=Category, blank=True)
 
-    stargazers = models.ManyToManyField(to=UserModel, blank=True)
+    stargazers = models.ManyToManyField(to=User, blank=True)
 
     event = models.ForeignKey(
         Event, blank=True, null=True, related_name='lectures', on_delete=models.SET_NULL)
@@ -151,7 +142,7 @@ class Playlist(models.Model):
 
     views = models.IntegerField()
     user = models.ForeignKey(
-        UserModel, on_delete=models.CASCADE, related_name='playlist_author')
+        User, on_delete=models.CASCADE, related_name='playlist_author')
 
     published = models.DateField()
 
@@ -164,7 +155,7 @@ class Playlist(models.Model):
 class Note(models.Model):
     lecture = models.ForeignKey(
         Lecture, on_delete=models.CASCADE, related_name='notes')
-    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     text = models.TextField(max_length=1000)  # ! rethink the size
     timestamp = models.IntegerField()
@@ -173,4 +164,4 @@ class Note(models.Model):
         ordering = ['lecture', 'user', 'timestamp']
 
     def __str__(self):
-        return str(self.user.user.username) + ' in ' + str(self.lecture.title) + ' at ' + str(self.timestamp)
+        return str(self.user.username) + ' in ' + str(self.lecture.title) + ' at ' + str(self.timestamp)

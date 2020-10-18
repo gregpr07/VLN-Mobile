@@ -10,7 +10,7 @@ import {
 
 import { connect } from "react-redux";
 
-import ViewPager from "@react-native-community/viewpager";
+/* import ViewPager from "@react-native-community/viewpager"; */
 import { Video } from "expo-av";
 
 import { setVideoID, setVideoRef } from "../../services/storage/actions";
@@ -36,8 +36,15 @@ const VideoAudio = ({
   slides,
   videoID,
   lecture,
+  videoAudioPlay,
 }: any) => {
   const { colors, dark } = useTheme();
+
+  useEffect(() => {
+    if (videoID && videoRef) {
+      playVideoORAudio(videoAudioPlay, currentPositionMillis);
+    }
+  }, [videoAudioPlay]);
 
   const getCurrentSlide = () => {
     const newslides = slides
@@ -58,7 +65,7 @@ const VideoAudio = ({
     //! change timestamp
     //handleSlideChange();
     const gotSlide = getCurrentSlide();
-    if (gotSlide !== currentSlide && gotSlide !== null && slidesRef) {
+    if (gotSlide !== currentSlide && gotSlide !== null && slidesRef.current) {
       //setCurrSlide(gotSlide);
 
       console.log("slide should change to: " + gotSlide);
@@ -71,23 +78,27 @@ const VideoAudio = ({
   async function _handleVideoRef(ref: any) {
     if (videoRef !== ref && ref) {
       //ref.loadAsync()
-      ref.getStatusAsync().then((res) => {
-        component = ref;
-        setVidRef(ref);
+      try {
+        ref.getStatusAsync().then((res) => {
+          component = ref;
+          setVidRef(ref);
 
-        ref.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-        audioRef.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-      });
+          ref.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
+          audioRef.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
+        });
+      } catch (e) {
+        console.log("cant set video ref");
+      }
     }
   }
 
   const slidesRef = useRef(null);
 
-  const handleVideoAudioChange = (pos: number) => {
+  /*   const handleVideoAudioChange = (pos: number) => {
     if (videoRef && videoID) {
       playVideoORAudio(pos, currentPositionMillis);
     }
-  };
+  }; */
 
   const AudioSlides = () => {
     //const slidesarray = slides.map((slide) => slide.url);
@@ -114,17 +125,22 @@ const VideoAudio = ({
     );
 
     if (slides) {
-      const slides_results = slides.results.map((res) => {
+      /*       const slides_results = slides.results.map((res) => {
         return { image: res.image, id: res.id };
-      });
+      }); */
 
       return (
         //! write this by hand
         <TouchableHighlight onPress={handlePausePlay}>
           <FlatList
             ref={slidesRef}
-            data={slides_results}
+            data={slides.results}
             renderItem={RenderSlide}
+            style={[
+              videostyle,
+              videoAudioPlay === 1 ? null : { height: 0 },
+              { backgroundColor: colors.background },
+            ]}
             keyExtractor={(item) => item.image + item.id}
             onScrollToIndexFailed={(index) =>
               console.log("failed to scroll to " + index)
@@ -144,7 +160,7 @@ const VideoAudio = ({
         transform: [{ translateY: SpringAnim }],
       }}
     >
-      <ViewPager
+      {/*       <ViewPager
         initialPage={initPager}
         style={{
           height: videoHeight, // - 2 * padding
@@ -155,8 +171,17 @@ const VideoAudio = ({
           //currentPager = e.nativeEvent.position;
           handleVideoAudioChange(e.nativeEvent.position);
         }}
+      > */}
+      <View
+        style={
+          videoAudioPlay === 1
+            ? { height: 0 }
+            : {
+                height: videoHeight, // - 2 * padding
+              }
+        }
       >
-        <ImageBackground
+        {/*  <ImageBackground
           key="0"
           source={
             dark
@@ -164,15 +189,18 @@ const VideoAudio = ({
               : require("../../assets/icons/videolecture-net-light.png")
           }
           resizeMode="contain"
-        >
-          <Video
-            ref={(component) => _handleVideoRef(component)}
-            //isLooping={false}
-            style={videostyle}
-            useNativeControls={true}
-          />
-        </ImageBackground>
-        <ImageBackground
+        > */}
+        <Video
+          ref={(component) => _handleVideoRef(component)}
+          //isLooping={false}
+          style={videostyle}
+          source={{ uri: lecture ? lecture.video : "" }}
+          useNativeControls={true}
+        />
+      </View>
+
+      {/*   </ImageBackground>
+        <ImageBackground 
           key="1"
           source={
             dark
@@ -180,10 +208,11 @@ const VideoAudio = ({
               : require("../../assets/icons/videolecture-net-light.png")
           }
           resizeMode="contain"
-        >
-          <AudioSlides />
-        </ImageBackground>
-      </ViewPager>
+        >  */}
+      <AudioSlides />
+      {/* </ImageBackground> */}
+
+      {/* </ViewPager> */}
     </Animated.View>
   );
 };
@@ -193,6 +222,7 @@ const mapStateToProps = (state) => ({
   videoID: state.video.videoID,
   videoRef: state.video.videoRef,
   audioRef: state.video.audioRef,
+  videoAudioPlay: state.video.videoAudioPlay,
 });
 
 const mapDispatchToProps = (dispatch) => ({
