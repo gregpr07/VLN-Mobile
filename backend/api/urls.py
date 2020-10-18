@@ -19,6 +19,7 @@ router.register(r'note', NoteViewSet, 'note')
 urlpatterns = [
     path('', include(router.urls)),
 
+    path('starred/', StarredLecturesView.as_view()),
     path('star/<int:lecture_id>/', StarLectureView.as_view()),
     path('unstar/<int:lecture_id>/', UnstarLectureView.as_view()),
 
