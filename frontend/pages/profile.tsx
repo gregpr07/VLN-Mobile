@@ -1,24 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {
-  Text,
-  View,
-  TouchableHighlight,
-  TextInput,
-  StyleSheet,
-  Dimensions,
-  Image,
-  SafeAreaView,
-  FlatList,
-  Button,
-} from "react-native";
-const { width, height } = Dimensions.get("window");
-import Constants from "expo-constants";
-import { StatusBar } from "expo-status-bar";
+import {Dimensions, Image, StyleSheet, Text, View,} from "react-native";
 
-import { Ionicons } from "@expo/vector-icons";
-
-import { useTheme } from "@react-navigation/native";
+import {useTheme} from "@react-navigation/native";
 import {useSelector} from "react-redux";
+
+const { width, height } = Dimensions.get("window");
 
 const padding = 24;
 export default function ProfileScreen({ navigation }) {
@@ -93,6 +79,22 @@ export default function ProfileScreen({ navigation }) {
       </View>
     );
   };
+
+  const Menu = () => {
+    return (
+        <View style={styles.navsContainer}>
+            <View style={styles.navsLeft}>
+                <Text style={styles.navsText}>Uno</Text>
+            </View>
+            <View style={styles.navsLeft}>
+                <Text style={styles.navsText}>Due</Text>
+            </View>
+            <View style={styles.navsLeft}>
+                <Text style={styles.navsText}>Tres</Text>
+            </View>
+        </View>
+    )
+  }
 
   const styles = StyleSheet.create({
     container: {
@@ -173,6 +175,49 @@ export default function ProfileScreen({ navigation }) {
       fontSize: 20,
       fontFamily: "SF-UI-medium",
     },
+    navsContainer: {
+        flex: 1,
+        flexDirection: "row",
+        flexWrap: "wrap",
+        alignItems: "flex-start",
+        paddingTop: 20,
+    },
+    navsLeft: {
+        width: 104,
+        height: 44,
+        borderRadius: 15,
+        backgroundColor: "#ffffff"
+    },
+    navsMid: {
+        width: 105,
+        height: 44,
+        backgroundColor: "#ffffff",
+        shadowColor: "rgba(60, 128, 209, 0.09)",
+        shadowOffset: {
+            width: 0,
+            height: 12
+        },
+        shadowRadius: 19,
+        shadowOpacity: 1
+    },
+    navsRight: {
+        width: 104,
+        height: 44,
+        borderRadius: 15,
+        backgroundColor: "#ffffff"
+    },
+    navsText: {
+        width: 60,
+        height: 17,
+        fontFamily: "HKGrotesk",
+        fontSize: 14,
+        fontWeight: "normal",
+        fontStyle: "normal",
+        letterSpacing: 1,
+        textAlign: "center",
+        color: "red",
+        textTransform: "uppercase",
+    }
   });
 
   return (
@@ -182,6 +227,7 @@ export default function ProfileScreen({ navigation }) {
         <Text style={styles.h2}>{userData.name}</Text>
         <Text style={[styles.h4]}>{userData.title}</Text>
       </View>
+      <Menu />
     </View>
   );
 }
