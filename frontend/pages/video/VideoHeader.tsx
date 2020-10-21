@@ -39,7 +39,10 @@ const VideoHeader = ({
         <View style={{ flexDirection: "row", paddingTop: padding / 2 }}>
           {speeds.map((speed) => (
             <TouchableOpacity
-              onPress={() => setPlaybackSpd(speed)}
+              onPress={() => {
+                setPlaybackSpd(speed);
+                setModalVisible(false);
+              }}
               style={{
                 backgroundColor:
                   playbackSpeed === speed ? colors.secondary : colors.shadow,
@@ -74,7 +77,10 @@ const VideoHeader = ({
           <View style={{ flexDirection: "row", paddingTop: padding / 2 }}>
             {options.map((option) => (
               <TouchableOpacity
-                onPress={() => setVidAudPlay(option)}
+                onPress={() => {
+                  setVidAudPlay(option);
+                  setModalVisible(false);
+                }}
                 style={{
                   backgroundColor:
                     videoAudioPlay === option

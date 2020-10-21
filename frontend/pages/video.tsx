@@ -492,50 +492,48 @@ function VideoScreen({
       ) : null}
 
       {/* VideoAudio */}
-
-      <VideoAudioComponent
-        SpringAnim={SpringAnim}
-        //initPager={initPager}
-        videoHeight={videoHeight}
-        videostyle={styles.video}
-        playVideoORAudio={playVideoORAudio}
-        slides={slides}
-        lecture={lecture}
-      />
-      {lecture ? (
-        showNotes ? (
-          <Notes
-            styles={styles}
-            padding={padding}
-            quitNotes={quitNotes}
-            showNotes={showNotes}
-            setShowNotes={setShowNotes}
-          />
-        ) : (
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            style={{ paddingHorizontal: padding }}
-          >
-            <Categories
-              cats={lecture.categories}
-              navigation={navigation}
-              colors={colors}
-              padding={padding}
-            />
-
-            <Description />
-
-            {/* recommendations */}
-
-            <RecommendedVids
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <VideoAudioComponent
+          SpringAnim={SpringAnim}
+          //initPager={initPager}
+          videoHeight={videoHeight}
+          videostyle={styles.video}
+          playVideoORAudio={playVideoORAudio}
+          slides={slides}
+          lecture={lecture}
+        />
+        {lecture ? (
+          showNotes ? (
+            <Notes
               styles={styles}
-              colors={colors}
-              lecture={lecture}
               padding={padding}
+              quitNotes={quitNotes}
+              showNotes={showNotes}
+              setShowNotes={setShowNotes}
             />
-          </ScrollView>
-        )
-      ) : null}
+          ) : (
+            <View style={{ paddingHorizontal: padding }}>
+              <Categories
+                cats={lecture.categories}
+                navigation={navigation}
+                colors={colors}
+                padding={padding}
+              />
+
+              <Description />
+
+              {/* recommendations */}
+
+              <RecommendedVids
+                styles={styles}
+                colors={colors}
+                lecture={lecture}
+                padding={padding}
+              />
+            </View>
+          )
+        ) : null}
+      </ScrollView>
 
       {showNotes ? null : <SwitchToNotes />}
     </View>

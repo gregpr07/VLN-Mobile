@@ -13,6 +13,7 @@ import {
   Button,
 } from "react-native";
 import { shorterText, numberWithCommas } from "../services/functions";
+
 import Constants from "expo-constants";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -141,11 +142,15 @@ const SearchScreen = ({
         style={styles.recommendation}
       >
         <Image
-          source={item.thumbnail ? {
-            uri: item.thumbnail,
-          } :  dark
+          source={
+            item.thumbnail
+              ? {
+                  uri: item.thumbnail,
+                }
+              : dark
               ? require("../assets/icons/videolecture-net-dark.png")
-              : require("../assets/icons/videolecture-net-light.png")}
+              : require("../assets/icons/videolecture-net-light.png")
+          }
           style={{
             height: 80,
             maxWidth: (80 / 9) * 16,
@@ -153,7 +158,7 @@ const SearchScreen = ({
 
             borderBottomLeftRadius: 12,
             borderTopLeftRadius: 12,
-            resizeMode: item.thumbnail ? "cover" : 'contain',
+            resizeMode: item.thumbnail ? "cover" : "contain",
           }}
         />
         <View style={{ flex: 4, padding: 6, alignContent: "center" }}>
@@ -175,7 +180,7 @@ const SearchScreen = ({
     const SEPARATOR_WIDTH = 10;
     const RenderAuthor = ({ item, index }) => (
       <TouchableOpacity
-         onPress={() =>
+        onPress={() =>
           navigation.navigate("Home", {
             screen: "author",
             params: {
@@ -186,7 +191,7 @@ const SearchScreen = ({
         style={{
           //paddingVertical: 6,
           width: AUTHOR_WIDTH,
-          marginTop: 14,
+          marginTop: padding,
         }}
       >
         <View
@@ -239,18 +244,17 @@ const SearchScreen = ({
 
     return (
       <View
-        style={
-          {
-            //marginVertical: padding,
-          }
-        }
+        style={{
+          //marginVertical: padding,
+          marginTop: 70,
+        }}
       >
         <SafeAreaView>
           <FlatList
             data={authors}
-            ListHeaderComponent={() => (
+            /* ListHeaderComponent={() => (
               <View style={{ paddingLeft: padding }} />
-            )}
+            )} */
             ListFooterComponent={() => (
               <View style={{ paddingRight: padding }} />
             )}
@@ -269,7 +273,7 @@ const SearchScreen = ({
 
   let listflat: any;
 
-  const padding = 24;
+  const padding = 14;
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -307,7 +311,12 @@ const SearchScreen = ({
     SearchBar: {
       height: 70,
 
+      marginTop: Constants.statusBarHeight,
+
+      width: width - 2 * padding,
+
       backgroundColor: colors.card,
+
       borderRadius: 15,
       paddingLeft: 20,
       paddingRight: 10,
@@ -319,10 +328,12 @@ const SearchScreen = ({
         width: 0,
         height: 12,
       },
-      shadowRadius: 19,
+      shadowRadius: 15,
       shadowOpacity: 1,
 
       flexDirection: "row",
+
+      position: "absolute",
     },
     textinput: {
       height: 70,
@@ -360,12 +371,12 @@ const SearchScreen = ({
       shadowRadius: 19,
       shadowOpacity: 1,
 
-      marginTop: padding / 2,
+      marginTop: padding,
       backgroundColor: colors.card,
       //padding: padding,
       borderRadius: 15,
 
-      marginHorizontal: padding,
+      marginRight: padding,
       maxWidth: 500,
 
       flex: 1,
@@ -374,6 +385,24 @@ const SearchScreen = ({
 
   return (
     <View style={styles.container}>
+      {/* <Authors /> */}
+      {/* {lecture ? ( */}
+
+      <View style={{ flex: 1, paddingLeft: padding }}>
+        <FlatList
+          ref={(ref) => (listflat = ref)}
+          data={lecture}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+          onEndReached={loadMoreLecs}
+          ListHeaderComponent={<Authors />}
+          ListFooterComponent={() => <View style={{ marginBottom: padding }} />}
+          //getNativeScrollRef={(ref) => (flatlistRef = ref)}
+          keyboardDismissMode={"on-drag"}
+          numColumns={width / 600 > 1 ? 2 : 1}
+        />
+      </View>
+
       <View style={styles.SearchBar}>
         <TextInput
           style={styles.textinput}
@@ -382,6 +411,7 @@ const SearchScreen = ({
           autoFocus={true}
           onSubmitEditing={handleSubmit}
           clearButtonMode={"while-editing"}
+          placeholder={"Search for everything"}
           keyboardAppearance={dark ? "dark" : "light"}
         />
         <TouchableOpacity onPress={handleSubmit}>
@@ -396,23 +426,6 @@ const SearchScreen = ({
         </TouchableOpacity>
       </View>
 
-      {/* <Authors /> */}
-      {/* {lecture ? ( */}
-      
-      <View style={{ flex: 1 }}>
-        <FlatList
-          ref={(ref) => (listflat = ref)}
-          data={lecture}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          onEndReached={loadMoreLecs}
-          ListHeaderComponent={<Authors />}
-          ListFooterComponent={() => <View style={{ marginBottom: padding }} />}
-          //getNativeScrollRef={(ref) => (flatlistRef = ref)}
-          keyboardDismissMode={"on-drag"}
-          numColumns={width / 600 > 1 ? 2 : 1}
-        />
-      </View>
       {/* ) : null} */}
 
       {loading ? (

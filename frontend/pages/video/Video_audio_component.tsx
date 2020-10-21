@@ -6,6 +6,7 @@ import {
   TouchableHighlight,
   FlatList,
   ImageBackground,
+  Platform,
 } from "react-native";
 
 import { connect } from "react-redux";
@@ -79,13 +80,15 @@ const VideoAudio = ({
     if (videoRef !== ref && ref) {
       //ref.loadAsync()
       try {
-        ref.getStatusAsync().then((res) => {
-          component = ref;
-          setVidRef(ref);
+        await ref.getStatusAsync();
+        component = ref;
+        setVidRef(ref);
 
+        if (Platform.OS !== "web") {
           ref.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-          audioRef.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-        });
+        }
+
+        audioRef.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
       } catch (e) {
         console.log("cant set video ref");
       }
@@ -141,6 +144,7 @@ const VideoAudio = ({
               videoAudioPlay === 1 ? null : { height: 0 },
               { backgroundColor: colors.background },
             ]}
+            horizontal
             keyExtractor={(item) => item.image + item.id}
             onScrollToIndexFailed={(index) =>
               console.log("failed to scroll to " + index)

@@ -34,6 +34,7 @@ const Notes = ({
   styles,
   padding,
   quitNotes,
+  videoID,
 }: any) => {
   const { colors, dark }: any = useTheme();
 
@@ -139,6 +140,26 @@ const Notes = ({
         // console.log(positionMillis);
       }
     };
+
+    const postNoteAdd = () => {
+      var formdata = new FormData();
+      formdata.append("lecture", videoID);
+      formdata.append("text", noteText);
+      formdata.append("timestamp", timestamp.toString());
+
+      var requestOptionsPOST: any = {
+        method: "POST",
+        headers: myHeaders,
+        body: formdata,
+        redirect: "follow",
+      };
+
+      fetch(API + "note/", requestOptionsPOST)
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.log("error", error));
+    };
+
     const handleNoteSubmit = () => {
       if (noteText) {
         let newnotes: any = [...notes, output_obj].sort(compare);
@@ -146,6 +167,7 @@ const Notes = ({
       }
       Keyboard.dismiss();
       setNoteText("");
+      postNoteAdd();
       //console.log(output_obj);
     };
     return (
@@ -266,6 +288,7 @@ const Notes = ({
           onScroll={handleQuit}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
+          scrollEnabled={false}
         />
       </SafeAreaView>
     </View>

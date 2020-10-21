@@ -113,6 +113,7 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
     headerStyle: {
       backgroundColor: themeIsDark ? "black" : colors.whiteBackground,
       shadowColor: "transparent",
+      borderBottomWidth: 0,
     },
     //headerTintColor: themeIsDark ? colors.dark : colors.darkGreyBlue,
     headerTitleStyle: {
@@ -232,7 +233,7 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
             let iconName: string = "";
 
             if (route.name === "Home") {
-              iconName = focused ? "ios-home" : "ios-home";
+              iconName = focused ? "md-grid" : "md-grid";
             } else if (route.name === "Profile") {
               iconName = focused ? "ios-person" : "ios-person";
             } else if (route.name == "Search") {

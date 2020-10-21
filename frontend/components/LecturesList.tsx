@@ -66,6 +66,8 @@ const Lectures = ({
         //padding: padding,
         borderRadius: 15,
 
+        marginRight: padding,
+
         maxWidth: 500,
 
         flex: 1,
@@ -126,7 +128,7 @@ const Lectures = ({
   );
 
   return (
-    <View style={{ flex: 1, paddingHorizontal: padding }}>
+    <View style={{ flex: 1, paddingLeft: padding }}>
       <FlatList
         data={lectures}
         renderItem={RenderItem}
