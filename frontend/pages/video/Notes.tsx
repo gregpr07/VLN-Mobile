@@ -64,7 +64,7 @@ const Notes = ({
   };
 
   const getNotes = () => {
-    fetch(API + "note/lecture/1/", requestOptions)
+    fetch(API + `note/lecture/${videoID}/`, requestOptions)
       .then((r) => {
         if (r.status === 200) {
           return r.json();

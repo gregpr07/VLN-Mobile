@@ -24,7 +24,6 @@ import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
 
 import { fetcher, noHeadFetcher } from "../services/fetcher";
-import useSWR from "swr";
 
 import { connect } from "react-redux";
 import { setVideoID, setVideoAudioPlay } from "../services/actions";
@@ -234,40 +233,62 @@ function VideoScreen({
       <View style={styles.default_card}>
         <View style={{ flex: 1, flexDirection: "row" }}>
           <View>
-            <Image
-              //? Shows author image otherwise thumbhnail of the video
-              //? --> good because video thumbnails are mostly author heads
-              source={{
-                uri: lecture.author.image
-                  ? lecture.author.image
-                  : lecture.thumbnail,
-              }}
-              style={{
-                height: 75,
-                width: 75,
-                borderRadius: 50,
-                borderColor: colors.border,
-                borderWidth: 5,
-                marginRight: 15,
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("Home", {
+                  screen: "author",
+                  params: {
+                    authorID: lecture.author.id,
+                  },
+                })
+              }
+            >
+              <Image
+                //? Shows author image otherwise thumbhnail of the video
+                //? --> good because video thumbnails are mostly author heads
+                source={{
+                  uri: lecture.author.image
+                    ? lecture.author.image
+                    : lecture.thumbnail,
+                }}
+                style={{
+                  height: 75,
+                  width: 75,
+                  borderRadius: 50,
+                  borderColor: colors.border,
+                  borderWidth: 5,
+                  marginRight: 15,
 
-                shadowColor: colors.shadow,
-                shadowOffset: {
-                  width: 0,
-                  height: 10,
-                },
-                shadowRadius: 25,
-                shadowOpacity: 1,
-              }}
-            />
+                  shadowColor: colors.shadow,
+                  shadowOffset: {
+                    width: 0,
+                    height: 10,
+                  },
+                  shadowRadius: 25,
+                  shadowOpacity: 1,
+                }}
+              />
+            </TouchableOpacity>
           </View>
           <View style={{ justifyContent: "center" }}>
             <Text style={styles.h5}>
               <Text style={styles.gray}>views:</Text>{" "}
               {numberWithCommas(lecture.views)}
             </Text>
-            <Text style={styles.h5}>
-              <Text style={styles.gray}>author:</Text> {lecture.author.name}
-            </Text>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("Home", {
+                  screen: "author",
+                  params: {
+                    authorID: lecture.author.id,
+                  },
+                })
+              }
+            >
+              <Text style={styles.h5}>
+                <Text style={styles.gray}>author:</Text> {lecture.author.name}
+              </Text>
+            </TouchableOpacity>
             <Text style={styles.h5}>
               <Text style={styles.gray}>published:</Text> {lecture.published}
             </Text>

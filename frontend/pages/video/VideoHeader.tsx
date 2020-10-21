@@ -187,6 +187,7 @@ const VideoHeader = ({
       </Text>
       <TouchableOpacity
         style={{ paddingHorizontal: padding / 2, paddingVertical: padding }}
+        onPress={() => console.log(lecture)}
       >
         <Ionicons name={"ios-star"} size={20} color={colors.text} />
       </TouchableOpacity>

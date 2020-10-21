@@ -200,6 +200,7 @@ const VideoAudio = ({
           style={videostyle}
           source={{ uri: lecture ? lecture.video : "" }}
           useNativeControls={true}
+          resizeMode="contain"
         />
       </View>
 
