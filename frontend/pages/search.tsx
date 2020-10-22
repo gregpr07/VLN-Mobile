@@ -244,10 +244,12 @@ const SearchScreen = ({
 
     return (
       <View
-        style={{
-          //marginVertical: padding,
-          marginTop: 70,
-        }}
+        style={
+          {
+            //marginVertical: padding,
+            //marginTop: 70,
+          }
+        }
       >
         <SafeAreaView>
           <FlatList
@@ -278,7 +280,7 @@ const SearchScreen = ({
     container: {
       flex: 1,
 
-      paddingTop: padding + Constants.statusBarHeight,
+      paddingTop: Constants.statusBarHeight,
     },
     h1: {
       fontSize: 36,
@@ -311,7 +313,7 @@ const SearchScreen = ({
     SearchBar: {
       height: 70,
 
-      marginTop: Constants.statusBarHeight,
+      //marginTop: Constants.statusBarHeight,
 
       width: width - 2 * padding,
 
@@ -333,7 +335,7 @@ const SearchScreen = ({
 
       flexDirection: "row",
 
-      position: "absolute",
+      //position: "absolute",
     },
     textinput: {
       height: 70,
@@ -387,21 +389,17 @@ const SearchScreen = ({
     <View style={styles.container}>
       {/* <Authors /> */}
       {/* {lecture ? ( */}
-
-      <View style={{ flex: 1, paddingLeft: padding }}>
-        <FlatList
-          ref={(ref) => (listflat = ref)}
-          data={lecture}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          onEndReached={loadMoreLecs}
-          ListHeaderComponent={<Authors />}
-          ListFooterComponent={() => <View style={{ marginBottom: padding }} />}
-          //getNativeScrollRef={(ref) => (flatlistRef = ref)}
-          keyboardDismissMode={"on-drag"}
-          numColumns={width / 600 > 1 ? 2 : 1}
-        />
-      </View>
+      <Text
+        style={{
+          fontSize: 36,
+          fontFamily: "SF-UI-semibold",
+          color: colors.text,
+          paddingHorizontal: padding,
+          paddingBottom: 10,
+        }}
+      >
+        Search
+      </Text>
 
       <View style={styles.SearchBar}>
         <TextInput
@@ -424,6 +422,21 @@ const SearchScreen = ({
             />
           </View>
         </TouchableOpacity>
+      </View>
+
+      <View style={{ flex: 1, paddingLeft: padding }}>
+        <FlatList
+          ref={(ref) => (listflat = ref)}
+          data={lecture}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+          onEndReached={loadMoreLecs}
+          ListHeaderComponent={<Authors />}
+          ListFooterComponent={() => <View style={{ marginBottom: padding }} />}
+          //getNativeScrollRef={(ref) => (flatlistRef = ref)}
+          keyboardDismissMode={"on-drag"}
+          numColumns={width / 600 > 1 ? 2 : 1}
+        />
       </View>
 
       {/* ) : null} */}

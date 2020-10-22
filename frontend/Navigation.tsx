@@ -267,14 +267,14 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
         }}
       >
         <Tabs.Screen name="Home" component={HomeStackScreen} />
-        {/*  <Tabs.Screen name="Video" component={VideoStackScreen} /> */}
+        <Tabs.Screen name="Video" component={VideoStackScreen} />
         {/*    {videoID || !videoRef ? ( */}
         <Tabs.Screen name="Player" component={PlayerStackScreen} />
         {/*      ) : null} */}
 
         <Tabs.Screen name="Search" component={SearchScreen} />
         <Tabs.Screen name="Profile" component={ProfileStackScreen} />
-        <Tabs.Screen name="DEV" component={DevOnlyComponent} />
+        {/*  <Tabs.Screen name="DEV" component={DevOnlyComponent} /> */}
       </Tabs.Navigator>
       <StatusBar style={themeIsDark ? "light" : "dark"} />
     </NavigationContainer>

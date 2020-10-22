@@ -27,7 +27,7 @@ import useSWR from "swr";
 
 //import { color } from "react-native-reanimated";
 
-const padding = 24;
+const padding = 14;
 export default function HomeScreen({ navigation }: any) {
   const { colors, dark } = useTheme();
 
@@ -75,17 +75,28 @@ export default function HomeScreen({ navigation }: any) {
     events ? (
       <View>
         <Text
-          style={[
-            styles.h1,
-            {
-              paddingHorizontal: padding,
-              paddingBottom: 10,
-              color: colors.text,
-            },
-          ]}
+          style={{
+            fontSize: 36,
+            fontFamily: "SF-UI-semibold",
+            color: colors.text,
+            paddingHorizontal: padding,
+            paddingBottom: 10,
+          }}
         >
-          Events
+          Home
         </Text>
+        <View
+          style={{
+            flexDirection: "row",
+            marginHorizontal: padding,
+            paddingBottom: 8,
+          }}
+        >
+          <Text style={[styles.h3, { flex: 1, color: colors.text }]}>
+            Events
+          </Text>
+          <Text style={[styles.h3, { color: colors.secondary }]}>Show all</Text>
+        </View>
         <SafeAreaView>
           <CarouselPlatform
             events={events}
@@ -289,16 +300,7 @@ export default function HomeScreen({ navigation }: any) {
           </Text>
           <Text style={[styles.h3, { color: colors.secondary }]}>Show all</Text>
         </View>
-        {/* CANT GET THIS TO WORK FROM LEFT */}
-        {/*         <SafeAreaView>
-          <Carousel
-            data={cats}
-            renderItem={RenderCategory}
-            sliderWidth={width}
-            itemWidth={CAT_WIDTH}
-            //layout={"stack"}
-          />
-        </SafeAreaView> */}
+
         <SafeAreaView>
           <FlatList
             data={cats}
@@ -321,7 +323,7 @@ export default function HomeScreen({ navigation }: any) {
   return (
     <ScrollView
       style={{
-        marginTop: Constants.statusBarHeight + 6,
+        marginTop: Constants.statusBarHeight,
       }}
       showsVerticalScrollIndicator={false}
     >
