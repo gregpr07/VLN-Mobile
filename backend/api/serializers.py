@@ -127,9 +127,11 @@ class LectureSerializer(serializers.ModelSerializer):
 
 
 class SimpleLectureSerializer(serializers.ModelSerializer):
+    author = SimpleAuthorSerializer()
+
     class Meta:
         model = Lecture
-        fields = ('id', 'title', 'thumbnail', 'views')
+        fields = ('id', 'title', 'thumbnail', 'author', 'views')
 
 
 class SlideSerializer(serializers.ModelSerializer):
