@@ -14,7 +14,7 @@ import { shorterText, numberWithCommas } from "../../services/functions";
 
 import { setVideoID, setVideoRef } from "../../services/actions";
 
-import { BASEURL } from "../../services/fetcher";
+import { API } from "../../services/fetcher";
 
 const { width, height } = Dimensions.get("window");
 
@@ -45,7 +45,7 @@ const RecommendedVids = ({
   const [recommendations, setRecommendations] = useState([]);
 
   const getRecommendation = (text) => {
-    const search_link = `${BASEURL}esearch/search/lecture/${text}/0/`;
+    const search_link = `${API}search/lecture/${text}/0/`;
     fetch(search_link)
       .then((res) => (res.status === 200 ? res.json() : null))
       .then((json) => {
