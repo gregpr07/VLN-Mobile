@@ -38,7 +38,7 @@ def list_mixin(obj, queryset):
 
 class AuthorViewSet(SimpleViewSet):
     queryset = Author.objects.all()
-    serializer_class = AuthorSerializer
+    serializer_class = SimpleAuthorSerializer
 
     action_serializers = {
         'retrieve': AuthorSerializer,
@@ -53,7 +53,7 @@ class AuthorViewSet(SimpleViewSet):
 
 class CategoryViewSet(SimpleViewSet):
     queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+    serializer_class = SimpleCategorySerializer
 
     action_serializers = {
         'retrieve': CategorySerializer,
@@ -63,7 +63,7 @@ class CategoryViewSet(SimpleViewSet):
 
 class LectureViewSet(SimpleViewSet):
     queryset = Lecture.objects.all()
-    serializer_class = LectureSerializer
+    serializer_class = SimpleLectureSerializer
 
     action_serializers = {
         'retrieve': LectureSerializer,
@@ -98,7 +98,7 @@ class SlideViewSet(SimpleViewSet):
 
 class EventViewSet(SimpleViewSet):
     queryset = Event.objects.all()
-    serializer_class = EventSerializer
+    serializer_class = SimpleEventSerializer
 
     action_serializers = {
         'retrieve': EventSerializer,
