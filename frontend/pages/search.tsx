@@ -22,7 +22,7 @@ const { width, height } = Dimensions.get("window");
 
 import { useTheme } from "@react-navigation/native";
 
-import { BASEURL } from "../services/fetcher";
+import { API } from "../services/fetcher";
 
 import { connect } from "react-redux";
 import { setVideoID } from "../services/actions";
@@ -55,7 +55,7 @@ const SearchScreen = ({
   async function getData(append_array: boolean) {
     setPreviousValue(inputValue);
 
-    const search_link = `${BASEURL}esearch/search/lecture/${inputValue}/${CURRENT_PAGE_LEC}/`;
+    const search_link = `${API}search/lecture/${inputValue}/${CURRENT_PAGE_LEC}/`;
     fetch(search_link)
       .then((res) => res.json())
       .then((json) => {
@@ -74,7 +74,7 @@ const SearchScreen = ({
 
   async function getDataAut(append_array: boolean) {
     if (inputValue) {
-      const search_link = `${BASEURL}esearch/search/author/${inputValue}/0/`;
+      const search_link = `${API}search/author/${inputValue}/0/`;
       fetch(search_link)
         .then((res) => res.json())
         .then((json) => {
