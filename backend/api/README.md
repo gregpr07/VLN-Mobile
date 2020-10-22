@@ -5,7 +5,7 @@ Legend
 :warning: - authentication required
 
 ## Pagination
-There are up to 50 results per page. To navigate between pages pass `page` parameter with index in the URL. Like so:
+There are up to 20 results per page. To navigate between pages pass `page` parameter with index in the URL. Like so:
 http://127.0.0.1:8000/api/user/?page=2
 
 ## Authentication
@@ -53,7 +53,13 @@ fetch("http://127.0.0.1:8000/api/note/lecture/1/", requestOptions)
 ### Author
 1. List (http://127.0.0.1:8000/api/author/)
 1. Detail (http://127.0.0.1:8000/api/author/author_id/)
+1. Author's lectures (http://127.0.0.1:8000/api/author/author_id/lectures/)
 1. Most viewed authors (http://127.0.0.1:8000/api/author/most_viewed/)
+
+### Category
+1. List (http://127.0.0.1:8000/api/category/)
+1. Detail (http://127.0.0.1:8000/api/category/category_id/)
+1. Category's lectures (http://127.0.0.1:8000/api/category/category_id/lectures/)
 
 ### Lecture
 1. List (http://127.0.0.1:8000/api/lecture/)
