@@ -26,14 +26,18 @@ class SimpleViewSet(mixins.RetrieveModelMixin,
     pass
 
 
-def list_mixin(obj, queryset):
+def list_mixin(obj, queryset, p_serializer):
     page = obj.paginate_queryset(queryset)
     if page is not None:
-        serializer = obj.get_serializer(page, many=True)
+        serializer = p_serializer(page, many=True)
         return obj.get_paginated_response(serializer.data)
 
-    serializer = obj.get_serializer(queryset, many=True)
+    serializer = p_serializer(queryset, many=True)
     return Response(serializer.data)
+
+
+def simple_list_mixin(obj, queryset):
+    return list_mixin(obj, queryset, obj.get_serializer)
 
 
 class AuthorViewSet(SimpleViewSet):
@@ -45,15 +49,25 @@ class AuthorViewSet(SimpleViewSet):
         'list': SimpleAuthorSerializer,
     }
 
+    @action(detail=True)
+    def lectures(self, request, *args, **kwargs):
+        queryset = self.get_object().get_lectures()
+        return list_mixin(self, queryset, SimpleLectureSerializer)
+
     @action(detail=False)
     def most_viewed(self, request, *args, **kwargs):
         queryset = self.queryset.order_by("-views")
-        return list_mixin(self, queryset)
+        return simple_list_mixin(self, queryset)
 
 
 class CategoryViewSet(SimpleViewSet):
     queryset = Category.objects.all()
     serializer_class = SimpleCategorySerializer
+
+    @action(detail=True)
+    def lectures(self, request, *args, **kwargs):
+        queryset = self.get_object().get_lectures()
+        return list_mixin(self, queryset, SimpleLectureSerializer)
 
     action_serializers = {
         'retrieve': CategorySerializer,
@@ -73,17 +87,17 @@ class LectureViewSet(SimpleViewSet):
     @action(detail=False)
     def most_viewed(self, request, *args, **kwargs):
         queryset = self.queryset.order_by("-views")
-        return list_mixin(self, queryset)
+        return simple_list_mixin(self, queryset)
 
     @action(detail=False)
     def most_starred(self, request, *args, **kwargs):
         queryset = self.queryset.annotate(count=Count("stargazers")).order_by("-count")
-        return list_mixin(self, queryset)
+        return simple_list_mixin(self, queryset)
 
     @action(detail=False)
     def latest(self, request, *args, **kwargs):
         queryset = self.queryset.order_by("-published")
-        return list_mixin(self, queryset)
+        return simple_list_mixin(self, queryset)
 
 
 class SlideViewSet(SimpleViewSet):
@@ -93,7 +107,7 @@ class SlideViewSet(SimpleViewSet):
     @action(detail=False, url_path='lecture/(?P<lecture_pk>[^/.]+)')
     def lecture(self, request, lecture_pk):
         queryset = Slide.objects.filter(lecture_id=lecture_pk)
-        return list_mixin(self, queryset)
+        return simple_list_mixin(self, queryset)
 
 
 class EventViewSet(SimpleViewSet):
@@ -146,7 +160,7 @@ class NoteViewSet(ModelViewSet):
     def user(self, request, lecture_pk):
         queryset = Note.objects.filter(lecture_id=lecture_pk, user=request.user)
 
-        return list_mixin(self, queryset)
+        return simple_list_mixin(self, queryset)
 
 
 class StarLectureView(APIView):

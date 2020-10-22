@@ -42,8 +42,8 @@ class AuthorSerializer(serializers.ModelSerializer):
         serialized_data = super().to_representation(instance)
         serialized_data["categories"] = SimpleCategorySerializer(
             instance.get_categories(), many=True).data
-        serialized_data["lectures"] = SimpleLectureSerializer(instance.get_lectures(), many=True,
-                                                              context={'request': self.context['request']}).data
+        # serialized_data["lectures"] = SimpleLectureSerializer(instance.get_lectures(), many=True,
+        #                                                       context={'request': self.context['request']}).data
 
         return serialized_data
 
@@ -66,8 +66,8 @@ class CategorySerializer(serializers.ModelSerializer):
             instance.get_children(), many=True, read_only=True).data
         serialized_data["authors"] = SimpleAuthorSerializer(instance.get_authors(), many=True,
                                                             context={'request': self.context['request']}).data
-        serialized_data["lectures"] = SimpleLectureSerializer(instance.get_lectures(), many=True,
-                                                              context={'request': self.context['request']}).data
+        # serialized_data["lectures"] = SimpleLectureSerializer(instance.get_lectures(), many=True,
+        #                                                       context={'request': self.context['request']}).data
 
         return serialized_data
 
@@ -103,7 +103,7 @@ class SimpleEventSerializer(serializers.ModelSerializer):
 
 
 class LectureSerializer(serializers.ModelSerializer):
-    author = AuthorSerializer()
+    author = SimpleAuthorSerializer()
     event = SimpleEventSerializer()
     categories = SimpleCategorySerializer(many=True, read_only=True)
 
