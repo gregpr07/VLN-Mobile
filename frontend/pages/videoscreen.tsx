@@ -11,116 +11,144 @@ import {
 } from "react-native";
 const { width, height } = Dimensions.get("window");
 import Constants from "expo-constants";
-import { StatusBar } from "expo-status-bar";
+
+import { shorterText, numberWithCommas } from "../services/functions";
+
+import { HeaderText } from "../components/TextHeader";
+
+import { connect } from "react-redux";
+import { setVideoID } from "../services/storage/actions";
 
 import {
+  ScrollView,
   TouchableHighlight,
   TouchableOpacity,
 } from "react-native-gesture-handler";
 
 import { useTheme } from "@react-navigation/native";
 
-const padding = 24;
-export default function VideosScreen({ navigation }: any) {
+import { noHeadFetcher } from "../services/fetcher";
+
+const padding = 14;
+const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
   const { colors, dark } = useTheme();
 
-  /*   React.useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      if (videoreference) {
-        console.log("not found");
-      } else {
-        console.log("found");
-      }
+  const [latestLectures, setLatestLectures] = useState([]);
+  const [mostStarred, setMostStarred] = useState([]);
+  const [mostViewed, setMostViewed] = useState([]);
+
+  useEffect(() => {
+    noHeadFetcher("lecture/latest/?limit=25").then((json) =>
+      setLatestLectures(json.results)
+    );
+    noHeadFetcher("lecture/most_starred/?limit=25").then((json) =>
+      setMostStarred(json.results)
+    );
+    noHeadFetcher("lecture/most_viewed/?limit=25").then((json) =>
+      setMostViewed(json.results)
+    );
+  }, []);
+
+  const _handleResultsClick = async (item) => {
+    if (videoRef) {
+      await videoRef.unloadAsync();
+      await audioRef.unloadAsync();
+    }
+
+    setVidID(item.id);
+    navigation.navigate("Player", {
+      screen: "Video",
     });
+  };
 
-    return unsubscribe;
-  }, [navigation]); */
-  const Authors = () => {
-    const recommendations = [
-      {
-        title:
-          "This page - How Machine Learning has Finally Solved Wanamaker’s Dilemma",
-        views: 12784,
-        author: "Oliver Downs",
-        date: "2016",
-        image:
-          "http://hydro.ijs.si/v013/d2/2ley3qjmm7a3v7g6lnq5duermqrzbq7f.jpg",
-      },
-      {
-        title: "This page - How Machine ",
-        views: 127123,
-        author: "Oliver Downs",
-        date: "2016",
-        image:
-          "http://hydro.ijs.si/v013/d2/2ley3qjmm7a3v7g6lnq5duermqrzbq7f.jpg",
-      },
-      {
-        title: "Blabla video title ",
-        views: 27312391,
-        author: "Erik Novak",
-        date: "201123",
-        image:
-          "http://hydro.ijs.si/v013/d2/2ley3qjmm7a3v7g6lnq5duermqrzbq7f.jpg",
-      },
-    ];
-    const AUTHOR_HEIGHT = 80;
-    const AUTHOR_WIDTH = (AUTHOR_HEIGHT / 9) * 16;
-    const SEPARATOR_WIDTH = 20;
-    const RenderAuthor = ({ item, index }) => (
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate("Player", {
-            screen: "Video",
-          })
-        }
-      >
-        <View
-          style={{
-            paddingVertical: 6,
-            width: AUTHOR_WIDTH,
-            marginVertical: 10,
-          }}
-        >
-          <Image
-            source={
-              item.image
-                ? {
-                    uri: item.image,
-                  }
-                : require(`../assets/icons/profile_image.png`)
-            }
-            style={{
-              height: AUTHOR_HEIGHT,
-              borderRadius: 12,
-              resizeMode: item.image ? "cover" : "center",
-              marginBottom: 5,
-            }}
-          />
-          <Text style={[styles.h5, { color: colors.text }]}>{item.title}</Text>
-          <Text style={{ color: colors.secondary }}>{item.author}</Text>
-        </View>
-      </TouchableOpacity>
-    );
+  const Videos = ({ videos, section }: any) => {
+    const VID_HEIGHT = 90;
+    const VID_WIDTH = 200;
 
-    const AuthorSeparator = () => (
-      <View style={{ paddingRight: SEPARATOR_WIDTH }} />
-    );
-    return (
-      <View
+    const Separator = () => (
+      <Text
         style={{
-          paddingVertical: 25,
-          paddingHorizontal: padding,
+          color: "#5468fe",
         }}
       >
-        <Text style={[styles.h3, { color: colors.text }]}>Videos for you</Text>
+        {" "}
+        |{" "}
+      </Text>
+    );
+
+    const RenderVideo = ({ item, index }: any) => (
+      <View
+        style={{
+          width: VID_WIDTH,
+          borderRadius: 8,
+          backgroundColor: colors.card,
+          shadowColor: colors.shadow,
+          shadowOffset: {
+            width: 0,
+            height: 12,
+          },
+          shadowRadius: 19,
+          shadowOpacity: 1,
+
+          marginTop: 10,
+          marginBottom: padding,
+        }}
+      >
+        <TouchableOpacity onPress={() => _handleResultsClick(item)}>
+          <>
+            <Image
+              source={{
+                uri: item.thumbnail,
+              }}
+              style={{
+                width: "100%",
+                height: VID_HEIGHT,
+                borderTopLeftRadius: 8,
+                borderTopRightRadius: 8,
+                resizeMode: "cover",
+                //marginBottom: 5,
+              }}
+            />
+            <View style={{ padding: 10 }}>
+              <Text style={[styles.h4, { height: 36 }]}>
+                {shorterText(item.title, 60)}
+              </Text>
+
+              <View>
+                <Text style={[styles.h5, { color: colors.secondary }]}>
+                  {item.author.name}
+                  <Separator />
+                  {numberWithCommas(item.views)}
+                </Text>
+              </View>
+            </View>
+          </>
+        </TouchableOpacity>
+      </View>
+    );
+
+    return (
+      <View>
+        <View style={{ flexDirection: "row", paddingHorizontal: padding }}>
+          <Text style={[styles.h2, { flex: 1, color: colors.text }]}>
+            {section}
+          </Text>
+          {/* <Text style={[styles.h2, { color: colors.secondary }]}>Show all</Text> */}
+        </View>
+
         <SafeAreaView>
           <FlatList
-            data={recommendations}
-            renderItem={RenderAuthor}
-            keyExtractor={(item) => item.title}
-            ItemSeparatorComponent={AuthorSeparator}
+            data={videos}
+            renderItem={RenderVideo}
+            keyExtractor={(item) => item.id.toString()}
+            ItemSeparatorComponent={() => (
+              <View style={{ marginLeft: padding }} />
+            )}
             horizontal
-            snapToInterval={AUTHOR_WIDTH + SEPARATOR_WIDTH}
+            ListHeaderComponent={() => (
+              <View style={{ paddingLeft: padding }} />
+            )}
+            snapToInterval={VID_WIDTH + padding}
             showsHorizontalScrollIndicator={false}
             decelerationRate={0}
           />
@@ -129,34 +157,57 @@ export default function VideosScreen({ navigation }: any) {
     );
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      marginTop: Constants.statusBarHeight,
+    },
+    h1: {
+      fontSize: 36,
+      fontFamily: "SF-UI-semibold",
+      color: colors.text,
+    },
+    h2: {
+      fontSize: 20,
+      fontFamily: "SF-UI-semibold",
+      color: colors.text,
+    },
+    h3: {
+      fontSize: 14,
+      fontFamily: "SF-UI-semibold",
+      textAlign: "center",
+      color: colors.text,
+    },
+    h4: {
+      fontSize: 14,
+      fontFamily: "SF-UI-medium",
+      color: colors.text,
+    },
+    h5: {
+      fontSize: 12,
+      fontFamily: "SF-UI-medium",
+      color: colors.text,
+    },
+  });
+
   return (
-    <View style={styles.container}>
-      <Authors />
-    </View>
+    <ScrollView style={styles.container}>
+      <HeaderText text="Explore" />
+      <Videos videos={latestLectures} section={"Latest lectures"} />
+      <Videos videos={mostViewed} section={"Most viewed"} />
+      <Videos videos={mostStarred} section={"Most starred"} />
+    </ScrollView>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: Constants.statusBarHeight,
-  },
-  h1: {
-    fontSize: 36,
-    textAlign: "center",
-    fontFamily: "SF-UI-semibold",
-  },
-
-  h3: {
-    fontSize: 20,
-    fontFamily: "SF-UI-medium",
-  },
-  h4: {
-    fontSize: 18,
-    fontFamily: "SF-UI-medium",
-  },
-  h5: {
-    fontSize: 14,
-    fontFamily: "SF-UI-medium",
-  },
+const mapStateToProps = (state) => ({
+  videoID: state.video.videoID,
+  videoRef: state.video.videoRef,
+  audioRef: state.video.audioRef,
 });
+
+const mapDispatchToProps = (dispatch) => ({
+  setVidID: (num: number) => dispatch(setVideoID(num)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(VideosScreen);

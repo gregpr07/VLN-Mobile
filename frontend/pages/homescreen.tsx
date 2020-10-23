@@ -10,13 +10,13 @@ import {
   Image,
   SafeAreaView,
   FlatList,
+  Platform,
 } from "react-native";
 
 // expo
 import Constants from "expo-constants";
 
-/* // @ts-ignore
-import Carousel from "react-native-snap-carousel"; */
+import CarouselPlatform from "../components/Carousel";
 
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -25,9 +25,11 @@ import { useTheme } from "@react-navigation/native";
 import { noHeadFetcher } from "../services/fetcher";
 import useSWR from "swr";
 
+import { HeaderText } from "../components/TextHeader";
+
 //import { color } from "react-native-reanimated";
 
-const padding = 24;
+const padding = 14;
 export default function HomeScreen({ navigation }: any) {
   const { colors, dark } = useTheme();
 
@@ -40,6 +42,8 @@ export default function HomeScreen({ navigation }: any) {
   const { width, height } = useWindowDimensions();
   const eventHeight = 190;
 
+  const cardWidth = width > 350 + 2 * padding ? 350 : width - 2 * padding;
+
   const EventCard = ({ item, index }: any) => (
     <View key={index}>
       <TouchableOpacity
@@ -49,6 +53,7 @@ export default function HomeScreen({ navigation }: any) {
             eventTitle: item.title,
           })
         }
+        style={{ width: cardWidth }}
         activeOpacity={0.75}
       >
         <Image
@@ -60,6 +65,7 @@ export default function HomeScreen({ navigation }: any) {
             //maxHeight: 400,
             borderRadius: 12,
             resizeMode: "cover",
+
             //marginVertical: 24,
           }}
         />
@@ -70,32 +76,28 @@ export default function HomeScreen({ navigation }: any) {
   const Header = () =>
     events ? (
       <View>
-        <Text
-          style={[
-            styles.h1,
-            {
-              paddingHorizontal: padding,
-              paddingBottom: 10,
-              color: colors.text,
-            },
-          ]}
+        <HeaderText text="Home" />
+        <View
+          style={{
+            flexDirection: "row",
+            marginHorizontal: padding,
+            paddingBottom: 8,
+          }}
         >
-          Events
-        </Text>
-        {/*  <SafeAreaView>
-          <Carousel
-            data={events.results}
-            renderItem={EventCard}
-            sliderWidth={width}
-            itemWidth={width > 350 + 2 * padding ? 350 : width - 2 * padding}
-            //layout={"stack"}
-            layout={"stack"}
-            activeSlideAlignment="start"
-            containerCustomStyle={{
-              paddingStart: padding,
-            }}
+          <Text style={[styles.h3, { flex: 1, color: colors.text }]}>
+            Events
+          </Text>
+          <Text style={[styles.h3, { color: colors.secondary }]}>Show all</Text>
+        </View>
+        <SafeAreaView>
+          <CarouselPlatform
+            events={events}
+            EventCard={EventCard}
+            width={width}
+            padding={padding}
+            itemWidth={cardWidth}
           />
-        </SafeAreaView> */}
+        </SafeAreaView>
       </View>
     ) : null;
 
@@ -290,16 +292,7 @@ export default function HomeScreen({ navigation }: any) {
           </Text>
           <Text style={[styles.h3, { color: colors.secondary }]}>Show all</Text>
         </View>
-        {/* CANT GET THIS TO WORK FROM LEFT */}
-        {/*         <SafeAreaView>
-          <Carousel
-            data={cats}
-            renderItem={RenderCategory}
-            sliderWidth={width}
-            itemWidth={CAT_WIDTH}
-            //layout={"stack"}
-          />
-        </SafeAreaView> */}
+
         <SafeAreaView>
           <FlatList
             data={cats}
@@ -322,7 +315,7 @@ export default function HomeScreen({ navigation }: any) {
   return (
     <ScrollView
       style={{
-        marginTop: Constants.statusBarHeight + 6,
+        marginTop: Constants.statusBarHeight,
       }}
       showsVerticalScrollIndicator={false}
     >

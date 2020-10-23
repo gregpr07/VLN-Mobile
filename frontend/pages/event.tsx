@@ -5,6 +5,7 @@ import { noHeadFetcher } from "../services/fetcher";
 import useSWR from "swr";
 
 import { useTheme } from "@react-navigation/native";
+import { ScrollView } from "react-native-gesture-handler";
 
 const padding = 12;
 
@@ -36,7 +37,7 @@ const Event = ({ navigation, route }: any) => {
   });
 
   return (
-    <View>
+    <ScrollView>
       <View
         style={{
           width: "100%",
@@ -56,7 +57,7 @@ const Event = ({ navigation, route }: any) => {
 
         <Text style={styles.h3}>{eventinfo.description}</Text>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

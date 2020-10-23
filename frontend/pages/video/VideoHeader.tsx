@@ -9,7 +9,8 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { useTheme } from "@react-navigation/native";
 
-import { setPlaybackSpeed } from "../../services/storage/actions";
+import { setPlaybackSpeed, setVideoAudioPlay } from "../../services/storage/actions";
+import {noHeadFetcher} from "../../services/fetcher";
 
 const VideoHeader = ({
   padding,
@@ -19,6 +20,7 @@ const VideoHeader = ({
   playbackSpeed,
   setVidAudPlay,
   videoAudioPlay,
+  token,
 }) => {
   const { colors, dark } = useTheme();
 
@@ -28,6 +30,23 @@ const VideoHeader = ({
   }, [playbackSpeed]); */
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [starred, setStarred] = useState(false);
+
+  useEffect(() => {
+      const myHeaders = new Headers();
+      myHeaders.append("Authorization", `Token ${token}`);
+
+      const requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+      };
+
+      fetch(`http://vln-mobile.ijs.si/api/lecture/${lecture.id}/`, requestOptions)
+          .then(response => response.text())
+          .then(result => console.log(result))
+          .catch(error => console.log('error', error));
+  }, []);
 
   const SettingsModal = () => {
     const SpeedController = () => {
@@ -39,7 +58,10 @@ const VideoHeader = ({
         <View style={{ flexDirection: "row", paddingTop: padding / 2 }}>
           {speeds.map((speed) => (
             <TouchableOpacity
-              onPress={() => setPlaybackSpd(speed)}
+              onPress={() => {
+                setPlaybackSpd(speed);
+                setModalVisible(false);
+              }}
               style={{
                 backgroundColor:
                   playbackSpeed === speed ? colors.secondary : colors.shadow,
@@ -74,7 +96,10 @@ const VideoHeader = ({
           <View style={{ flexDirection: "row", paddingTop: padding / 2 }}>
             {options.map((option) => (
               <TouchableOpacity
-                onPress={() => setVidAudPlay(option)}
+                onPress={() => {
+                  setVidAudPlay(option);
+                  setModalVisible(false);
+                }}
                 style={{
                   backgroundColor:
                     videoAudioPlay === option
@@ -104,9 +129,9 @@ const VideoHeader = ({
 
       return <PlayerController />;
     };
-    /*     if (!modalVisible) {
+    if (!modalVisible) {
       return null;
-    } */
+    }
     return (
       <Modal
         isVisible={modalVisible}
@@ -163,6 +188,25 @@ const VideoHeader = ({
     );
   };
 
+  const setStar = (star: boolean) => {
+      const myHeaders = new Headers();
+      myHeaders.append("Authorization", `Token ${token}`);
+
+      const requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+      };
+
+      fetch("http://vln-mobile.ijs.si/api/" + (star ? "star" : "unstar") + `/${lecture.id}/`, requestOptions)
+          .then(response => response.text())
+          .then(result => console.log(result))
+          .catch(error => console.log('error', error));
+
+      console.log("should be star: " + star);
+      setStarred(star);
+  }
+
   return (
     <View style={{ flexDirection: "row" }}>
       <Text
@@ -181,8 +225,15 @@ const VideoHeader = ({
       </Text>
       <TouchableOpacity
         style={{ paddingHorizontal: padding / 2, paddingVertical: padding }}
+        onPress={() => console.log(lecture)}
       >
-        <Ionicons name={"ios-star"} size={20} color={colors.text} />
+      {token ?
+          starred ?
+              <Ionicons name={"ios-star"} size={20} color={colors.text} onPress={() => setStar(false)} /> :
+              <Ionicons name={"ios-star-outline"} size={20} color={colors.text} onPress={() => setStar(true)} />
+          :
+          <></>
+      }
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => setModalVisible(!modalVisible)}
@@ -196,6 +247,7 @@ const VideoHeader = ({
 };
 
 const mapStateToProps = (state) => ({
+  token: state.token.token,
   playbackSpeed: state.video.playbackSpeed,
   videoAudioPlay: state.video.videoAudioPlay,
 });

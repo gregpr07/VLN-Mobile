@@ -4,12 +4,11 @@ import store from "./storage/store";
 
 export const BASEURL = "http://vln-mobile.ijs.si/";
 
-
 export const API = BASEURL + "api/";
 
 const state = store.getState();
 
-console.log(state.token.token);
+//console.log(state.token.token);
 
 const myHeaders = new Headers();
 myHeaders.append("Authorization", `Token ${state.token.token}`);

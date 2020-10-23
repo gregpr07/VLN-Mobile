@@ -5,7 +5,7 @@ Legend
 :warning: - authentication required
 
 ## Pagination
-There are up to 50 results per page. To navigate between pages pass `page` parameter with index in the URL. Like so:
+There are up to 20 results per page. To navigate between pages pass `page` parameter with index in the URL. Like so:
 http://127.0.0.1:8000/api/user/?page=2
 
 ## Authentication
@@ -53,7 +53,13 @@ fetch("http://127.0.0.1:8000/api/note/lecture/1/", requestOptions)
 ### Author
 1. List (http://127.0.0.1:8000/api/author/)
 1. Detail (http://127.0.0.1:8000/api/author/author_id/)
+1. Author's lectures (http://127.0.0.1:8000/api/author/author_id/lectures/)
 1. Most viewed authors (http://127.0.0.1:8000/api/author/most_viewed/)
+
+### Category
+1. List (http://127.0.0.1:8000/api/category/)
+1. Detail (http://127.0.0.1:8000/api/category/category_id/)
+1. Category's lectures (http://127.0.0.1:8000/api/category/category_id/lectures/)
 
 ### Lecture
 1. List (http://127.0.0.1:8000/api/lecture/)
@@ -61,7 +67,7 @@ fetch("http://127.0.0.1:8000/api/note/lecture/1/", requestOptions)
 1. Most viewed lectures (http://127.0.0.1:8000/api/lecture/most_viewed/)
 1. Most starred lectures (http://127.0.0.1:8000/api/lecture/most_starred/)
 1. Latest lectures (http://127.0.0.1:8000/api/lecture/latest/)
-1. :warning: Starred (http://127.0.0.1:8000/api/starred/) (returns all user's starred lectures)
+1. :warning: User starred lectures (http://127.0.0.1:8000/api/starred/)
 1. :warning: Star (http://127.0.0.1:8000/api/star/lecture_id/)
 1. :warning: Unstar (http://127.0.0.1:8000/api/unstar/lecture_id/)
 

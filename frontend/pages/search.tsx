@@ -13,15 +13,18 @@ import {
   Button,
 } from "react-native";
 import { shorterText, numberWithCommas } from "../services/functions";
+
 import Constants from "expo-constants";
 
 import { Ionicons } from "@expo/vector-icons";
 
 const { width, height } = Dimensions.get("window");
 
+import { HeaderText } from "../components/TextHeader";
+
 import { useTheme } from "@react-navigation/native";
 
-import { BASEURL } from "../services/fetcher";
+import { API } from "../services/fetcher";
 
 import { connect } from "react-redux";
 import { setVideoID } from "../services/storage/actions";
@@ -54,7 +57,7 @@ const SearchScreen = ({
   async function getData(append_array: boolean) {
     setPreviousValue(inputValue);
 
-    const search_link = `${BASEURL}esearch/search/lecture/${inputValue}/${CURRENT_PAGE_LEC}/`;
+    const search_link = `${API}search/lecture/${inputValue}/${CURRENT_PAGE_LEC}/`;
     fetch(search_link)
       .then((res) => res.json())
       .then((json) => {
@@ -73,7 +76,7 @@ const SearchScreen = ({
 
   async function getDataAut(append_array: boolean) {
     if (inputValue) {
-      const search_link = `${BASEURL}esearch/search/author/${inputValue}/0/`;
+      const search_link = `${API}search/author/${inputValue}/0/`;
       fetch(search_link)
         .then((res) => res.json())
         .then((json) => {
@@ -99,10 +102,10 @@ const SearchScreen = ({
     }
   };
 
-  //! only for faster dev
+  /*   //! only for faster dev
   useEffect(() => {
     onChangeText("complex");
-  }, []);
+  }, []); */
 
   async function loadMoreLecs() {
     if (!LOADED_ALL_LEC) {
@@ -141,11 +144,15 @@ const SearchScreen = ({
         style={styles.recommendation}
       >
         <Image
-          source={item.thumbnail ? {
-            uri: item.thumbnail,
-          } :  dark
+          source={
+            item.thumbnail
+              ? {
+                  uri: item.thumbnail,
+                }
+              : dark
               ? require("../assets/icons/videolecture-net-dark.png")
-              : require("../assets/icons/videolecture-net-light.png")}
+              : require("../assets/icons/videolecture-net-light.png")
+          }
           style={{
             height: 80,
             maxWidth: (80 / 9) * 16,
@@ -153,7 +160,7 @@ const SearchScreen = ({
 
             borderBottomLeftRadius: 12,
             borderTopLeftRadius: 12,
-            resizeMode: item.thumbnail ? "cover" : 'contain',
+            resizeMode: item.thumbnail ? "cover" : "contain",
           }}
         />
         <View style={{ flex: 4, padding: 6, alignContent: "center" }}>
@@ -175,7 +182,7 @@ const SearchScreen = ({
     const SEPARATOR_WIDTH = 10;
     const RenderAuthor = ({ item, index }) => (
       <TouchableOpacity
-         onPress={() =>
+        onPress={() =>
           navigation.navigate("Home", {
             screen: "author",
             params: {
@@ -186,7 +193,7 @@ const SearchScreen = ({
         style={{
           //paddingVertical: 6,
           width: AUTHOR_WIDTH,
-          marginTop: 14,
+          marginTop: padding,
         }}
       >
         <View
@@ -242,15 +249,16 @@ const SearchScreen = ({
         style={
           {
             //marginVertical: padding,
+            //marginTop: 70,
           }
         }
       >
         <SafeAreaView>
           <FlatList
             data={authors}
-            ListHeaderComponent={() => (
+            /* ListHeaderComponent={() => (
               <View style={{ paddingLeft: padding }} />
-            )}
+            )} */
             ListFooterComponent={() => (
               <View style={{ paddingRight: padding }} />
             )}
@@ -269,12 +277,12 @@ const SearchScreen = ({
 
   let listflat: any;
 
-  const padding = 24;
+  const padding = 14;
   const styles = StyleSheet.create({
     container: {
       flex: 1,
 
-      paddingTop: padding + Constants.statusBarHeight,
+      paddingTop: Constants.statusBarHeight,
     },
     h1: {
       fontSize: 36,
@@ -307,7 +315,12 @@ const SearchScreen = ({
     SearchBar: {
       height: 70,
 
+      //marginTop: Constants.statusBarHeight,
+
+      width: width - 2 * padding,
+
       backgroundColor: colors.card,
+
       borderRadius: 15,
       paddingLeft: 20,
       paddingRight: 10,
@@ -319,10 +332,12 @@ const SearchScreen = ({
         width: 0,
         height: 12,
       },
-      shadowRadius: 19,
+      shadowRadius: 15,
       shadowOpacity: 1,
 
       flexDirection: "row",
+
+      //position: "absolute",
     },
     textinput: {
       height: 70,
@@ -360,12 +375,12 @@ const SearchScreen = ({
       shadowRadius: 19,
       shadowOpacity: 1,
 
-      marginTop: padding / 2,
+      marginTop: padding,
       backgroundColor: colors.card,
       //padding: padding,
       borderRadius: 15,
 
-      marginHorizontal: padding,
+      marginRight: padding,
       maxWidth: 500,
 
       flex: 1,
@@ -374,6 +389,10 @@ const SearchScreen = ({
 
   return (
     <View style={styles.container}>
+      {/* <Authors /> */}
+      {/* {lecture ? ( */}
+      <HeaderText text="Search" />
+
       <View style={styles.SearchBar}>
         <TextInput
           style={styles.textinput}
@@ -382,6 +401,8 @@ const SearchScreen = ({
           autoFocus={true}
           onSubmitEditing={handleSubmit}
           clearButtonMode={"while-editing"}
+          placeholder={"What are you searching for?"}
+          placeholderTextColor={colors.secondary}
           keyboardAppearance={dark ? "dark" : "light"}
         />
         <TouchableOpacity onPress={handleSubmit}>
@@ -396,10 +417,7 @@ const SearchScreen = ({
         </TouchableOpacity>
       </View>
 
-      {/* <Authors /> */}
-      {/* {lecture ? ( */}
-
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, paddingLeft: padding }}>
         <FlatList
           ref={(ref) => (listflat = ref)}
           data={lecture}
@@ -413,6 +431,7 @@ const SearchScreen = ({
           numColumns={width / 600 > 1 ? 2 : 1}
         />
       </View>
+
       {/* ) : null} */}
 
       {loading ? (
