@@ -10,6 +10,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 
 import { setPlaybackSpeed, setVideoAudioPlay } from "../../services/actions";
+import {noHeadFetcher} from "../../services/fetcher";
 
 const VideoHeader = ({
   padding,
@@ -19,6 +20,7 @@ const VideoHeader = ({
   playbackSpeed,
   setVidAudPlay,
   videoAudioPlay,
+  token,
 }) => {
   const { colors, dark } = useTheme();
 
@@ -28,6 +30,23 @@ const VideoHeader = ({
   }, [playbackSpeed]); */
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [starred, setStarred] = useState(false);
+
+  useEffect(() => {
+      const myHeaders = new Headers();
+      myHeaders.append("Authorization", `Token ${token}`);
+
+      const requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+      };
+
+      fetch(`http://vln-mobile.ijs.si/api/lecture/${lecture.id}/`, requestOptions)
+          .then(response => response.text())
+          .then(result => console.log(result))
+          .catch(error => console.log('error', error));
+  }, []);
 
   const SettingsModal = () => {
     const SpeedController = () => {
@@ -169,6 +188,25 @@ const VideoHeader = ({
     );
   };
 
+  const setStar = (star: boolean) => {
+      const myHeaders = new Headers();
+      myHeaders.append("Authorization", `Token ${token}`);
+
+      const requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+      };
+
+      fetch("http://vln-mobile.ijs.si/api/" + (star ? "star" : "unstar") + `/${lecture.id}/`, requestOptions)
+          .then(response => response.text())
+          .then(result => console.log(result))
+          .catch(error => console.log('error', error));
+
+      console.log("should be star: " + star);
+      setStarred(star);
+  }
+
   return (
     <View style={{ flexDirection: "row" }}>
       <Text
@@ -189,7 +227,13 @@ const VideoHeader = ({
         style={{ paddingHorizontal: padding / 2, paddingVertical: padding }}
         onPress={() => console.log(lecture)}
       >
-        <Ionicons name={"ios-star"} size={20} color={colors.text} />
+      {token ?
+          starred ?
+              <Ionicons name={"ios-star"} size={20} color={colors.text} onPress={() => setStar(false)} /> :
+              <Ionicons name={"ios-star-outline"} size={20} color={colors.text} onPress={() => setStar(true)} />
+          :
+          <Ionicons name={"ios-star-outline"} size={20} color={colors.text} />
+      }
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => setModalVisible(!modalVisible)}
@@ -203,6 +247,7 @@ const VideoHeader = ({
 };
 
 const mapStateToProps = (state) => ({
+  token: state.token.token,
   playbackSpeed: state.video.playbackSpeed,
   videoAudioPlay: state.video.videoAudioPlay,
 });
