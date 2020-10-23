@@ -232,7 +232,7 @@ const VideoHeader = ({
               <Ionicons name={"ios-star"} size={20} color={colors.text} onPress={() => setStar(false)} /> :
               <Ionicons name={"ios-star-outline"} size={20} color={colors.text} onPress={() => setStar(true)} />
           :
-          <Ionicons name={"ios-star-outline"} size={20} color={colors.text} />
+          <></>
       }
       </TouchableOpacity>
       <TouchableOpacity
