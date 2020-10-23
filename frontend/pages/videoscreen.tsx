@@ -11,9 +11,10 @@ import {
 } from "react-native";
 const { width, height } = Dimensions.get("window");
 import Constants from "expo-constants";
-import { StatusBar } from "expo-status-bar";
 
 import { shorterText, numberWithCommas } from "../services/functions";
+
+import { HeaderText } from "../components/TextHeader";
 
 import { connect } from "react-redux";
 import { setVideoID } from "../services/actions";
@@ -60,37 +61,9 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
     });
   };
 
-  const recommendations = [
-    {
-      title:
-        "This page - How Machine Learning has Finally Solved Wanamaker’s Dilemma",
-      views: 12784,
-      author: "Oliver Downs",
-      date: "2016",
-      id: 1,
-      image: "http://hydro.ijs.si/v013/d2/2ley3qjmm7a3v7g6lnq5duermqrzbq7f.jpg",
-    },
-    {
-      title: "This page - How Machine ",
-      views: 127123,
-      author: "Oliver Downs",
-      id: 2,
-      date: "2016",
-      image: "http://hydro.ijs.si/v013/d2/2ley3qjmm7a3v7g6lnq5duermqrzbq7f.jpg",
-    },
-    {
-      title: "Blabla video title ",
-      views: 27312391,
-      author: "Erik Novak",
-      id: 3,
-      date: "201123",
-      image: "http://hydro.ijs.si/v013/d2/2ley3qjmm7a3v7g6lnq5duermqrzbq7f.jpg",
-    },
-  ];
-
   const Videos = ({ videos, section }: any) => {
-    const VID_HEIGHT = 100;
-    const VID_WIDTH = 230;
+    const VID_HEIGHT = 90;
+    const VID_WIDTH = 200;
 
     const Separator = () => (
       <Text
@@ -118,7 +91,7 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
           shadowOpacity: 1,
 
           marginTop: 10,
-          marginBottom: 2 * padding,
+          marginBottom: padding,
         }}
       >
         <TouchableOpacity onPress={() => _handleResultsClick(item)}>
@@ -160,14 +133,14 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
           <Text style={[styles.h2, { flex: 1, color: colors.text }]}>
             {section}
           </Text>
-          <Text style={[styles.h2, { color: colors.secondary }]}>Show all</Text>
+          {/* <Text style={[styles.h2, { color: colors.secondary }]}>Show all</Text> */}
         </View>
 
         <SafeAreaView>
           <FlatList
             data={videos}
             renderItem={RenderVideo}
-            keyExtractor={(item) => item.name}
+            keyExtractor={(item) => item.id.toString()}
             ItemSeparatorComponent={() => (
               <View style={{ marginLeft: padding }} />
             )}
@@ -196,7 +169,7 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
     },
     h2: {
       fontSize: 20,
-      fontFamily: "SF-UI-medium",
+      fontFamily: "SF-UI-semibold",
       color: colors.text,
     },
     h3: {
@@ -219,18 +192,7 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text
-        style={{
-          fontSize: 36,
-          fontFamily: "SF-UI-semibold",
-          color: colors.text,
-          paddingHorizontal: padding,
-          paddingBottom: 10,
-        }}
-      >
-        Discover
-      </Text>
-
+      <HeaderText text="Explore" />
       <Videos videos={latestLectures} section={"Latest lectures"} />
       <Videos videos={mostViewed} section={"Most viewed"} />
       <Videos videos={mostStarred} section={"Most starred"} />

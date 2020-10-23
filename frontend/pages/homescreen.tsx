@@ -25,6 +25,8 @@ import { useTheme } from "@react-navigation/native";
 import { noHeadFetcher } from "../services/fetcher";
 import useSWR from "swr";
 
+import { HeaderText } from "../components/TextHeader";
+
 //import { color } from "react-native-reanimated";
 
 const padding = 14;
@@ -74,17 +76,7 @@ export default function HomeScreen({ navigation }: any) {
   const Header = () =>
     events ? (
       <View>
-        <Text
-          style={{
-            fontSize: 36,
-            fontFamily: "SF-UI-semibold",
-            color: colors.text,
-            paddingHorizontal: padding,
-            paddingBottom: 10,
-          }}
-        >
-          Home
-        </Text>
+        <HeaderText text="Home" />
         <View
           style={{
             flexDirection: "row",

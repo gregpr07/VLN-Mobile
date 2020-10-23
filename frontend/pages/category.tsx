@@ -114,7 +114,8 @@ const Category = ({ navigation, route }: any) => {
       HeaderComponent={ListHeaderComponent}
       padding={padding}
       styles={styles}
-      lectures={category.lectures}
+      //lectures={category.lectures}
+      fetchurl={`category/${categoryID}/lectures/`}
     />
   );
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,8 @@ import {
   Dimensions,
 } from "react-native";
 const { width, height } = Dimensions.get("window");
+
+import { noHeadFetcher } from "../services/fetcher";
 
 import { useTheme } from "@react-navigation/native";
 
@@ -24,9 +26,30 @@ const Lectures = ({
   navigation,
   padding,
   styles,
-  lectures,
+  fetchurl,
 }: any) => {
   const { colors, dark } = useTheme();
+
+  const [lectures, setLectures] = useState([]);
+  const [paginate, setPaginate] = useState("");
+
+  useEffect(() => {
+    noHeadFetcher(fetchurl).then((json) => {
+      setLectures(json.results), setPaginate(json.next);
+    });
+  }, [fetchurl]);
+
+  const loadMoreLecs = () => {
+    if (paginate) {
+      fetch(paginate)
+        .then((res) => res.json())
+        .then((json) => {
+          const newlecs = lectures.concat(json.results);
+          setLectures(newlecs);
+          setPaginate(json.next);
+        });
+    }
+  };
 
   const _handleResultsClick = async (item) => {
     if (videoRef) {
@@ -117,7 +140,7 @@ const Lectures = ({
                 color: colors.secondary,
               }}
             >
-              {item.author}
+              {item.author.name}
               <Separator />
               {numberWithCommas(item.views)}
             </Text>
@@ -138,6 +161,7 @@ const Lectures = ({
         //getNativeScrollRef={(ref) => (flatlistRef = ref)}
         keyboardDismissMode={"on-drag"}
         numColumns={width / 600 > 1 ? 2 : 1}
+        onEndReached={loadMoreLecs}
       />
     </View>
   );

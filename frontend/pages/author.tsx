@@ -153,7 +153,8 @@ const Author = ({ navigation, route }: any) => {
       HeaderComponent={ListHeaderComponent}
       padding={padding}
       styles={styles}
-      lectures={author.lectures}
+      //lectures={author.lectures}
+      fetchurl={`author/${authorID}/lectures/`}
     />
   );
 };

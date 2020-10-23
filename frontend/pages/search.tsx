@@ -20,6 +20,8 @@ import { Ionicons } from "@expo/vector-icons";
 
 const { width, height } = Dimensions.get("window");
 
+import { HeaderText } from "../components/TextHeader";
+
 import { useTheme } from "@react-navigation/native";
 
 import { API } from "../services/fetcher";
@@ -100,10 +102,10 @@ const SearchScreen = ({
     }
   };
 
-  //! only for faster dev
+  /*   //! only for faster dev
   useEffect(() => {
     onChangeText("complex");
-  }, []);
+  }, []); */
 
   async function loadMoreLecs() {
     if (!LOADED_ALL_LEC) {
@@ -389,17 +391,7 @@ const SearchScreen = ({
     <View style={styles.container}>
       {/* <Authors /> */}
       {/* {lecture ? ( */}
-      <Text
-        style={{
-          fontSize: 36,
-          fontFamily: "SF-UI-semibold",
-          color: colors.text,
-          paddingHorizontal: padding,
-          paddingBottom: 10,
-        }}
-      >
-        Search
-      </Text>
+      <HeaderText text="Search" />
 
       <View style={styles.SearchBar}>
         <TextInput
@@ -409,7 +401,8 @@ const SearchScreen = ({
           autoFocus={true}
           onSubmitEditing={handleSubmit}
           clearButtonMode={"while-editing"}
-          placeholder={"Search for everything"}
+          placeholder={"What are you searching for?"}
+          placeholderTextColor={colors.secondary}
           keyboardAppearance={dark ? "dark" : "light"}
         />
         <TouchableOpacity onPress={handleSubmit}>
