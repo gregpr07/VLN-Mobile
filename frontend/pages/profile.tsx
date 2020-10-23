@@ -209,7 +209,7 @@ export default function ProfileScreen({ navigation }) {
     navsText: {
         width: 60,
         height: 17,
-        fontFamily: "HKGrotesk",
+        fontFamily: "SF-UI-medium",
         fontSize: 14,
         fontWeight: "normal",
         fontStyle: "normal",
