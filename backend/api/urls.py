@@ -20,6 +20,7 @@ urlpatterns = [
 
     path('star/<int:lecture_id>/', StarLectureView.as_view()),
     path('unstar/<int:lecture_id>/', UnstarLectureView.as_view()),
+    path('starred/', StarredLecturesView.as_view()),
 
     url("^auth/user/$", UserAPI.as_view()),
     url("^auth/login/$", LoginAPI.as_view()),

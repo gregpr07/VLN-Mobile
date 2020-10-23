@@ -163,6 +163,18 @@ class NoteViewSet(ModelViewSet):
         return simple_list_mixin(self, queryset)
 
 
+class StarredLecturesView(APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    @staticmethod
+    def get(request):
+        lectures = Lecture.objects.filter(stargazers=request.user)
+
+        return Response({
+            "lectures": SimpleLectureSerializer(lectures, many=True).data
+        })
+
+
 class StarLectureView(APIView):
     permission_classes = [permissions.IsAuthenticated, ]
 
