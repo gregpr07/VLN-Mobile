@@ -30,7 +30,7 @@ import { getUserToken } from "./services/storage/actions";
 
 import { colors, LightTheme, DarkTheme } from "./services/themes";
 
-import { useColorScheme } from "react-native-appearance"; 
+import { useColorScheme } from "react-native-appearance";
 
 
 const Tabs = createBottomTabNavigator();
@@ -115,6 +115,7 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
     headerStyle: {
       backgroundColor: themeIsDark ? "black" : colors.whiteBackground,
       shadowColor: "transparent",
+      elevation: 0,
     },
     //headerTintColor: themeIsDark ? colors.dark : colors.darkGreyBlue,
     headerTitleStyle: {
@@ -267,7 +268,7 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
         <Tabs.Screen name="Home" component={HomeStackScreen} />
         {/*  <Tabs.Screen name="Video" component={VideoStackScreen} /> */}
         {/*    {videoID || !videoRef ? ( */}
-         <Tabs.Screen name="Player" component={PlayerStackScreen} /> 
+         <Tabs.Screen name="Player" component={PlayerStackScreen} />
         {/*      ) : null} */}
 
         <Tabs.Screen name="Search" component={SearchScreen} />

@@ -11,7 +11,7 @@ const state = store.getState();
 
 console.log(state.token.token);
 
-var myHeaders = new Headers();
+const myHeaders = new Headers();
 myHeaders.append("Authorization", `Token ${state.token.token}`);
 
 const requestOptions: any = {

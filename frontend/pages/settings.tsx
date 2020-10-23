@@ -75,7 +75,7 @@ const SignOutScreen = ({ token, removeUserToken }: any) => {
           <Text style={styles.h3}>Remove user data</Text>
           <Text style={styles.h3}>Do not track</Text>
           <Text style={styles.h3}>Privacy and terms (GDPR)</Text>
-          <Text style={styles.h3}>Contact us</Text>
+          {/*<Text style={styles.h3}>Contact us</Text>   TODO: uncomment me*/}
         </View>
       </View>
       <TouchableOpacity onPress={_signOutAsync}>

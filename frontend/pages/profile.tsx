@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {Dimensions, Image, StyleSheet, Text, View,} from "react-native";
 
-import {useTheme} from "@react-navigation/native";
+import {useTheme, useFocusEffect} from "@react-navigation/native";
 import {useSelector} from "react-redux";
+import {API, fetcher, noHeadFetcher} from "../services/fetcher";
 
 const { width, height } = Dimensions.get("window");
 
@@ -12,6 +13,40 @@ export default function ProfileScreen({ navigation }) {
   const { colors, dark } = useTheme();
 
   const tokenState = useSelector(state => state.token);
+  const [starredLectures, setStarredLectures] = useState([]);
+  const [notes, setNotes] = useState([]);
+
+  useFocusEffect(
+      React.useCallback(() => {
+          const myHeaders = new Headers();
+          myHeaders.append("Authorization", `Token ${tokenState.token}`);
+
+          const requestOptions = {
+              method: 'GET',
+              headers: myHeaders,
+              redirect: 'follow'
+          };
+
+          fetch(API + "starred/", requestOptions)
+              .then(response => response.json())
+              .then(json => {
+                  const lectures = json["lectures"];
+                  setStarredLectures(lectures);
+                  console.log(lectures);
+              })
+              .catch(error => console.log('error', error));
+
+          fetch(API + "/note/", requestOptions)
+              .then(response => response.json())
+              .then(json => {
+                  const notes = json["results"];
+                  setNotes(notes);
+                  console.log(notes);
+              })
+              .catch(error => console.log('error', error));
+      }, [])
+  );
+
   const [userData, setUserData] = useState({
       profileImage: "https://blogs.bmj.com/ebn/files/2015/11/Professor-Brendan-McCormack-low-res-2-683x1024.jpg",
       name: "",
@@ -83,14 +118,20 @@ export default function ProfileScreen({ navigation }) {
   const Menu = () => {
     return (
         <View style={styles.navsContainer}>
-            <View style={styles.navsLeft}>
-                <Text style={styles.navsText}>Uno</Text>
+            <View style={[styles.navItem, styles.navLeft]}>
+                <Text style={styles.navText}>
+                    Starred
+                </Text>
             </View>
-            <View style={styles.navsLeft}>
-                <Text style={styles.navsText}>Due</Text>
+            <View style={[styles.navItem]}>
+                <Text style={styles.navText}>
+                    Notes
+                </Text>
             </View>
-            <View style={styles.navsLeft}>
-                <Text style={styles.navsText}>Tres</Text>
+            <View style={[styles.navItem, styles.navRight]}>
+                <Text style={styles.navText}>
+                    History
+                </Text>
             </View>
         </View>
     )
@@ -114,7 +155,6 @@ export default function ProfileScreen({ navigation }) {
       lineHeight: 40,
       color: colors.text,
     },
-
     h3: {
       fontSize: 28,
       fontFamily: "SF-UI-medium",
@@ -132,7 +172,6 @@ export default function ProfileScreen({ navigation }) {
       fontFamily: "SF-UI-medium",
       color: colors.secondary,
     },
-
     gray: {
       color: "#828282",
     },
@@ -176,48 +215,51 @@ export default function ProfileScreen({ navigation }) {
       fontFamily: "SF-UI-medium",
     },
     navsContainer: {
+        backgroundColor: "red",
         flex: 1,
-        flexDirection: "row",
-        flexWrap: "wrap",
-        alignItems: "flex-start",
-        paddingTop: 20,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        alignItems: 'flex-start',
+        margin: 20,
     },
-    navsLeft: {
-        width: 104,
-        height: 44,
-        borderRadius: 15,
-        backgroundColor: "#ffffff"
+    navItem: {
+      padding: 10,
+      paddingBottom: 13,
+      width: "33.33%",
+      backgroundColor: colors.card,
     },
-    navsMid: {
-        width: 105,
-        height: 44,
-        backgroundColor: "#ffffff",
-        shadowColor: "rgba(60, 128, 209, 0.09)",
-        shadowOffset: {
-            width: 0,
-            height: 12
-        },
-        shadowRadius: 19,
-        shadowOpacity: 1
+    navLeft: {
+        borderTopLeftRadius: 10,
+        borderBottomLeftRadius: 10,
+        borderRightWidth: 1,
+        borderColor: colors.shadow,
     },
-    navsRight: {
-        width: 104,
-        height: 44,
-        borderRadius: 15,
-        backgroundColor: "#ffffff"
+    navRight: {
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        borderLeftWidth: 1,
+        borderColor: colors.shadow,
     },
-    navsText: {
-        width: 60,
-        height: 17,
+    navText: {
         fontFamily: "SF-UI-medium",
         fontSize: 14,
         fontWeight: "normal",
         fontStyle: "normal",
         letterSpacing: 1,
         textAlign: "center",
-        color: "red",
+        color: colors.text,
         textTransform: "uppercase",
-    }
+    },
+    card: {
+        backgroundColor: colors.card,
+        margin: 20,
+        marginTop: 42,
+        height: 300,
+        borderRadius: 10,
+    },
+    cardBody: {
+        padding: 10,
+    },
   });
 
   return (
@@ -228,6 +270,11 @@ export default function ProfileScreen({ navigation }) {
         <Text style={[styles.h4]}>{userData.title}</Text>
       </View>
       <Menu />
+      <View style={styles.card}>
+          <View style={styles.cardBody}>
+
+          </View>
+      </View>
     </View>
   );
 }
