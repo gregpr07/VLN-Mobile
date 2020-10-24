@@ -255,8 +255,7 @@ function VideoScreen({
                   height: 75,
                   width: 75,
                   borderRadius: 50,
-                  borderColor: colors.border,
-                  borderWidth: 5,
+
                   marginRight: 15,
 
                   shadowColor: colors.shadow,
@@ -295,9 +294,7 @@ function VideoScreen({
             {lecture.events ? (
               <Text
                 style={[styles.h5, { paddingTop: 4, color: colors.primary }]}
-              >
-                NOT WORKING CORRECTLY
-              </Text>
+              ></Text>
             ) : null}
           </View>
         </View>

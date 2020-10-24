@@ -81,9 +81,6 @@ const Author = ({ navigation, route }: any) => {
               resizeMode: "cover",
 
               marginBottom: 5,
-
-              borderColor: colors.card,
-              borderWidth: 4,
             }}
           />
         </View>

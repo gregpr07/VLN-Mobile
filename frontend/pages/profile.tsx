@@ -53,8 +53,6 @@ export default function ProfileScreen({ navigation }) {
             height: 150,
             width: 150,
             borderRadius: 150,
-            borderColor: colors.border,
-            borderWidth: 9,
           }}
         />
       </View>

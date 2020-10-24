@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { Component, useState, useEffect, useRef } from "react";
 import {
   TextInput,
   SafeAreaView,
@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Dimensions,
   Button,
+  Animated,
 } from "react-native";
 import { shorterText, numberWithCommas } from "../services/functions";
 
@@ -96,7 +97,8 @@ const SearchScreen = ({
       CURRENT_PAGE_LEC = 0;
       LOADED_ALL_LEC = false;
       setLoading(true);
-      listflat.scrollToOffset(0);
+      listflat.current.scrollToOffset(0);
+      //console.log(listflat);
       getData(false);
       getDataAut(false);
     }
@@ -193,7 +195,7 @@ const SearchScreen = ({
         style={{
           //paddingVertical: 6,
           width: AUTHOR_WIDTH,
-          marginTop: padding,
+          marginBottom: padding,
         }}
       >
         <View
@@ -246,12 +248,10 @@ const SearchScreen = ({
 
     return (
       <View
-        style={
-          {
-            //marginVertical: padding,
-            //marginTop: 70,
-          }
-        }
+        style={{
+          //marginVertical: padding,
+          marginTop: 70,
+        }}
       >
         <SafeAreaView>
           <FlatList
@@ -274,8 +274,6 @@ const SearchScreen = ({
       </View>
     );
   };
-
-  let listflat: any;
 
   const padding = 14;
   const styles = StyleSheet.create({
@@ -326,6 +324,7 @@ const SearchScreen = ({
       paddingRight: 10,
 
       marginHorizontal: padding,
+      marginBottom: padding,
 
       shadowColor: colors.shadow,
       shadowOffset: {
@@ -337,7 +336,7 @@ const SearchScreen = ({
 
       flexDirection: "row",
 
-      //position: "absolute",
+      position: "absolute",
     },
     textinput: {
       height: 70,
@@ -375,7 +374,7 @@ const SearchScreen = ({
       shadowRadius: 19,
       shadowOpacity: 1,
 
-      marginTop: padding,
+      marginBottom: padding,
       backgroundColor: colors.card,
       //padding: padding,
       borderRadius: 15,
@@ -387,48 +386,78 @@ const SearchScreen = ({
     },
   });
 
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const listflat = useRef(undefined);
+
+  const searchHeight = 52 + padding;
+
   return (
     <View style={styles.container}>
       {/* <Authors /> */}
       {/* {lecture ? ( */}
+
       <HeaderText text="Search" />
 
-      <View style={styles.SearchBar}>
-        <TextInput
-          style={styles.textinput}
-          onChangeText={(text) => onChangeText(text)}
-          value={inputValue}
-          autoFocus={true}
-          onSubmitEditing={handleSubmit}
-          clearButtonMode={"while-editing"}
-          placeholder={"What are you searching for?"}
-          placeholderTextColor={colors.secondary}
-          keyboardAppearance={dark ? "dark" : "light"}
-        />
-        <TouchableOpacity onPress={handleSubmit}>
-          <View style={styles.searchicon}>
-            <Ionicons
-              name={"ios-search"}
-              size={30}
-              style={{ paddingHorizontal: 12 }}
-              color={"white"}
-            />
-          </View>
-        </TouchableOpacity>
-      </View>
+      <Animated.View
+        style={{
+          transform: [
+            {
+              translateY: scrollY.interpolate({
+                inputRange: [-1, 0, searchHeight, searchHeight + 1],
+                outputRange: [0, 0, -searchHeight, -searchHeight],
+              }),
+            },
+          ],
+        }}
+      >
+        <View style={styles.SearchBar}>
+          <TextInput
+            style={styles.textinput}
+            onChangeText={(text) => onChangeText(text)}
+            value={inputValue}
+            autoFocus={true}
+            onSubmitEditing={handleSubmit}
+            clearButtonMode={"while-editing"}
+            placeholder={"What are you searching for?"}
+            placeholderTextColor={colors.secondary}
+            keyboardAppearance={dark ? "dark" : "light"}
+          />
+          <TouchableOpacity onPress={handleSubmit}>
+            <View style={styles.searchicon}>
+              <Ionicons
+                name={"ios-search"}
+                size={30}
+                style={{ paddingHorizontal: 12 }}
+                color={"white"}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+      </Animated.View>
 
-      <View style={{ flex: 1, paddingLeft: padding }}>
-        <FlatList
-          ref={(ref) => (listflat = ref)}
+      <View
+        style={{
+          flex: 1,
+          paddingLeft: padding,
+          paddingTop: padding,
+          zIndex: -1000,
+        }}
+      >
+        <Animated.FlatList
+          ref={listflat}
           data={lecture}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
           onEndReached={loadMoreLecs}
           ListHeaderComponent={<Authors />}
-          ListFooterComponent={() => <View style={{ marginBottom: padding }} />}
           //getNativeScrollRef={(ref) => (flatlistRef = ref)}
           keyboardDismissMode={"on-drag"}
           numColumns={width / 600 > 1 ? 2 : 1}
+          scrollEventThrottle={1}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            { useNativeDriver: true }
+          )}
         />
       </View>
 
