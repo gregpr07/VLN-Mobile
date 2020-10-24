@@ -136,6 +136,7 @@ const SearchScreen = ({
       |{" "}
     </Text>
   );
+
   const renderItem = ({ item }: any) => (
     <View style={styles.default_card}>
       <TouchableOpacity

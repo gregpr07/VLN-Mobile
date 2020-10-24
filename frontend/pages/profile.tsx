@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {Dimensions, Image, StyleSheet, Text, View,} from "react-native";
+import {Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View,} from "react-native";
 
-import {useTheme, useFocusEffect} from "@react-navigation/native";
+import {useFocusEffect, useTheme} from "@react-navigation/native";
 import {useSelector} from "react-redux";
-import {API, fetcher, noHeadFetcher} from "../services/fetcher";
+import {API} from "../services/fetcher";
+import {numberWithCommas, shorterText} from "../services/functions";
+import Constants from "expo-constants";
 
 const { width, height } = Dimensions.get("window");
 
@@ -12,6 +14,7 @@ export default function ProfileScreen({ navigation }) {
 
   const { colors, dark } = useTheme();
 
+  const [activeTab, setActiveTab] = useState("starred");
   const tokenState = useSelector(state => state.token);
   const [starredLectures, setStarredLectures] = useState([]);
   const [notes, setNotes] = useState([]);
@@ -33,6 +36,7 @@ export default function ProfileScreen({ navigation }) {
                   const lectures = json["lectures"];
                   setStarredLectures(lectures);
                   console.log(lectures);
+
               })
               .catch(error => console.log('error', error));
 
@@ -48,7 +52,7 @@ export default function ProfileScreen({ navigation }) {
   );
 
   const [userData, setUserData] = useState({
-      profileImage: "https://blogs.bmj.com/ebn/files/2015/11/Professor-Brendan-McCormack-low-res-2-683x1024.jpg",
+      profileImage: "https://i.kym-cdn.com/photos/images/original/001/561/356/734.jpg",
       name: "",
       title: "",
     }
@@ -115,132 +119,68 @@ export default function ProfileScreen({ navigation }) {
     );
   };
 
-  const Menu = () => {
-    return (
-        <View style={styles.navsContainer}>
-            <View style={[styles.navItem, styles.navLeft]}>
-                <Text style={styles.navText}>
-                    Starred
-                </Text>
+    const Menu = () => {
+        return (
+            <View style={styles.navsContainer}>
+                <View style={[styles.navItem, styles.navLeft]} onTouchStart={() => setActiveTab("starred")}>
+                    <Text style={[styles.navText, activeTab == "starred" ? styles.active : {}]}>
+                      Starred
+                    </Text>
+                </View>
+                <View style={[styles.navItem]} onTouchStart={() => setActiveTab("notes")}>
+                    <Text style={[styles.navText, activeTab == "notes" ? styles.active : {}]}>
+                        Notes
+                    </Text>
+                </View>
+                <View style={[styles.navItem, styles.navRight]} onTouchStart={() => setActiveTab("history")}>
+                    <Text style={[styles.navText, activeTab == "history" ? styles.active : {}]}>
+                        History
+                    </Text>
+                </View>
             </View>
-            <View style={[styles.navItem]}>
-                <Text style={styles.navText}>
-                    Notes
-                </Text>
-            </View>
-            <View style={[styles.navItem, styles.navRight]}>
-                <Text style={styles.navText}>
-                    History
-                </Text>
-            </View>
-        </View>
-    )
-  }
+        )
+    }
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: padding,
-    },
-    h1: {
-      fontSize: 36,
-      textAlign: "center",
-      fontFamily: "SF-UI-semibold",
-      color: colors.text,
-    },
-    h2: {
-      fontSize: 30,
-      fontFamily: "SF-UI-semibold",
-      textAlign: "center",
-      lineHeight: 40,
-      color: colors.text,
-    },
-    h3: {
-      fontSize: 28,
-      fontFamily: "SF-UI-medium",
-      height: 28,
-      color: colors.text,
-    },
-    h4: {
-      fontSize: 18,
-      fontFamily: "SF-UI-medium",
-      textAlign: "center",
-      color: colors.text,
-    },
-    h5: {
-      fontSize: 16,
-      fontFamily: "SF-UI-medium",
-      color: colors.secondary,
-    },
-    gray: {
-      color: "#828282",
-    },
-    video_title: {
-      fontSize: 22,
-      paddingBottom: 16,
-      paddingTop: 16,
-      fontFamily: "SF-UI-medium",
-      paddingRight: 32,
-    },
-    video: {
-      borderRadius: 16,
-      height: ((width - 2 * padding) / 16) * 9,
-      width: width - 2 * padding,
-    },
-    description: {
-      paddingVertical: 8,
-    },
-    recommendation: {
-      paddingVertical: 8,
-      flexDirection: "row",
-    },
-    your_notes: {
-      borderRadius: 16,
-      paddingHorizontal: 16,
-      //height: 100,
-      marginVertical: 8,
-      backgroundColor: "white",
-    },
-    note_text: {
-      fontFamily: "SF-UI-light",
-      fontSize: 16,
-      color: "#4F4F4F",
-    },
-    button_default: {
-      paddingHorizontal: 32,
-      paddingVertical: 16,
-      borderRadius: 20,
-      backgroundColor: "#5DB075",
-      fontSize: 20,
-      fontFamily: "SF-UI-medium",
-    },
-    navsContainer: {
-        backgroundColor: "red",
-        flex: 1,
+    const styles = StyleSheet.create({
+      userName: {
+        fontSize: 30,
+        textAlign: "center",
+        fontFamily: "SF-UI-semibold",
+        color: colors.text,
+      },
+      userTag: {
+        fontSize: 18,
+        fontFamily: "SF-UI-semibold",
+        textAlign: "center",
+        lineHeight: 40,
+        color: colors.text,
+        marginTop: -5,
+      },
+      navsContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         alignItems: 'flex-start',
         margin: 20,
-    },
-    navItem: {
-      padding: 10,
-      paddingBottom: 13,
-      width: "33.33%",
-      backgroundColor: colors.card,
-    },
-    navLeft: {
+      },
+      navItem: {
+        padding: 10,
+        paddingBottom: 13,
+        width: "33.33%",
+        backgroundColor: colors.card,
+      },
+      navLeft: {
         borderTopLeftRadius: 10,
         borderBottomLeftRadius: 10,
         borderRightWidth: 1,
         borderColor: colors.shadow,
-    },
-    navRight: {
+      },
+      navRight: {
         borderTopRightRadius: 10,
         borderBottomRightRadius: 10,
         borderLeftWidth: 1,
         borderColor: colors.shadow,
-    },
-    navText: {
+      },
+      navText: {
         fontFamily: "SF-UI-medium",
         fontSize: 14,
         fontWeight: "normal",
@@ -249,31 +189,153 @@ export default function ProfileScreen({ navigation }) {
         textAlign: "center",
         color: colors.text,
         textTransform: "uppercase",
-    },
-    card: {
+      },
+      active: {
+        fontWeight: "bold",
+      },
+      card: {
+        marginHorizontal: 20,
         backgroundColor: colors.card,
-        margin: 20,
-        marginTop: 42,
-        height: 300,
+        height: 210,
         borderRadius: 10,
-    },
-    cardBody: {
-        padding: 10,
-    },
-  });
+      },
+      cardBody: {
+          padding: 10,
+      },
+      container: {
+        flex: 1,
+
+        paddingTop: Constants.statusBarHeight,
+      },
+      h1: {
+        fontSize: 36,
+        textAlign: "center",
+        fontFamily: "SF-UI-semibold",
+      },
+
+      h3: {
+        fontSize: 14,
+        fontFamily: "SF-UI-semibold",
+        textAlign: "center",
+      },
+      h4: {
+        paddingBottom: 2,
+        fontSize: 14,
+        fontFamily: "SF-UI-medium",
+        color: colors.text,
+      },
+      h5: {
+        fontSize: 12,
+        fontFamily: "SF-UI-medium",
+      },
+
+      gray: {
+        color: "#828282",
+      },
+      recommendation: {
+        flexDirection: "row",
+      },
+      default_card: {
+        shadowColor: colors.shadow,
+        shadowOffset: {
+          width: 0,
+          height: 12,
+        },
+        shadowRadius: 19,
+        shadowOpacity: 1,
+
+        backgroundColor: colors.card,
+        //padding: padding,
+        borderRadius: 15,
+        marginBottom: 10,
+
+        marginRight: padding,
+        maxWidth: 500,
+
+        flex: 1,
+      },
+    });
+
+  const Separator = () => (
+    <Text
+      style={{
+        color: "#5468fe",
+      }}
+    >
+      {" "}
+      |{" "}
+    </Text>
+  );
+
+  const renderItem = (item: any) => (
+    <View style={styles.default_card}>
+      <TouchableOpacity
+        // onPress={() => _handleResultsClick(item)}
+        //key={item.title}
+        style={styles.recommendation}
+      >
+        <Image
+          source={
+            item.thumbnail
+              ? {
+                uri: item.thumbnail,
+              }
+              : dark
+              ? require("../assets/icons/videolecture-net-dark.png")
+              : require("../assets/icons/videolecture-net-light.png")
+          }
+          style={{
+            height: 80,
+            maxWidth: (80 / 9) * 16,
+            flex: 3,
+
+            borderBottomLeftRadius: 12,
+            borderTopLeftRadius: 12,
+            resizeMode: item.thumbnail ? "cover" : "contain",
+          }}
+        />
+        <View style={{ flex: 4, padding: 6, alignContent: "center" }}>
+          <Text style={[styles.h4]}>{shorterText(item.title, 75)}</Text>
+          <View>
+            <Text style={[styles.h5, { color: colors.secondary }]}>
+              {item.author.name}
+              <Separator />
+              {numberWithCommas(item.views)}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
 
   return (
     <View>
       <Header />
       <View style={{ paddingTop: 15 }}>
-        <Text style={styles.h2}>{userData.name}</Text>
-        <Text style={[styles.h4]}>{userData.title}</Text>
+        <Text style={styles.userName}>{userData.name}</Text>
+        <Text style={[styles.userTag]}>{userData.title}</Text>
       </View>
       <Menu />
-      <View style={styles.card}>
+      <View>
+        <View style={styles.card}>
           <View style={styles.cardBody}>
-
+            <ScrollView>
+              {activeTab == "starred" &&
+                <View>
+                  {starredLectures.map((lecture) => {
+                    return renderItem(lecture);
+                  })}
+                </View>
+              }
+              {activeTab == "notes" &&
+                <Text>Notes</Text>
+              }
+              {activeTab == "history" &&
+                <Text>History</Text>
+              }
+            </ScrollView>
           </View>
+        </View>
       </View>
     </View>
   );
