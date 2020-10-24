@@ -165,14 +165,13 @@ class Command(BaseCommand):
         LECTURE_COLS = [desc[0] for desc in cursor.description]
 
         cursor.execute(
-            "SELECT * FROM vl_lecture WHERE (\"enabled\" = 'true') AND (\"type\" = 'vl') AND (\"public\" = 'true')")
-        lectures = cursor.fetchall()
+            "SELECT * FROM vl_lecture WHERE (\"enabled\" = 'true') AND (\"public\" = 'true') AND (( type = 'vkn') OR ( type = 'vl') OR ( type = 'vdb') OR ( type = 'vdm') OR ( type = 'viv') OR ( type = 'vid') OR ( type = 'vop') OR ( type = 'vkn') OR ( type = 'vsm') OR ( type = 'vtt') OR ( type = 'vit') OR ( type = 'vtd') OR ( type = 'vpr') OR ( type = 'vtp') OR ( type = 'vpa') OR ( type = 'vps'))")
 
         added = 0
         already_there = 0
         errors = 0
 
-        for lecture in tqdm(lectures):
+        for lecture in tqdm(cursor.fetchall()):
             lec_id = lecture[0]
 
             try:
