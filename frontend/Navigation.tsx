@@ -30,6 +30,7 @@ import { getUserToken } from "./services/actions";
 import { colors, LightTheme, DarkTheme } from "./services/themes";
 
 import { useColorScheme } from "react-native-appearance";
+import { BASEURL } from "./services/fetcher";
 
 const Tabs = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -220,7 +221,7 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
   );
 
   const linking = {
-    prefixes: ["https://localhost:8000/", "localhost:8000/"],
+    prefixes: [BASEURL, "localhost:5000/"],
   };
   return (
     <NavigationContainer
