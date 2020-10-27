@@ -196,7 +196,6 @@ export default function ProfileScreen({ navigation }) {
       card: {
         marginHorizontal: 20,
         backgroundColor: colors.card,
-        height: 210,
         borderRadius: 10,
       },
       cardBody: {
@@ -268,7 +267,7 @@ export default function ProfileScreen({ navigation }) {
   );
 
   const renderItem = (item: any) => (
-    <View style={styles.default_card}>
+    <View style={styles.default_card} key={item.id}>
       <TouchableOpacity
         // onPress={() => _handleResultsClick(item)}
         //key={item.title}
@@ -309,7 +308,7 @@ export default function ProfileScreen({ navigation }) {
   );
 
   return (
-    <View>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <Header />
       <View style={{ paddingTop: 15 }}>
         <Text style={styles.userName}>{userData.name}</Text>
@@ -319,7 +318,7 @@ export default function ProfileScreen({ navigation }) {
       <View>
         <View style={styles.card}>
           <View style={styles.cardBody}>
-            <ScrollView>
+            <View>
               {activeTab == "starred" &&
                 <View>
                   {starredLectures.map((lecture) => {
@@ -333,10 +332,10 @@ export default function ProfileScreen({ navigation }) {
               {activeTab == "history" &&
                 <Text>History</Text>
               }
-            </ScrollView>
+            </View>
           </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
