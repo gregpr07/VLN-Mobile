@@ -35,17 +35,14 @@ export default function ProfileScreen({ navigation }) {
               .then(json => {
                   const lectures = json["lectures"];
                   setStarredLectures(lectures);
-                  console.log(lectures);
-
               })
               .catch(error => console.log('error', error));
 
-          fetch(API + "/note/", requestOptions)
+          fetch(API + "/noted/", requestOptions)
               .then(response => response.json())
               .then(json => {
-                  const notes = json["results"];
+                  const notes = json["lectures"];
                   setNotes(notes);
-                  console.log(notes);
               })
               .catch(error => console.log('error', error));
       }, [])
@@ -327,10 +324,17 @@ export default function ProfileScreen({ navigation }) {
                 </View>
               }
               {activeTab == "notes" &&
-                <Text>Notes</Text>
+                <View>
+                  {notes.map((lecture) => {
+                    return renderItem(lecture);
+                  })}
+                </View>
               }
               {activeTab == "history" &&
-                <Text>History</Text>
+                <Text>
+                  History
+                  {/* TODO: implement me in backend first */}
+                </Text>
               }
             </View>
           </View>
