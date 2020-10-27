@@ -163,12 +163,12 @@ class NoteViewSet(ModelViewSet):
         return simple_list_mixin(self, queryset)
 
 
-class StarredLecturesView(APIView):
+class NotedLecturesView(APIView):
     permission_classes = [permissions.IsAuthenticated, ]
 
     @staticmethod
     def get(request):
-        lectures = Lecture.objects.filter(stargazers=request.user)
+        lectures = Lecture.objects.filter(notes__user=request.user).distinct()
 
         return Response({
             "lectures": SimpleLectureSerializer(lectures, many=True).data
@@ -180,8 +180,11 @@ class StarredLecturesView(APIView):
 
     @staticmethod
     def get(request):
-        starred = Lecture.objects.filter(stargazers=request.user.usermodel).order_by("-views")
-        return Response(SimpleLectureSerializer(starred, many=True).data)
+        lectures = Lecture.objects.filter(stargazers=request.user)
+
+        return Response({
+            "lectures": SimpleLectureSerializer(lectures, many=True).data
+        })
 
 
 class StarLectureView(APIView):
