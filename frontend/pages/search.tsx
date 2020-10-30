@@ -28,7 +28,7 @@ import { useTheme } from "@react-navigation/native";
 import { API } from "../services/fetcher";
 
 import { connect } from "react-redux";
-import { setVideoID } from "../services/actions";
+import { setVideoID } from "../services/storage/actions";
 
 let CURRENT_PAGE_LEC: number;
 let LOADED_ALL_LEC: boolean;
@@ -138,6 +138,7 @@ const SearchScreen = ({
       |{" "}
     </Text>
   );
+
   const renderItem = ({ item }: any) => (
     <View style={styles.default_card}>
       <TouchableOpacity

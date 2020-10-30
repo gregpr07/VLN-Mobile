@@ -26,7 +26,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { fetcher, noHeadFetcher } from "../services/fetcher";
 
 import { connect } from "react-redux";
-import { setVideoID, setVideoAudioPlay } from "../services/actions";
+import { setVideoID } from "../services/storage/actions";
 
 import { useTheme } from "@react-navigation/native";
 

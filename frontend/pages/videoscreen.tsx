@@ -17,7 +17,7 @@ import { shorterText, numberWithCommas } from "../services/functions";
 import { HeaderText } from "../components/TextHeader";
 
 import { connect } from "react-redux";
-import { setVideoID } from "../services/actions";
+import { setVideoID } from "../services/storage/actions";
 
 import {
   ScrollView,

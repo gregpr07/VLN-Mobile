@@ -9,7 +9,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { useTheme } from "@react-navigation/native";
 
-import { setPlaybackSpeed, setVideoAudioPlay } from "../../services/actions";
+import { setPlaybackSpeed, setVideoAudioPlay } from "../../services/storage/actions";
 import {noHeadFetcher} from "../../services/fetcher";
 
 const VideoHeader = ({

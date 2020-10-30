@@ -16,7 +16,7 @@ import { useTheme } from "@react-navigation/native";
 import { shorterText, numberWithCommas } from "../services/functions";
 
 import { connect } from "react-redux";
-import { setVideoID } from "../services/actions";
+import { setVideoID } from "../services/storage/actions";
 
 const Lectures = ({
   videoRef,

@@ -12,7 +12,7 @@ import { connect } from "react-redux";
 
 import { shorterText, numberWithCommas } from "../../services/functions";
 
-import { setVideoID, setVideoRef } from "../../services/actions";
+import { setVideoID, setVideoRef } from "../../services/storage/actions";
 
 import { API } from "../../services/fetcher";
 

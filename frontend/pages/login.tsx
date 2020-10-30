@@ -8,7 +8,7 @@ import {
   Dimensions,
 } from "react-native";
 import { connect } from "react-redux";
-import { saveUserToken } from "../services/actions";
+import { saveUserToken } from "../services/storage/actions";
 import Constants from "expo-constants";
 
 import { API } from "../services/fetcher";

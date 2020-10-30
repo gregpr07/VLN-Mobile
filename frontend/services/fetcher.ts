@@ -1,4 +1,4 @@
-import store from "./store";
+import store from "./storage/store";
 
 //export const BASEURL = "http://localhost:8000/";
 
@@ -10,7 +10,7 @@ const state = store.getState();
 
 //console.log(state.token.token);
 
-var myHeaders = new Headers();
+const myHeaders = new Headers();
 myHeaders.append("Authorization", `Token ${state.token.token}`);
 
 const requestOptions: any = {

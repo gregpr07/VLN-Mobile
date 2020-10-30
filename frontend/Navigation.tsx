@@ -25,7 +25,7 @@ import { AppLoading } from "expo";
 import * as Font from "expo-font";
 
 import { connect } from "react-redux";
-import { getUserToken } from "./services/actions";
+import { getUserToken } from "./services/storage/actions";
 
 import { colors, LightTheme, DarkTheme } from "./services/themes";
 
@@ -114,6 +114,7 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
     headerStyle: {
       backgroundColor: themeIsDark ? "black" : colors.whiteBackground,
       shadowColor: "transparent",
+      elevation: 0,
       borderBottomWidth: 0,
     },
     //headerTintColor: themeIsDark ? colors.dark : colors.darkGreyBlue,

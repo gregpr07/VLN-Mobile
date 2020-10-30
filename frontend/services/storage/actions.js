@@ -1,8 +1,9 @@
 // https://blog.usejournal.com/persisting-user-authentication-in-a-react-native-app-778e028ac816
-
 import AsyncStorage from "@react-native-community/async-storage";
-import store from "./store";
-const { video } = store.getState();
+
+// =======================================================================
+// ROOT
+// =======================================================================
 
 export const getToken = (token) => ({
   type: "GET_TOKEN",
@@ -61,7 +62,9 @@ export const removeUserToken = () => (dispatch) =>
       dispatch(error(err.message || "ERROR"));
     });
 
-//* VIDEO
+// =======================================================================
+// VIDEO
+// =======================================================================
 
 export const videoID = (videoID) => ({
   type: "VIDEO_ID",
@@ -87,8 +90,6 @@ export const setVideoID = (data) => (dispatch) => dispatch(videoID(data));
 
 export const setVideoRef = (ref) => (dispatch) => dispatch(videoRef(ref));
 
-export const setPlaybackSpeed = (speed) => (dispatch) =>
-  dispatch(playbackSpeed(speed));
+export const setPlaybackSpeed = (speed) => (dispatch) => dispatch(playbackSpeed(speed));
 
-export const setVideoAudioPlay = (num) => (dispatch) =>
-  dispatch(videoAudioPlay(num));
+export const setVideoAudioPlay = (num) => (dispatch) => dispatch(videoAudioPlay(num));

@@ -7,7 +7,7 @@ import * as Updates from "expo-updates";
 import { Video, Audio } from "expo-av";
 
 import { connect } from "react-redux";
-import { setVideoID, setVideoRef } from "../services/actions";
+import { setVideoID, setVideoRef } from "../services/storage/actions";
 
 let component: any;
 

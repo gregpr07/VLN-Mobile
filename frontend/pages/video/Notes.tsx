@@ -15,7 +15,7 @@ import {
 
 import { connect } from "react-redux";
 
-import { setVideoID, setVideoRef } from "../../services/actions";
+import { setVideoID, setVideoRef } from "../../services/storage/actions";
 
 import { API } from "../../services/fetcher";
 

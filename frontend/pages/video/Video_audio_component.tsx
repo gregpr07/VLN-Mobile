@@ -14,7 +14,7 @@ import { connect } from "react-redux";
 /* import ViewPager from "@react-native-community/viewpager"; */
 import { Video } from "expo-av";
 
-import { setVideoID, setVideoRef } from "../../services/actions";
+import { setVideoID, setVideoRef } from "../../services/storage/actions";
 
 import { compare } from "../../services/functions";
 import { useTheme } from "@react-navigation/native";

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, StyleSheet, View, Text } from "react-native";
 import { connect } from "react-redux";
-import { removeUserToken } from "../services/actions";
+import { removeUserToken } from "../services/storage/actions";
 import Constants from "expo-constants";
 import {
   TouchableHighlight,
@@ -75,7 +75,7 @@ const SignOutScreen = ({ token, removeUserToken }: any) => {
           <Text style={styles.h3}>Remove user data</Text>
           <Text style={styles.h3}>Do not track</Text>
           <Text style={styles.h3}>Privacy and terms (GDPR)</Text>
-          <Text style={styles.h3}>Contact us</Text>
+          {/*<Text style={styles.h3}>Contact us</Text>   TODO: uncomment me*/}
         </View>
       </View>
       <TouchableOpacity onPress={_signOutAsync}>

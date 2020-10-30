@@ -3,11 +3,11 @@ import React from "react";
 import App from "./Navigation";
 
 import { Provider } from "react-redux";
-import store from "./services/store";
+import store from "./services/storage/store";
 
 export default () => (
   <Provider store={store}>
     <App />
 
   </Provider>
-); 
+);
