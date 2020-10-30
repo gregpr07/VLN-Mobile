@@ -193,6 +193,7 @@ function ProfileScreen({ navigation, setVidID }) {
         marginHorizontal: 20,
         backgroundColor: colors.card,
         borderRadius: 10,
+        marginBottom: 20,
       },
       cardBody: {
           padding: 10,
