@@ -129,6 +129,7 @@ class Slide(models.Model):
         Lecture, on_delete=models.CASCADE, related_name='slides')
     timestamp = models.IntegerField()
     image = models.URLField(null=True)
+    title = models.CharField(max_length=200)
 
     class Meta:
         ordering = ['lecture', 'timestamp']

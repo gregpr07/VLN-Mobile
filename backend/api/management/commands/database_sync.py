@@ -10,7 +10,7 @@ import pandas as pd
 
 from tqdm import tqdm
 
-from api.models import Category, Author, Lecture, Event
+from api.models import Category, Author, Lecture, Event, Slide
 from django.contrib.auth.models import User
 
 
@@ -71,6 +71,15 @@ STORAGE_COLS = [desc[0] for desc in cursor.description]
 cursor.execute("Select * FROM attachments_attachment LIMIT 0")
 ATTACHMENTS_COLS = [desc[0] for desc in cursor.description]
 
+cursor.execute("Select * FROM vl_presentation LIMIT 0")
+PRESENTATION_COLS = [desc[0] for desc in cursor.description]
+
+cursor.execute("Select * FROM vl_sync LIMIT 0")
+SYNC_COLS = [desc[0] for desc in cursor.description]
+
+cursor.execute("Select * FROM vl_syncable LIMIT 0")
+SYNCABLE_COLS = [desc[0] for desc in cursor.description]
+
 cursor.execute("Select * FROM vl_contribution LIMIT 0")
 AUTHOR_COLS = [desc[0] for desc in cursor.description]
 
@@ -118,6 +127,11 @@ class Command(BaseCommand):
             '--connectCategories',
             action='store_true',
             help='Connect categories to existing lectures -> fast',
+        )
+        parser.add_argument(
+            '--getSlides',
+            action='store_true',
+            help='Get all the slides for all videos -> extremely slow!!',
         )
 
     def ToInt(self, num):
@@ -179,8 +193,6 @@ class Command(BaseCommand):
             video = cursor.fetchone()
 
             return self.makeurl(video)
-
-
 
     #! Fixed ?
     def get_lecture_thumbnail(self, lec_id):
@@ -388,19 +400,22 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(
             'Connecting lectures to events'))
         for lecture in tqdm(Lecture.objects.all()):
-            lec_evt_id = vl_lec_refs[lecture.id]
-            new = 0
-            already = 0
-            if not lecture.event:
-                try:
-                    evt = Event.objects.get(id=lec_evt_id)
-                    lecture.event = evt
-                    lecture.save()
-                    new += 1
-                except:
-                    pass
-            else:
-                already += 1
+            try:
+                lec_evt_id = vl_lec_refs[lecture.id]
+                new = 0
+                already = 0
+                if not lecture.event:
+                    try:
+                        evt = Event.objects.get(id=lec_evt_id)
+                        lecture.event = evt
+                        lecture.save()
+                        new += 1
+                    except:
+                        pass
+                else:
+                    already += 1
+            except Exception as e:
+                print(e)
         print(f'Added {new}, already connected {already}')
 
     def connect_categories_lectures(self):
@@ -483,6 +498,52 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(
             f'Added {created} users and updated {updated} users'))
 
+    def get_slides(self):
+        self.stdout.write(self.style.SUCCESS('Getting slides'))
+
+        for lec in tqdm(Lecture.objects.all()):
+            
+            try:
+                cursor.execute(
+                    f"SELECT * FROM vl_presentation WHERE lecture_id = '{lec.id}'"
+                )
+                presentation_id = cursor.fetchone()[PRESENTATION_COLS.index('id')]
+
+                cursor.execute(
+                    f"SELECT * FROM vl_syncable WHERE presentation_id = '{presentation_id}'"
+                )
+
+                for syncable in cursor.fetchall():
+                    syncable_id = syncable[PRESENTATION_COLS.index('id')]
+                    title = syncable[SYNCABLE_COLS.index('title')][:200]
+
+
+                    cursor.execute(
+                        f"SELECT * FROM attachments_attachment WHERE object_id = {syncable_id} AND type = 'i.sld' AND ext = 'jpg' ORDER BY size"
+                    )
+                    img_hash = cursor.fetchone()[ATTACHMENTS_COLS.index('hash')]
+                    cursor.execute(
+                        f"SELECT * FROM storage_file WHERE hash = '{img_hash}' AND server_id = '8'")
+                    image = self.makeurl(cursor.fetchone())
+
+
+                    cursor.execute(
+                        f"SELECT * FROM vl_sync where syncable_id = '{syncable_id}'"
+                    )
+                    timestamp = cursor.fetchone()[SYNC_COLS.index('time')]
+
+                    Slide.objects.create(
+                        id=syncable_id,
+                        lecture=lec,
+                        timestamp=timestamp,
+                        image=image,
+                        title=title
+                    )
+
+            except Exception as e:
+                tqdm.write(str(e))
+
+
     def handle(self, *args, **options):
 
         if options['categories'] or options['all']:
@@ -505,6 +566,9 @@ class Command(BaseCommand):
 
         if options['connectCategories'] or options['all']:
             self.connect_categories_lectures()
+
+        if options['getSlides'] or options['all']:
+            self.get_slides()
 
         print('Done')
         """lec = 'eswc09_munoz_ess'

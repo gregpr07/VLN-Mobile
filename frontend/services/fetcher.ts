@@ -1,5 +1,5 @@
-//export const BASEURL = "http://localhost:8000/";
-export const BASEURL = "http://vln-mobile.ijs.si/";
+export const BASEURL = "http://localhost:8000/";
+//export const BASEURL = "http://vln-mobile.ijs.si/";
 export const API = BASEURL + "api/";
 
 //console.log(state.token.token);
@@ -10,7 +10,8 @@ const requestOptions = (token: string) => {
   return {
     method: "GET",
     headers: myHeaders,
-  }};
+  };
+};
 
 export const fetcher = (url: string, token: string) =>
   fetch(API + url, requestOptions(token)).then((r) => r.json());
