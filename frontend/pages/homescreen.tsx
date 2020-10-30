@@ -50,7 +50,7 @@ export default function HomeScreen({ navigation }: any) {
         onPress={() =>
           navigation.push("event", {
             eventID: item.id,
-            eventTitle: item.title,
+            eventTitle: item.caption,
           })
         }
         style={{ width: cardWidth }}

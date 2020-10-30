@@ -291,10 +291,24 @@ function VideoScreen({
             <Text style={styles.h5}>
               <Text style={styles.gray}>published:</Text> {lecture.published}
             </Text>
-            {lecture.events ? (
-              <Text
-                style={[styles.h5, { paddingTop: 4, color: colors.primary }]}
-              ></Text>
+            {lecture.event ? (
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("Home", {
+                    screen: "event",
+                    params: {
+                      eventID: lecture.event.id,
+                      eventTitle: lecture.event.caption,
+                    },
+                  })
+                }
+              >
+                <Text
+                  style={[styles.h5, { paddingTop: 4, color: colors.primary }]}
+                >
+                  {lecture.event.caption}
+                </Text>
+              </TouchableOpacity>
             ) : null}
           </View>
         </View>

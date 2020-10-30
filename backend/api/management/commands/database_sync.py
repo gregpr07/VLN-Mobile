@@ -415,7 +415,7 @@ class Command(BaseCommand):
                 else:
                     already += 1
             except Exception as e:
-                print(e)
+                tqdm.write(str(e))
         print(f'Added {new}, already connected {already}')
 
     def connect_categories_lectures(self):
