@@ -1,6 +1,8 @@
 import os
 from django.core.management.base import BaseCommand, CommandError
 
+import sys
+
 from sshtunnel import SSHTunnelForwarder
 import psycopg2
 
@@ -65,6 +67,9 @@ SERVER_HOST = 'http://' + cursor.fetchone()[STORAGE_SERVER_COLS.index('host')]
 
 cursor.execute("Select * FROM storage_file LIMIT 0")
 STORAGE_COLS = [desc[0] for desc in cursor.description]
+
+cursor.execute("Select * FROM attachments_attachment LIMIT 0")
+ATTACHMENTS_COLS = [desc[0] for desc in cursor.description]
 
 cursor.execute("Select * FROM vl_contribution LIMIT 0")
 AUTHOR_COLS = [desc[0] for desc in cursor.description]
@@ -140,26 +145,59 @@ class Command(BaseCommand):
 
         return url
 
-    def get_lecture_video(self, slug):
+    #? FIXED ??
+    def get_lecture_video(self, lec_id, slug):
+        try:
+            cursor.execute(
+                f"SELECT * FROM attachments_attachment WHERE object_id = {lec_id} AND type = 'v' AND ext = 'mp4' ORDER BY size"
+            )
+            lec_hash = cursor.fetchone()[ATTACHMENTS_COLS.index('hash')]
+        except:
+            pass
 
-        cursor.execute(
-            # only select hydro server
-            f"SELECT * FROM storage_file WHERE ((path::TEXT LIKE '/mnt/hydro/video/scratch/{slug}_01%' AND path::TEXT LIKE '%_h264_%') OR LOWER(path)::TEXT LIKE LOWER('%{slug}_01.mp4%')) AND server_id = '8' ORDER BY size DESC")
+        try:
+            cursor.execute(
+                f"SELECT * FROM attachments_attachment WHERE object_id = {lec_id} AND type = 'v.src' AND ext = 'mp4' ORDER BY size"
+            )
+            lec_hash = cursor.fetchone()[ATTACHMENTS_COLS.index('hash')]
+        except:
+            lec_hash = None
 
-        video = cursor.fetchone()
-
-        return self.makeurl(video)
-
-    def get_lecture_thumbnail(self, slug):
-        """ try: """
-        cursor.execute(
-            f"SELECT * FROM storage_file WHERE path::TEXT LIKE '%{slug}%' AND ext::TEXT LIKE 'jpg' AND server_id = '8' ORDER BY size")
-        img = cursor.fetchone()
-
-        return self.makeurl(img)
         """ except:
-        return '' """
+            raise NameError('No lecture found') """
 
+        if lec_hash:
+            cursor.execute(
+                f"SELECT * FROM storage_file WHERE hash = '{lec_hash}' AND server_id = '8'")
+            return self.makeurl(cursor.fetchone())
+
+        else:
+            cursor.execute(
+                # only select hydro server
+                f"SELECT * FROM storage_file WHERE ((path::TEXT LIKE '/mnt/hydro/video/scratch/{slug}_01%' AND path::TEXT LIKE '%_h264_%') OR LOWER(path)::TEXT LIKE LOWER('%{slug}_01.mp4%')) AND server_id = '8' ORDER BY size DESC")
+
+            video = cursor.fetchone()
+
+            return self.makeurl(video)
+
+
+
+    #! Fixed ?
+    def get_lecture_thumbnail(self, lec_id):
+
+        
+        cursor.execute(
+            f"SELECT * FROM attachments_attachment WHERE object_id = {lec_id} AND ( type = 'i.thu' OR type = 'i.scr' ) AND ext = 'jpg' ORDER BY size"
+        )
+
+        lec_hash = cursor.fetchone()[ATTACHMENTS_COLS.index('hash')]
+
+
+        cursor.execute(
+            f"SELECT * FROM storage_file WHERE hash = '{lec_hash}' AND server_id = '8'")
+        return self.makeurl(cursor.fetchone())
+
+    #? 15k / 23k lectures are currently found
     def get_lectures(self):
         cursor.execute("Select * FROM vl_lecture LIMIT 0")
         LECTURE_COLS = [desc[0] for desc in cursor.description]
@@ -186,11 +224,11 @@ class Command(BaseCommand):
 
                 try:
 
-                    video_url = self.get_lecture_video(slug)
+                    video_url = self.get_lecture_video(lec_id,slug)
 
                     try:
                         author = self.get_lecture_author_id(lec_id)
-                        thumbnail = self.get_lecture_thumbnail(slug)
+                        thumbnail = self.get_lecture_thumbnail(lec_id)
                     except:
                         author = Author.objects.get(id=1)
                         thumbnail = None
@@ -214,6 +252,7 @@ class Command(BaseCommand):
         print(
             f'Added {added} lectures and updated {already_there} lectures; {errors} errors.')
 
+    #? i guess all authors are there
     def get_authors(self):
         cursor.execute("SELECT * FROM vl_author")
 
@@ -245,6 +284,7 @@ class Command(BaseCommand):
                     id=aut_id, name=author[cols.index('name')], views=0, description=descriptions[aut_id])
         print('Added all authors')
 
+    #? all categories are there
     def process_categories(self):
         cursor.execute("SELECT * FROM categories_category")
         categories = cursor.fetchall()
@@ -270,18 +310,29 @@ class Command(BaseCommand):
 
         return True
 
-    def getEventImage(self, slug):
+    #? all events have images!
+    def getEventImage(self, evt_id):
         cursor.execute(
-            f"SELECT * FROM storage_file WHERE server_id = '8' AND path:: TEXT LIKE '%{slug}'")
+            f"SELECT * FROM attachments_attachment WHERE object_id = {evt_id} AND ((type = 'i.thu' AND path = 'thumbnail.jpg') OR type = 'i.bnr')"
+        )
+        thumb_hash = cursor.fetchone()[ATTACHMENTS_COLS.index('hash')]
+
+        cursor.execute(
+            f"SELECT * FROM storage_file WHERE hash = '{thumb_hash}' AND server_id = '8'")
         return self.makeurl(cursor.fetchone())
 
+    #? all events are found
     def get_events(self):
 
         cursor.execute("Select * FROM vl_lecture LIMIT 0")
         cols = [desc[0] for desc in cursor.description]
 
+        # get only the enabled events
         cursor.execute(
             "SELECT * FROM vl_lecture WHERE public = 'true' AND type = 'evt' AND enabled = 'true'")
+
+
+        wo_image = 0
 
         print('Adding events')
         for event in tqdm(cursor.fetchall()):
@@ -294,11 +345,13 @@ class Command(BaseCommand):
             if not caption:
                 caption = title
 
-            """ try:
-                image = event[cols.index('thumb')]
-                self.getEventImage(image)
-            except: """
-            image = None
+                #image = event[cols.index('thumb')]
+            try:
+                image = self.getEventImage(evt_id)
+
+            except:
+                wo_image += 1
+                image = None
 
             try:
                 Event.objects.get(id=evt_id)
@@ -309,7 +362,7 @@ class Command(BaseCommand):
                 except:
                     pass
 
-        print('Added all events')
+        print('Added all events','events with no image:',wo_image)
 
     def connect_events_lectures(self):
         cursor.execute("Select * FROM vl_ref LIMIT 0")
@@ -332,21 +385,28 @@ class Command(BaseCommand):
 
         # print(vl_lec_refs[30518])
 
-        for lecture in Lecture.objects.all():
+        self.stdout.write(self.style.SUCCESS(
+            'Connecting lectures to events'))
+        for lecture in tqdm(Lecture.objects.all()):
             lec_evt_id = vl_lec_refs[lecture.id]
+            new = 0
+            already = 0
             if not lecture.event:
                 try:
                     evt = Event.objects.get(id=lec_evt_id)
                     lecture.event = evt
                     lecture.save()
+                    new += 1
                 except:
                     pass
+            else:
+                already += 1
+        print(f'Added {new}, already connected {already}')
 
     def connect_categories_lectures(self):
         cursor.execute("Select * FROM categories_member LIMIT 0")
         cols = [desc[0] for desc in cursor.description]
 
-        print(cols)
 
         connected = 0
         error = 0
