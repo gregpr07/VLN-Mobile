@@ -2,15 +2,16 @@ import React, {useEffect, useState} from "react";
 import {Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View,} from "react-native";
 
 import {useFocusEffect, useTheme} from "@react-navigation/native";
-import {useSelector} from "react-redux";
+import {connect, useSelector} from "react-redux";
 import {API} from "../services/fetcher";
 import {numberWithCommas, shorterText} from "../services/functions";
 import Constants from "expo-constants";
+import {setVideoID} from "../services/storage/actions";
 
 const { width, height } = Dimensions.get("window");
 
 const padding = 24;
-export default function ProfileScreen({ navigation }) {
+function ProfileScreen({ navigation, setVidID }) {
 
   const { colors, dark } = useTheme();
 
@@ -261,10 +262,17 @@ export default function ProfileScreen({ navigation }) {
     </Text>
   );
 
+  const _handleResultsClick = async (item: any) => {
+    setVidID(item.id);
+    navigation.navigate("Player", {
+      screen: "Video",
+    });
+  };
+
   const renderItem = (item: any) => (
     <View style={styles.default_card} key={item.id}>
       <TouchableOpacity
-        // onPress={() => _handleResultsClick(item)}
+        onPress={() => _handleResultsClick(item)}
         //key={item.title}
         style={styles.recommendation}
       >
@@ -341,3 +349,13 @@ export default function ProfileScreen({ navigation }) {
     </ScrollView>
   );
 }
+
+const mapStateToProps = (state) => ({
+  videoID: state.video.videoID,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  setVidID: (num: number) => dispatch(setVideoID(num)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileScreen);
