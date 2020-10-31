@@ -71,10 +71,13 @@ class Event(models.Model):
 
     lectures_order = ArrayField(models.IntegerField(), null=True, blank=True)
 
+    def get_lectures(self):
+        return Lecture.objects.filter(event=self)
+
     def get_categories(self):  # this works, but should be improved
         category_id_set = set()
 
-        for lecture in self.lectures.all():
+        for lecture in Lecture.objects.filter(event=self):
             for category in lecture.categories.all():
                 if category.id not in category_id_set:
                     category_id_set.add(category.id)
@@ -84,7 +87,7 @@ class Event(models.Model):
     def get_authors(self):  # this works, but should be improved
         author_id_set = set()
 
-        for lecture in self.lectures.all():
+        for lecture in Lecture.objects.filter(event=self):
             if lecture.author.id not in author_id_set:
                 author_id_set.add(lecture.author.id)
 

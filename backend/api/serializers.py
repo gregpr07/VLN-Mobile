@@ -86,8 +86,17 @@ class EventSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         serialized_data = super().to_representation(instance)
-        serialized_data["categories"] = instance.get_categories()
-        serialized_data["authors"] = instance.get_authors()
+        serialized_data["lectures"] = SimpleLectureSerializer(instance.get_lectures(), many=True).data
+
+        categories = []
+        for category in instance.get_categories():
+            categories.append(SimpleCategorySerializer(Category.objects.get(id=category)).data)
+        serialized_data["categories"] = categories
+
+        authors = []
+        for author in instance.get_authors():
+            authors.append(SimpleAuthorSerializer(Author.objects.get(id=author)).data)
+        serialized_data["authors"] = authors
 
         return serialized_data
 

@@ -128,7 +128,7 @@ class PlaylistViewSet(ModelViewSet):
     @action(detail=False)
     def most_viewed(self, request, *args, **kwargs):
         queryset = self.queryset.order_by("-views")
-        return list_mixin(self, queryset)
+        return simple_list_mixin(self, queryset)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
