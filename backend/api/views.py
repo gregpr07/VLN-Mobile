@@ -51,8 +51,15 @@ class AuthorViewSet(SimpleViewSet):
 
     @action(detail=True)
     def lectures(self, request, *args, **kwargs):
-        queryset = self.get_object().get_lectures()
-        return list_mixin(self, queryset, SimpleLectureSerializer)
+        return list_mixin(self, self.get_object().get_lectures(), SimpleLectureSerializer)
+
+    @action(detail=True)
+    def lectures_most_viewed(self, request, *args, **kwargs):
+        return list_mixin(self, self.get_object().get_most_viewed_lectures(), SimpleLectureSerializer)
+
+    @action(detail=True)
+    def lectures_alphabetical(self, request, *args, **kwargs):
+        return list_mixin(self, self.get_object().get_alphabetical_lectures(), SimpleLectureSerializer)
 
     @action(detail=False)
     def most_viewed(self, request, *args, **kwargs):
@@ -68,6 +75,14 @@ class CategoryViewSet(SimpleViewSet):
     def lectures(self, request, *args, **kwargs):
         queryset = self.get_object().get_lectures()
         return list_mixin(self, queryset, SimpleLectureSerializer)
+
+    @action(detail=True)
+    def lectures_most_viewed(self, request, *args, **kwargs):
+        return list_mixin(self, self.get_object().get_most_viewed_lectures(), SimpleLectureSerializer)
+
+    @action(detail=True)
+    def lectures_alphabetical(self, request, *args, **kwargs):
+        return list_mixin(self, self.get_object().get_alphabetical_lectures(), SimpleLectureSerializer)
 
     action_serializers = {
         'retrieve': CategorySerializer,

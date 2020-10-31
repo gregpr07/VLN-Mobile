@@ -54,12 +54,16 @@ fetch("http://127.0.0.1:8000/api/note/lecture/1/", requestOptions)
 1. List (http://127.0.0.1:8000/api/author/)
 1. Detail (http://127.0.0.1:8000/api/author/author_id/)
 1. Author's lectures (http://127.0.0.1:8000/api/author/author_id/lectures/)
+1. Author's most viewed lectures (http://127.0.0.1:8000/api/author/author_id/lectures_most_viewed/)
+1. Author's lectures ordered alphabetically (http://127.0.0.1:8000/api/author/author_id/lectures_alphabetical/)
 1. Most viewed authors (http://127.0.0.1:8000/api/author/most_viewed/)
 
 ### Category
 1. List (http://127.0.0.1:8000/api/category/)
 1. Detail (http://127.0.0.1:8000/api/category/category_id/)
 1. Category's lectures (http://127.0.0.1:8000/api/category/category_id/lectures/)
+1. Category's most viewed lectures (http://127.0.0.1:8000/api/category/category_id/lectures_most_viewed/)
+1. Category's lectures ordered alphabetically (http://127.0.0.1:8000/api/category/category_id/lectures_alphabetical/)
 
 ### Lecture
 1. List (http://127.0.0.1:8000/api/lecture/)

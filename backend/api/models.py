@@ -18,6 +18,12 @@ class Author(models.Model):
     def get_lectures(self):
         return Lecture.objects.filter(author=self).all()
 
+    def get_most_viewed_lectures(self):
+        return self.get_lectures().order_by("-views")
+
+    def get_alphabetical_lectures(self):
+        return self.get_lectures().order_by("title")
+
     def get_categories(self):
         categories = set()
 
@@ -53,6 +59,12 @@ class Category(models.Model):
 
     def get_lectures(self):
         return Lecture.objects.filter(categories=self).all()
+
+    def get_most_viewed_lectures(self):
+        return self.get_lectures().order_by("-views")
+
+    def get_alphabetical_lectures(self):
+        return self.get_lectures().order_by("title")
 
     class Meta:
         verbose_name_plural = "categories"
