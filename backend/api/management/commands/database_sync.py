@@ -513,32 +513,38 @@ class Command(BaseCommand):
                     f"SELECT * FROM vl_syncable WHERE presentation_id = '{presentation_id}'"
                 )
 
-                for syncable in cursor.fetchall():
-                    syncable_id = syncable[PRESENTATION_COLS.index('id')]
-                    title = syncable[SYNCABLE_COLS.index('title')][:200]
+
+                #! COULD happen that if not all slides are added once, they never will be
+                syncables = cursor.fetchall()
+                if not len(lec.slides.all()): # != len(syncables):
+                    for syncable in syncables:
+                        syncable_id = syncable[PRESENTATION_COLS.index('id')]
+                        title = syncable[SYNCABLE_COLS.index('title')][:200]
 
 
-                    cursor.execute(
-                        f"SELECT * FROM attachments_attachment WHERE object_id = {syncable_id} AND type = 'i.sld' AND ext = 'jpg' ORDER BY size"
-                    )
-                    img_hash = cursor.fetchone()[ATTACHMENTS_COLS.index('hash')]
-                    cursor.execute(
-                        f"SELECT * FROM storage_file WHERE hash = '{img_hash}' AND server_id = '8'")
-                    image = self.makeurl(cursor.fetchone())
+                        cursor.execute(
+                            f"SELECT * FROM attachments_attachment WHERE object_id = {syncable_id} AND type = 'i.sld' AND ext = 'jpg' ORDER BY size"
+                        )
+                        img_hash = cursor.fetchone()[ATTACHMENTS_COLS.index('hash')]
+                        cursor.execute(
+                            f"SELECT * FROM storage_file WHERE hash = '{img_hash}' AND server_id = '8'")
+                        image = self.makeurl(cursor.fetchone())
 
 
-                    cursor.execute(
-                        f"SELECT * FROM vl_sync where syncable_id = '{syncable_id}'"
-                    )
-                    timestamp = cursor.fetchone()[SYNC_COLS.index('time')]
+                        cursor.execute(
+                            f"SELECT * FROM vl_sync where syncable_id = '{syncable_id}'"
+                        )
+                        timestamp = cursor.fetchone()[SYNC_COLS.index('time')]
 
-                    Slide.objects.create(
-                        id=syncable_id,
-                        lecture=lec,
-                        timestamp=timestamp,
-                        image=image,
-                        title=title
-                    )
+                        Slide.objects.create(
+                            id=syncable_id,
+                            lecture=lec,
+                            timestamp=timestamp,
+                            image=image,
+                            title=title
+                        )
+                    else:
+                        tqdm.write('Already has all slides')
 
             except Exception as e:
                 tqdm.write(str(e))

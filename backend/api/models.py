@@ -110,7 +110,7 @@ class Lecture(models.Model):
     video = models.URLField()
     audio = models.URLField()
 
-    categories = models.ManyToManyField(to=Category, blank=True)
+    categories = models.ManyToManyField(to=Category, blank=True, related_name='lectures')
 
     stargazers = models.ManyToManyField(to=User, blank=True)
 
