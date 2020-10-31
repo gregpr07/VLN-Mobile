@@ -163,14 +163,8 @@ class Command(BaseCommand):
         return url
 
     #? FIXED ??
-    def get_lecture_video(self, lec_id, slug):
+    def get_lecture_video(self, att_id, slug):
         lec_hash = None
-
-        cursor.execute(
-            f"SELECT * FROM vl_video WHERE lecture_id = {lec_id} AND part = '1'"
-        )
-        att_id = cursor.fetchone()[VIDEO_COLS.index('id')]
-
         try:
             cursor.execute(
                 f"SELECT * FROM attachments_attachment WHERE object_id = {att_id} AND type = 'v' AND ext = 'mp4' ORDER BY size"
@@ -206,11 +200,10 @@ class Command(BaseCommand):
             return self.makeurl(video)
 
     #! Fixed ?
-    def get_lecture_thumbnail(self, lec_id):
-
+    def get_lecture_thumbnail(self, vid_id):
         
         cursor.execute(
-            f"SELECT * FROM attachments_attachment WHERE object_id = {lec_id} AND ( type = 'i.thu' OR type = 'i.scr' ) AND ext = 'jpg' ORDER BY size"
+            f"SELECT * FROM attachments_attachment WHERE object_id = {vid_id} AND ( type = 'i.thu' OR type = 'i.scr' ) AND ext = 'jpg' ORDER BY size"
         )
 
         lec_hash = cursor.fetchone()[ATTACHMENTS_COLS.index('hash')]
@@ -245,13 +238,18 @@ class Command(BaseCommand):
                 published = lecture[LECTURE_COLS.index('pub_date')]
                 views = lecture[LECTURE_COLS.index('view_ctr')]
 
+                cursor.execute(
+                    f"SELECT * FROM vl_video WHERE lecture_id = {lec_id} AND part = '1'"
+                )
+                vid_id = cursor.fetchone()[VIDEO_COLS.index('id')]
+
                 try:
 
-                    video_url = self.get_lecture_video(lec_id,slug)
+                    video_url = self.get_lecture_video(vid_id,slug)
 
                     try:
                         author = self.get_lecture_author_id(lec_id)
-                        thumbnail = self.get_lecture_thumbnail(lec_id)
+                        thumbnail = self.get_lecture_thumbnail(vid_id)
                     except:
                         author = Author.objects.get(id=1)
                         thumbnail = None
@@ -588,7 +586,15 @@ class Command(BaseCommand):
             self.get_slides()
 
         print('Done')
-        print(self.get_lecture_video(11572,'mitworld_lewin_wem'))
+
+        """ lec_id = 11572
+        
+        cursor.execute(
+            f"SELECT * FROM vl_video WHERE lecture_id = {lec_id} AND part = '1'"
+        )
+        vid_id = cursor.fetchone()[VIDEO_COLS.index('id')]
+        print(self.get_lecture_video(vid_id, 'mitworld_lewin_wem'))
+        print(self.get_lecture_thumbnail(vid_id)) """
 
 
         server.stop()
