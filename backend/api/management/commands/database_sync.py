@@ -1,6 +1,8 @@
 import os
 from django.core.management.base import BaseCommand, CommandError
 
+import sys
+
 from sshtunnel import SSHTunnelForwarder
 import psycopg2
 
@@ -8,7 +10,7 @@ import pandas as pd
 
 from tqdm import tqdm
 
-from api.models import Category, Author, Lecture, Event
+from api.models import Category, Author, Lecture, Event, Slide
 from django.contrib.auth.models import User
 
 
@@ -66,6 +68,21 @@ SERVER_HOST = 'http://' + cursor.fetchone()[STORAGE_SERVER_COLS.index('host')]
 cursor.execute("Select * FROM storage_file LIMIT 0")
 STORAGE_COLS = [desc[0] for desc in cursor.description]
 
+cursor.execute("Select * FROM attachments_attachment LIMIT 0")
+ATTACHMENTS_COLS = [desc[0] for desc in cursor.description]
+
+cursor.execute("Select * FROM vl_presentation LIMIT 0")
+PRESENTATION_COLS = [desc[0] for desc in cursor.description]
+
+cursor.execute("Select * FROM vl_sync LIMIT 0")
+SYNC_COLS = [desc[0] for desc in cursor.description]
+
+cursor.execute("Select * FROM vl_syncable LIMIT 0")
+SYNCABLE_COLS = [desc[0] for desc in cursor.description]
+
+cursor.execute("Select * FROM vl_video LIMIT 0")
+VIDEO_COLS = [desc[0] for desc in cursor.description]
+
 cursor.execute("Select * FROM vl_contribution LIMIT 0")
 AUTHOR_COLS = [desc[0] for desc in cursor.description]
 
@@ -114,6 +131,11 @@ class Command(BaseCommand):
             action='store_true',
             help='Connect categories to existing lectures -> fast',
         )
+        parser.add_argument(
+            '--getSlides',
+            action='store_true',
+            help='Get all the slides for all videos -> extremely slow!!',
+        )
 
     def ToInt(self, num):
         try:
@@ -140,26 +162,58 @@ class Command(BaseCommand):
 
         return url
 
-    def get_lecture_video(self, slug):
+    #? FIXED ??
+    def get_lecture_video(self, att_id, slug):
+        lec_hash = None
+        try:
+            cursor.execute(
+                f"SELECT * FROM attachments_attachment WHERE object_id = {att_id} AND type = 'v' AND ext = 'mp4' ORDER BY size"
+            )
+            lec_hash = cursor.fetchone()[ATTACHMENTS_COLS.index('hash')]
+        except:
+            lec_hash = None
 
-        cursor.execute(
-            # only select hydro server
-            f"SELECT * FROM storage_file WHERE ((path::TEXT LIKE '/mnt/hydro/video/scratch/{slug}_01%' AND path::TEXT LIKE '%_h264_%') OR LOWER(path)::TEXT LIKE LOWER('%{slug}_01.mp4%')) AND server_id = '8' ORDER BY size DESC")
+        if not lec_hash:
+            try:
+                cursor.execute(
+                    f"SELECT * FROM attachments_attachment WHERE object_id = {att_id} AND type = 'v.src' AND ext = 'mp4' ORDER BY size"
+                )
+                lec_hash = cursor.fetchone()[ATTACHMENTS_COLS.index('hash')]
+            except:
+                lec_hash = None
 
-        video = cursor.fetchone()
-
-        return self.makeurl(video)
-
-    def get_lecture_thumbnail(self, slug):
-        """ try: """
-        cursor.execute(
-            f"SELECT * FROM storage_file WHERE path::TEXT LIKE '%{slug}%' AND ext::TEXT LIKE 'jpg' AND server_id = '8' ORDER BY size")
-        img = cursor.fetchone()
-
-        return self.makeurl(img)
         """ except:
-        return '' """
+            raise NameError('No lecture found') """
 
+        if lec_hash:
+            cursor.execute(
+                f"SELECT * FROM storage_file WHERE hash = '{lec_hash}' AND server_id = '8'")
+            return self.makeurl(cursor.fetchone())
+
+        else:
+            cursor.execute(
+                # only select hydro server
+                f"SELECT * FROM storage_file WHERE ((path::TEXT LIKE '/mnt/hydro/video/scratch/{slug}_01%' AND path::TEXT LIKE '%_h264_%') OR LOWER(path)::TEXT LIKE LOWER('%{slug}_01.mp4%')) AND server_id = '8' ORDER BY size DESC")
+
+            video = cursor.fetchone()
+
+            return self.makeurl(video)
+
+    #! Fixed ?
+    def get_lecture_thumbnail(self, vid_id):
+        
+        cursor.execute(
+            f"SELECT * FROM attachments_attachment WHERE object_id = {vid_id} AND ( type = 'i.thu' OR type = 'i.scr' ) AND ext = 'jpg' ORDER BY size"
+        )
+
+        lec_hash = cursor.fetchone()[ATTACHMENTS_COLS.index('hash')]
+
+
+        cursor.execute(
+            f"SELECT * FROM storage_file WHERE hash = '{lec_hash}' AND server_id = '8'")
+        return self.makeurl(cursor.fetchone())
+
+    #? 15k / 23k lectures are currently found
     def get_lectures(self):
         cursor.execute("Select * FROM vl_lecture LIMIT 0")
         LECTURE_COLS = [desc[0] for desc in cursor.description]
@@ -185,12 +239,16 @@ class Command(BaseCommand):
                 views = lecture[LECTURE_COLS.index('view_ctr')]
 
                 try:
+                    cursor.execute(
+                        f"SELECT * FROM vl_video WHERE lecture_id = {lec_id} AND part = '1'"
+                    )
+                    vid_id = cursor.fetchone()[VIDEO_COLS.index('id')]
 
-                    video_url = self.get_lecture_video(slug)
+                    video_url = self.get_lecture_video(vid_id,slug)
 
                     try:
                         author = self.get_lecture_author_id(lec_id)
-                        thumbnail = self.get_lecture_thumbnail(slug)
+                        thumbnail = self.get_lecture_thumbnail(vid_id)
                     except:
                         author = Author.objects.get(id=1)
                         thumbnail = None
@@ -214,6 +272,7 @@ class Command(BaseCommand):
         print(
             f'Added {added} lectures and updated {already_there} lectures; {errors} errors.')
 
+    #? i guess all authors are there
     def get_authors(self):
         cursor.execute("SELECT * FROM vl_author")
 
@@ -245,6 +304,7 @@ class Command(BaseCommand):
                     id=aut_id, name=author[cols.index('name')], views=0, description=descriptions[aut_id])
         print('Added all authors')
 
+    #? all categories are there
     def process_categories(self):
         cursor.execute("SELECT * FROM categories_category")
         categories = cursor.fetchall()
@@ -270,18 +330,29 @@ class Command(BaseCommand):
 
         return True
 
-    def getEventImage(self, slug):
+    #? all events have images!
+    def getEventImage(self, evt_id):
         cursor.execute(
-            f"SELECT * FROM storage_file WHERE server_id = '8' AND path:: TEXT LIKE '%{slug}'")
+            f"SELECT * FROM attachments_attachment WHERE object_id = {evt_id} AND ((type = 'i.thu' AND path = 'thumbnail.jpg') OR type = 'i.bnr')"
+        )
+        thumb_hash = cursor.fetchone()[ATTACHMENTS_COLS.index('hash')]
+
+        cursor.execute(
+            f"SELECT * FROM storage_file WHERE hash = '{thumb_hash}' AND server_id = '8'")
         return self.makeurl(cursor.fetchone())
 
+    #? all events are found
     def get_events(self):
 
         cursor.execute("Select * FROM vl_lecture LIMIT 0")
         cols = [desc[0] for desc in cursor.description]
 
+        # get only the enabled events
         cursor.execute(
             "SELECT * FROM vl_lecture WHERE public = 'true' AND type = 'evt' AND enabled = 'true'")
+
+
+        wo_image = 0
 
         print('Adding events')
         for event in tqdm(cursor.fetchall()):
@@ -294,11 +365,13 @@ class Command(BaseCommand):
             if not caption:
                 caption = title
 
-            """ try:
-                image = event[cols.index('thumb')]
-                self.getEventImage(image)
-            except: """
-            image = None
+                #image = event[cols.index('thumb')]
+            try:
+                image = self.getEventImage(evt_id)
+
+            except:
+                wo_image += 1
+                image = None
 
             try:
                 Event.objects.get(id=evt_id)
@@ -309,7 +382,7 @@ class Command(BaseCommand):
                 except:
                     pass
 
-        print('Added all events')
+        print('Added all events','events with no image:',wo_image)
 
     def connect_events_lectures(self):
         cursor.execute("Select * FROM vl_ref LIMIT 0")
@@ -332,21 +405,31 @@ class Command(BaseCommand):
 
         # print(vl_lec_refs[30518])
 
-        for lecture in Lecture.objects.all():
-            lec_evt_id = vl_lec_refs[lecture.id]
-            if not lecture.event:
-                try:
-                    evt = Event.objects.get(id=lec_evt_id)
-                    lecture.event = evt
-                    lecture.save()
-                except:
-                    pass
+        self.stdout.write(self.style.SUCCESS(
+            'Connecting lectures to events'))
+        for lecture in tqdm(Lecture.objects.all()):
+            try:
+                lec_evt_id = vl_lec_refs[lecture.id]
+                new = 0
+                already = 0
+                if not lecture.event:
+                    try:
+                        evt = Event.objects.get(id=lec_evt_id)
+                        lecture.event = evt
+                        lecture.save()
+                        new += 1
+                    except:
+                        pass
+                else:
+                    already += 1
+            except Exception as e:
+                tqdm.write(str(e))
+        print(f'Added {new}, already connected {already}')
 
     def connect_categories_lectures(self):
         cursor.execute("Select * FROM categories_member LIMIT 0")
         cols = [desc[0] for desc in cursor.description]
 
-        print(cols)
 
         connected = 0
         error = 0
@@ -423,6 +506,58 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(
             f'Added {created} users and updated {updated} users'))
 
+    def get_slides(self):
+        self.stdout.write(self.style.SUCCESS('Getting slides'))
+
+        for lec in tqdm(Lecture.objects.all()):
+            
+            try:
+                cursor.execute(
+                    f"SELECT * FROM vl_presentation WHERE lecture_id = '{lec.id}'"
+                )
+                presentation_id = cursor.fetchone()[PRESENTATION_COLS.index('id')]
+
+                cursor.execute(
+                    f"SELECT * FROM vl_syncable WHERE presentation_id = '{presentation_id}'"
+                )
+
+
+                #! COULD happen that if not all slides are added once, they never will be
+                syncables = cursor.fetchall()
+                if not len(lec.slides.all()): # != len(syncables):
+                    for syncable in syncables:
+                        syncable_id = syncable[PRESENTATION_COLS.index('id')]
+                        title = syncable[SYNCABLE_COLS.index('title')][:200]
+
+
+                        cursor.execute(
+                            f"SELECT * FROM attachments_attachment WHERE object_id = {syncable_id} AND type = 'i.sld' AND ext = 'jpg' ORDER BY size"
+                        )
+                        img_hash = cursor.fetchone()[ATTACHMENTS_COLS.index('hash')]
+                        cursor.execute(
+                            f"SELECT * FROM storage_file WHERE hash = '{img_hash}' AND server_id = '8'")
+                        image = self.makeurl(cursor.fetchone())
+
+
+                        cursor.execute(
+                            f"SELECT * FROM vl_sync where syncable_id = '{syncable_id}'"
+                        )
+                        timestamp = cursor.fetchone()[SYNC_COLS.index('time')]
+
+                        Slide.objects.create(
+                            id=syncable_id,
+                            lecture=lec,
+                            timestamp=timestamp,
+                            image=image,
+                            title=title
+                        )
+                    else:
+                        tqdm.write('Already has all slides')
+
+            except Exception as e:
+                tqdm.write(str(e))
+
+
     def handle(self, *args, **options):
 
         if options['categories'] or options['all']:
@@ -446,12 +581,19 @@ class Command(BaseCommand):
         if options['connectCategories'] or options['all']:
             self.connect_categories_lectures()
 
-        print('Done')
-        """lec = 'eswc09_munoz_ess'
-        print(self.get_lecture_video(lec))
-        print(self.get_lecture_thumbnail(lec))"""
+        if options['getSlides'] or options['all']:
+            self.get_slides()
 
-        # print(self.getEventImage('fmf_predavanja_seminarji.jpg'))
-        # self.connect_events_lectures()
+        print('Done')
+
+        """ lec_id = 11572
+        
+        cursor.execute(
+            f"SELECT * FROM vl_video WHERE lecture_id = {lec_id} AND part = '1'"
+        )
+        vid_id = cursor.fetchone()[VIDEO_COLS.index('id')]
+        print(self.get_lecture_video(vid_id, 'mitworld_lewin_wem'))
+        print(self.get_lecture_thumbnail(vid_id)) """
+
 
         server.stop()

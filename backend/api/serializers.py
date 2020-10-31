@@ -108,7 +108,12 @@ class EventSerializer(serializers.ModelSerializer):
 class SimpleEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
-        fields = ('id', 'title', 'image')
+        fields = ('id', 'title', 'image', 'caption')
+        
+class CaptionEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ('id','caption')
 
 
 class LectureSerializer(serializers.ModelSerializer):
@@ -137,10 +142,11 @@ class LectureSerializer(serializers.ModelSerializer):
 
 class SimpleLectureSerializer(serializers.ModelSerializer):
     author = SimpleAuthorSerializer()
+    event = CaptionEventSerializer()
 
     class Meta:
         model = Lecture
-        fields = ('id', 'title', 'thumbnail', 'author', 'views')
+        fields = ('id', 'title', 'thumbnail', 'author', 'views','event')
 
 
 class SlideSerializer(serializers.ModelSerializer):

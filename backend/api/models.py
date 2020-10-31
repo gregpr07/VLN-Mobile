@@ -113,7 +113,7 @@ class Lecture(models.Model):
     video = models.URLField()
     audio = models.URLField()
 
-    categories = models.ManyToManyField(to=Category, blank=True)
+    categories = models.ManyToManyField(to=Category, blank=True, related_name='lectures')
 
     stargazers = models.ManyToManyField(to=User, blank=True)
 
@@ -132,6 +132,7 @@ class Slide(models.Model):
         Lecture, on_delete=models.CASCADE, related_name='slides')
     timestamp = models.IntegerField()
     image = models.URLField(null=True)
+    title = models.CharField(max_length=200)
 
     class Meta:
         ordering = ['lecture', 'timestamp']

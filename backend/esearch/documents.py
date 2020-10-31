@@ -1,6 +1,6 @@
 from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
-from api.models import Lecture, Author, Event
+from api.models import Lecture, Author, Event, Category
 
 
 @registry.register_document
@@ -11,17 +11,23 @@ class LectureDocument(Document):
         'id': fields.IntegerField(),
     })
 
+    categories = fields.ListField(
+        fields.ObjectField(properties={
+            'name': fields.TextField(),
+    }))
+
     event = fields.ObjectField(properties={
         'title': fields.TextField(),
         'description': fields.TextField(),
+        'caption': fields.TextField(),
     })
 
     class Index:
         # Name of the Elasticsearch index
         name = 'lectures'
         # See Elasticsearch Indices API reference for available settings
-        settings = {'number_of_shards': 2,
-                    'number_of_replicas': 1}
+        settings = {'number_of_shards': 1,
+                    'number_of_replicas': 0}
 
     class Django:
         model = Lecture  # The model associated with this Document
@@ -38,7 +44,7 @@ class LectureDocument(Document):
             'id'
         ]
         # Optional: to ensure the Car will be re-saved when Manufacturer or Ad is updated
-        related_models = [Author, Event]
+        related_models = [Author, Event, Category]
 
         # Ignore auto updating of Elasticsearch when a model is saved
         # or deleted:
@@ -66,6 +72,8 @@ class LectureDocument(Document):
             return related_instance.lectures_author.all()
         elif isinstance(related_instance, Event):
             return related_instance.lectures.all()
+        elif isinstance(related_instance, Category):
+            return related_instance.lectures.all()
 
 
 @registry.register_document
@@ -86,4 +94,47 @@ class AuthorDocument(Document):
             'views',
             'id',
             'name',
+        ]
+
+
+@registry.register_document
+class CategoryDocument(Document):
+    class Index:
+        # Name of the Elasticsearch index
+        name = 'categories'
+        # See Elasticsearch Indices API reference for available settings
+        settings = {'number_of_shards': 1,
+                    'number_of_replicas': 0}
+
+    class Django:
+        model = Category  # The model associated with this Document
+
+        # The fields of the model you want to be indexed in Elasticsearch
+        fields = [
+            'id',
+            'name',
+            'image',
+        ]
+
+
+@registry.register_document
+class EventDocument(Document):
+    class Index:
+        # Name of the Elasticsearch index
+        name = 'events'
+        # See Elasticsearch Indices API reference for available settings
+        settings = {'number_of_shards': 1,
+                    'number_of_replicas': 0}
+
+    class Django:
+        model = Event  # The model associated with this Document
+
+        # The fields of the model you want to be indexed in Elasticsearch
+        fields = [
+            'id',
+            'title',
+            'description',
+            'caption',
+            'image',
+            'date'
         ]
