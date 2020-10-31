@@ -238,12 +238,11 @@ class Command(BaseCommand):
                 published = lecture[LECTURE_COLS.index('pub_date')]
                 views = lecture[LECTURE_COLS.index('view_ctr')]
 
-                cursor.execute(
-                    f"SELECT * FROM vl_video WHERE lecture_id = {lec_id} AND part = '1'"
-                )
-                vid_id = cursor.fetchone()[VIDEO_COLS.index('id')]
-
                 try:
+                    cursor.execute(
+                        f"SELECT * FROM vl_video WHERE lecture_id = {lec_id} AND part = '1'"
+                    )
+                    vid_id = cursor.fetchone()[VIDEO_COLS.index('id')]
 
                     video_url = self.get_lecture_video(vid_id,slug)
 
