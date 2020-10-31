@@ -80,6 +80,9 @@ SYNC_COLS = [desc[0] for desc in cursor.description]
 cursor.execute("Select * FROM vl_syncable LIMIT 0")
 SYNCABLE_COLS = [desc[0] for desc in cursor.description]
 
+cursor.execute("Select * FROM vl_video LIMIT 0")
+VIDEO_COLS = [desc[0] for desc in cursor.description]
+
 cursor.execute("Select * FROM vl_contribution LIMIT 0")
 AUTHOR_COLS = [desc[0] for desc in cursor.description]
 
@@ -161,21 +164,29 @@ class Command(BaseCommand):
 
     #? FIXED ??
     def get_lecture_video(self, lec_id, slug):
-        try:
-            cursor.execute(
-                f"SELECT * FROM attachments_attachment WHERE object_id = {lec_id} AND type = 'v' AND ext = 'mp4' ORDER BY size"
-            )
-            lec_hash = cursor.fetchone()[ATTACHMENTS_COLS.index('hash')]
-        except:
-            pass
+        lec_hash = None
+
+        cursor.execute(
+            f"SELECT * FROM vl_video WHERE lecture_id = {lec_id} AND part = '1'"
+        )
+        att_id = cursor.fetchone()[VIDEO_COLS.index('id')]
 
         try:
             cursor.execute(
-                f"SELECT * FROM attachments_attachment WHERE object_id = {lec_id} AND type = 'v.src' AND ext = 'mp4' ORDER BY size"
+                f"SELECT * FROM attachments_attachment WHERE object_id = {att_id} AND type = 'v' AND ext = 'mp4' ORDER BY size"
             )
             lec_hash = cursor.fetchone()[ATTACHMENTS_COLS.index('hash')]
         except:
             lec_hash = None
+
+        if not lec_hash:
+            try:
+                cursor.execute(
+                    f"SELECT * FROM attachments_attachment WHERE object_id = {att_id} AND type = 'v.src' AND ext = 'mp4' ORDER BY size"
+                )
+                lec_hash = cursor.fetchone()[ATTACHMENTS_COLS.index('hash')]
+            except:
+                lec_hash = None
 
         """ except:
             raise NameError('No lecture found') """
@@ -577,11 +588,7 @@ class Command(BaseCommand):
             self.get_slides()
 
         print('Done')
-        """lec = 'eswc09_munoz_ess'
-        print(self.get_lecture_video(lec))
-        print(self.get_lecture_thumbnail(lec))"""
+        print(self.get_lecture_video(11572,'mitworld_lewin_wem'))
 
-        # print(self.getEventImage('fmf_predavanja_seminarji.jpg'))
-        # self.connect_events_lectures()
 
         server.stop()
