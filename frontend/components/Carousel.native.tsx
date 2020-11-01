@@ -5,7 +5,7 @@ import React, { useState } from "react";
 
 const CarouselPlatform = ({ events, EventCard, width, padding, itemWidth }) => (
   <Carousel
-    data={events.results}
+    data={events}
     renderItem={EventCard}
     sliderWidth={width}
     itemWidth={itemWidth}

@@ -7,6 +7,10 @@ import useSWR from "swr";
 import { useTheme } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
 
+import Cats from "../components/CategoriesList";
+import Lectures from "../components/LecturesList";
+import AuthorList from "../components/AuthorList";
+
 const padding = 12;
 
 const Event = ({ navigation, route }: any) => {
@@ -34,10 +38,29 @@ const Event = ({ navigation, route }: any) => {
       color: colors.text,
       padding: padding,
     },
+    default_card: {
+      shadowColor: colors.shadow,
+      shadowOffset: {
+        width: 0,
+        height: 12,
+      },
+      shadowRadius: 19,
+      shadowOpacity: 1,
+
+      marginBottom: padding,
+      backgroundColor: colors.card,
+      //padding: padding,
+      borderRadius: 15,
+
+      margin: padding,
+      maxWidth: 500,
+
+      flex: 1,
+    },
   });
 
-  return (
-    <ScrollView>
+  const ListHeaderComponent = () => {
+    return (
       <View
         style={{
           width: "100%",
@@ -54,10 +77,37 @@ const Event = ({ navigation, route }: any) => {
             resizeMode: "cover",
           }}
         />
+        <View style={styles.default_card}>
+          <Text style={styles.h3}>{eventinfo.description}</Text>
+        </View>
 
-        <Text style={styles.h3}>{eventinfo.description}</Text>
+        <AuthorList
+          navigation={navigation}
+          padding={padding}
+          authors={eventinfo.authors}
+          HeaderPadding={padding}
+        />
+
+        <Cats
+          cats={eventinfo.categories}
+          navigation={navigation}
+          padding={padding}
+          HeaderPadding={padding}
+        />
       </View>
-    </ScrollView>
+    );
+  };
+
+  return (
+    <Lectures
+      navigation={navigation}
+      HeaderComponent={ListHeaderComponent}
+      padding={padding}
+      styles={styles}
+      //lectures={category.lectures}
+      fetchurl=""
+      default_lectures={eventinfo.lectures}
+    />
   );
 };
 

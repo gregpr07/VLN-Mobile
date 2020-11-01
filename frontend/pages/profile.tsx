@@ -187,6 +187,7 @@ function ProfileScreen({ navigation, setVidID }) {
       flexWrap: "wrap",
       alignItems: "flex-start",
       margin: padding,
+      marginTop: 2 * padding,
     },
     navItem: {
       padding: 10,
@@ -208,7 +209,7 @@ function ProfileScreen({ navigation, setVidID }) {
     },
     navText: {
       fontFamily: "SF-UI-medium",
-      fontSize: 14,
+      fontSize: 16,
       fontWeight: "normal",
       fontStyle: "normal",
       letterSpacing: 1,
@@ -218,7 +219,7 @@ function ProfileScreen({ navigation, setVidID }) {
       textTransform: "uppercase",
     },
     active: {
-      fontFamily: "SF-UI-semibold",
+      fontFamily: "SF-UI-bold",
       color: colors.text,
     },
 

@@ -4,10 +4,10 @@ import { View, FlatList } from "react-native";
 
 const CarouselPlatform = ({ events, EventCard, width, padding, itemWidth }) => (
   <FlatList
-    data={events.results}
+    data={events}
     ListHeaderComponent={() => <View style={{ paddingLeft: padding }} />}
     renderItem={EventCard}
-    keyExtractor={(item) => item.id}
+    keyExtractor={(item) => item.id.toString()}
     ItemSeparatorComponent={() => <View style={{ paddingLeft: padding }} />}
     horizontal
     //snapToInterval={AUTHOR_WIDTH + SEPARATOR_WIDTH}

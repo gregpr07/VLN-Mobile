@@ -11,10 +11,11 @@ import { useTheme } from "@react-navigation/native";
 
 import { noHeadFetcher } from "../services/fetcher";
 
-import { ActivityView, Categories as SubCats } from "../components/Components";
+import { ActivityView } from "../components/Components";
 
+import SubCats from "../components/CategoriesList";
 import Lectures from "../components/LecturesList";
-import { loading } from "../services/actions";
+import AuthorList from "../components/AuthorList";
 
 const Category = ({ navigation, route }: any) => {
   const { colors, dark } = useTheme();
@@ -92,7 +93,16 @@ const Category = ({ navigation, route }: any) => {
           cats={category.children}
           navigation={navigation}
           padding={padding}
+          HeaderPadding={padding}
         />
+        <View style={{ paddingTop: padding / 2 }}>
+          <AuthorList
+            navigation={navigation}
+            padding={padding}
+            authors={category.authors}
+            HeaderPadding={padding}
+          />
+        </View>
         <Text
           style={{
             fontSize: 24,
@@ -115,7 +125,7 @@ const Category = ({ navigation, route }: any) => {
       padding={padding}
       styles={styles}
       //lectures={category.lectures}
-      fetchurl={`category/${categoryID}/lectures/`}
+      fetchurl={`category/${categoryID}/lectures_most_viewed/`}
     />
   );
 };

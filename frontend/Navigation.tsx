@@ -126,8 +126,8 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
       color: themeIsDark ? colors.paleGrey : colors.darkGreyBlue,
       fontSize: 20,
       shadowOpacity: 0,
+      paddingLeft: 12,
     },
-
     headerBackImage: ({ tintColor }) => (
       <Ionicons
         name={"md-arrow-back"}
@@ -136,6 +136,7 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
         color={themeIsDark ? colors.paleGrey : colors.darkGreyBlue}
       />
     ),
+
     headerBackTitleVisible: false,
   };
 

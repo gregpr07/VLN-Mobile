@@ -2,21 +2,16 @@ import React, { useState } from "react";
 import {
   Text,
   View,
-  TouchableHighlight,
   TouchableOpacity,
-  TextInput,
   StyleSheet,
   useWindowDimensions,
   Image,
   SafeAreaView,
   FlatList,
-  Platform,
 } from "react-native";
 
 // expo
 import Constants from "expo-constants";
-
-import CarouselPlatform from "../components/Carousel";
 
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -26,6 +21,9 @@ import { noHeadFetcher } from "../services/fetcher";
 import useSWR from "swr";
 
 import { HeaderText } from "../components/TextHeader";
+
+import AuthorList from "../components/AuthorList";
+import EventList from "../components/EventList";
 
 //import { color } from "react-native-reanimated";
 
@@ -37,40 +35,6 @@ export default function HomeScreen({ navigation }: any) {
   const { data: authors_most_viewd } = useSWR(
     "author/most_viewed/",
     noHeadFetcher
-  );
-
-  const { width, height } = useWindowDimensions();
-  const eventHeight = 190;
-
-  const cardWidth = width > 350 + 2 * padding ? 350 : width - 2 * padding;
-
-  const EventCard = ({ item, index }: any) => (
-    <View key={index}>
-      <TouchableOpacity
-        onPress={() =>
-          navigation.push("event", {
-            eventID: item.id,
-            eventTitle: item.caption,
-          })
-        }
-        style={{ width: cardWidth }}
-        activeOpacity={0.75}
-      >
-        <Image
-          source={{
-            uri: item.image,
-          }}
-          style={{
-            height: eventHeight, // - 2 * padding
-            //maxHeight: 400,
-            borderRadius: 12,
-            resizeMode: "cover",
-
-            //marginVertical: 24,
-          }}
-        />
-      </TouchableOpacity>
-    </View>
   );
 
   const Header = () =>
@@ -89,109 +53,13 @@ export default function HomeScreen({ navigation }: any) {
           </Text>
           <Text style={[styles.h3, { color: colors.secondary }]}>Show all</Text>
         </View>
-        <SafeAreaView>
-          <CarouselPlatform
-            events={events}
-            EventCard={EventCard}
-            width={width}
-            padding={padding}
-            itemWidth={cardWidth}
-          />
-        </SafeAreaView>
+        <EventList
+          events={events.results}
+          padding={padding}
+          navigation={navigation}
+        />
       </View>
     ) : null;
-
-  const Authors = () => {
-    const AUTHOR_WIDTH = 100;
-    const SEPARATOR_WIDTH = 10;
-    const RenderAuthor = ({ item, index }) => (
-      <TouchableOpacity
-        onPress={() =>
-          navigation.push("author", {
-            authorID: item.id,
-          })
-        }
-        style={{
-          //paddingVertical: 6,
-          width: AUTHOR_WIDTH,
-          marginTop: 10,
-        }}
-      >
-        <View
-          style={{
-            shadowColor: colors.shadow,
-            shadowOffset: {
-              width: 0,
-              height: 12,
-            },
-            shadowRadius: 19,
-            shadowOpacity: 1,
-
-            borderRadius: AUTHOR_WIDTH,
-          }}
-        >
-          <Image
-            source={
-              item.image
-                ? {
-                    uri: item.image,
-                  }
-                : require(`../assets/icons/profile_image.png`)
-            }
-            style={{
-              height: AUTHOR_WIDTH,
-              width: AUTHOR_WIDTH,
-              borderRadius: AUTHOR_WIDTH,
-
-              resizeMode: "cover",
-
-              marginBottom: 5,
-            }}
-          />
-        </View>
-        <Text style={[styles.h5, { color: colors.text }]}>{item.name}</Text>
-      </TouchableOpacity>
-    );
-
-    const AuthorSeparator = () => (
-      <View style={{ paddingRight: SEPARATOR_WIDTH }} />
-    );
-
-    if (!authors_most_viewd) {
-      return null;
-    }
-
-    return (
-      <View
-        style={{
-          marginTop: 30,
-        }}
-      >
-        <View style={{ flexDirection: "row", marginHorizontal: padding }}>
-          <Text style={[styles.h3, { flex: 1, color: colors.text }]}>
-            Top authors
-          </Text>
-          <Text style={[styles.h3, { color: colors.secondary }]}>Show all</Text>
-        </View>
-
-        <SafeAreaView>
-          <FlatList
-            data={authors_most_viewd.results}
-            ListHeaderComponent={() => (
-              <View style={{ paddingLeft: padding }} />
-            )}
-            renderItem={RenderAuthor}
-            keyExtractor={(item) => item.name}
-            ItemSeparatorComponent={AuthorSeparator}
-            horizontal
-            snapToInterval={AUTHOR_WIDTH + SEPARATOR_WIDTH}
-            showsHorizontalScrollIndicator={false}
-            decelerationRate={0}
-          />
-        </SafeAreaView>
-      </View>
-    );
-  };
 
   const Categories = () => {
     const cats = [
@@ -317,7 +185,28 @@ export default function HomeScreen({ navigation }: any) {
       showsVerticalScrollIndicator={false}
     >
       <Header />
-      <Authors />
+      {authors_most_viewd ? (
+        <View
+          style={{
+            marginTop: 30 - padding,
+          }}
+        >
+          <View style={{ flexDirection: "row", marginHorizontal: padding }}>
+            <Text style={[styles.h3, { flex: 1, color: colors.text }]}>
+              Top authors
+            </Text>
+            {/*             <Text style={[styles.h3, { color: colors.secondary }]}>
+              Show all
+            </Text> */}
+          </View>
+          <AuthorList
+            navigation={navigation}
+            padding={padding}
+            authors={authors_most_viewd.results}
+            HeaderPadding={padding}
+          />
+        </View>
+      ) : null}
       <Categories />
     </ScrollView>
   );

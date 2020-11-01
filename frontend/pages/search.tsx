@@ -30,6 +30,10 @@ import { API } from "../services/fetcher";
 import { connect } from "react-redux";
 import { setVideoID } from "../services/storage/actions";
 
+import Cats from "../components/CategoriesList";
+import AuthorList from "../components/AuthorList";
+import EventList from "../components/EventList";
+
 let CURRENT_PAGE_LEC: number;
 let LOADED_ALL_LEC: boolean;
 
@@ -47,6 +51,8 @@ const SearchScreen = ({
 
   const [lecture, setLectures] = useState([]);
   const [authors, setAuthors] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [events, setEvents] = useState([]);
 
   const [inputValue, onChangeText] = useState("");
   const [previousInputValue, setPreviousValue] = useState("");
@@ -62,8 +68,6 @@ const SearchScreen = ({
     fetch(search_link)
       .then((res) => res.json())
       .then((json) => {
-        console.log("data returned on link: " + search_link);
-
         const new_arr = append_array
           ? lecture.concat(json.lectures)
           : json.lectures;
@@ -75,20 +79,19 @@ const SearchScreen = ({
       });
   }
 
-  async function getDataAut(append_array: boolean) {
-    if (inputValue) {
-      const search_link = `${API}search/author/${inputValue}/0/`;
-      fetch(search_link)
+  async function getDataOther(append_array: boolean) {
+    const fetchAndSet = (urlSearch: string, setHook: any, object: string) => {
+      fetch(`${API}search/${urlSearch}/${inputValue}/0/`)
         .then((res) => res.json())
         .then((json) => {
-          console.log("data returned on link: " + search_link);
-
-          const new_arr = append_array
-            ? authors.concat(json.authors)
-            : json.authors;
-          setAuthors(new_arr);
+          setHook(json[object]);
           setLoading(false);
         });
+    };
+    if (inputValue) {
+      fetchAndSet("category", setCategories, "categories");
+      fetchAndSet("author", setAuthors, "authors");
+      fetchAndSet("event", setEvents, "events");
     }
   }
 
@@ -100,7 +103,7 @@ const SearchScreen = ({
       listflat.current.scrollToOffset(0);
       //console.log(listflat);
       getData(false);
-      getDataAut(false);
+      getDataOther(false);
     }
   };
 
@@ -180,101 +183,28 @@ const SearchScreen = ({
     </View>
   );
 
-  const Authors = () => {
-    const AUTHOR_WIDTH = 100;
-    const SEPARATOR_WIDTH = 10;
-    const RenderAuthor = ({ item, index }) => (
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate("Home", {
-            screen: "author",
-            params: {
-              authorID: item.id,
-            },
-          })
-        }
-        style={{
-          //paddingVertical: 6,
-          width: AUTHOR_WIDTH,
-          marginBottom: padding,
-        }}
-      >
-        <View
-          style={{
-            shadowColor: colors.shadow,
-            shadowOffset: {
-              width: 0,
-              height: 12,
-            },
-            shadowRadius: 19,
-            shadowOpacity: 1,
+  const ListHeader = () => (
+    <View style={{ marginTop: 70 }}>
+      {events ? (
+        <EventList events={events} padding={padding} navigation={navigation} />
+      ) : null}
 
-            borderRadius: AUTHOR_WIDTH,
-          }}
-        >
-          <Image
-            source={
-              item.image
-                ? {
-                    uri: item.image,
-                  }
-                : require(`../assets/icons/profile_image.png`)
-            }
-            style={{
-              height: AUTHOR_WIDTH,
-              width: AUTHOR_WIDTH,
-              borderRadius: AUTHOR_WIDTH,
-
-              resizeMode: "cover",
-
-              marginBottom: 5,
-
-              borderColor: colors.card,
-              borderWidth: 4,
-            }}
-          />
-        </View>
-        <Text style={[styles.h3, { color: colors.text, height: 34 }]}>
-          {item.name}
-        </Text>
-      </TouchableOpacity>
-    );
-
-    const AuthorSeparator = () => (
-      <View style={{ paddingRight: SEPARATOR_WIDTH }} />
-    );
-    if (!authors) {
-      return null;
-    }
-
-    return (
-      <View
-        style={{
-          //marginVertical: padding,
-          marginTop: 70,
-        }}
-      >
-        <SafeAreaView>
-          <FlatList
-            data={authors}
-            /* ListHeaderComponent={() => (
-              <View style={{ paddingLeft: padding }} />
-            )} */
-            ListFooterComponent={() => (
-              <View style={{ paddingRight: padding }} />
-            )}
-            renderItem={RenderAuthor}
-            keyExtractor={(item) => item.name}
-            ItemSeparatorComponent={AuthorSeparator}
-            horizontal
-            snapToInterval={AUTHOR_WIDTH + SEPARATOR_WIDTH}
-            showsHorizontalScrollIndicator={false}
-            decelerationRate={0}
-          />
-        </SafeAreaView>
+      <AuthorList
+        authors={authors}
+        padding={padding}
+        navigation={navigation}
+        HeaderPadding={padding}
+      />
+      <View style={{ paddingBottom: padding }}>
+        <Cats
+          cats={categories}
+          navigation={navigation}
+          padding={padding}
+          HeaderPadding={padding}
+        />
       </View>
-    );
-  };
+    </View>
+  );
 
   const padding = 14;
   const styles = StyleSheet.create({
@@ -380,7 +310,7 @@ const SearchScreen = ({
       //padding: padding,
       borderRadius: 15,
 
-      marginRight: padding,
+      marginHorizontal: padding,
       maxWidth: 500,
 
       flex: 1,
@@ -439,7 +369,7 @@ const SearchScreen = ({
       <View
         style={{
           flex: 1,
-          paddingLeft: padding,
+          //paddingLeft: padding,
           paddingTop: padding,
           zIndex: -1000,
         }}
@@ -450,7 +380,7 @@ const SearchScreen = ({
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
           onEndReached={loadMoreLecs}
-          ListHeaderComponent={<Authors />}
+          ListHeaderComponent={<ListHeader />}
           //getNativeScrollRef={(ref) => (flatlistRef = ref)}
           keyboardDismissMode={"on-drag"}
           numColumns={width / 600 > 1 ? 2 : 1}

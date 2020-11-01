@@ -27,20 +27,22 @@ const Lectures = ({
   padding,
   styles,
   fetchurl,
+  default_lectures = null,
 }: any) => {
   const { colors, dark } = useTheme();
 
-  const [lectures, setLectures] = useState([]);
+  const [lectures, setLectures] = useState(default_lectures);
   const [paginate, setPaginate] = useState("");
 
   useEffect(() => {
-    noHeadFetcher(fetchurl).then((json) => {
-      setLectures(json.results), setPaginate(json.next);
-    });
+    if (!default_lectures)
+      noHeadFetcher(fetchurl).then((json) => {
+        setLectures(json.results), setPaginate(json.next);
+      });
   }, [fetchurl]);
 
   const loadMoreLecs = () => {
-    if (paginate) {
+    if (paginate && !default_lectures) {
       fetch(paginate)
         .then((res) => res.json())
         .then((json) => {
@@ -91,9 +93,11 @@ const Lectures = ({
 
         marginRight: padding,
 
-        maxWidth: 500,
+        maxWidth: 600,
 
         flex: 1,
+
+        marginLeft: padding,
       }}
     >
       <TouchableOpacity
@@ -151,7 +155,7 @@ const Lectures = ({
   );
 
   return (
-    <View style={{ flex: 1, paddingLeft: padding }}>
+    <View style={{ flex: 1 }}>
       <FlatList
         data={lectures}
         renderItem={RenderItem}

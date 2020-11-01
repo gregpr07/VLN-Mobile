@@ -37,7 +37,7 @@ import VideoHeader from "./video/VideoHeader";
 
 import { numberWithCommas } from "../services/functions";
 
-import { Categories } from "../components/Components";
+import Categories from "../components/CategoriesList";
 
 //? using let because we don't want the screen to re-render because of video
 
@@ -68,7 +68,7 @@ function VideoScreen({
   useEffect(() => {
     if (videoID) {
       setLoading(true);
-      noHeadFetcher("lecture/" + videoID).then((json) => {
+      noHeadFetcher("lecture/" + videoID + "/").then((json) => {
         setLecture(json);
         setLoading(false);
       });

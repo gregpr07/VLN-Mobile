@@ -15,7 +15,9 @@ import { noHeadFetcher } from "../services/fetcher";
 
 import { useTheme } from "@react-navigation/native";
 
-import { ActivityView, Categories } from "../components/Components";
+import { ActivityView } from "../components/Components";
+
+import Categories from "../components/CategoriesList";
 
 import Lectures from "../components/LecturesList";
 
@@ -151,7 +153,7 @@ const Author = ({ navigation, route }: any) => {
       padding={padding}
       styles={styles}
       //lectures={author.lectures}
-      fetchurl={`author/${authorID}/lectures/`}
+      fetchurl={`author/${authorID}/lectures_most_viewed/`}
     />
   );
 };
