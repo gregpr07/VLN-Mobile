@@ -106,7 +106,8 @@ class Event(models.Model):
         return author_id_set
 
     class Meta:
-        ordering = ['date', 'caption']
+        #get_latest_by = "date"
+        ordering = ['-date', 'caption']
 
     def __str__(self):
         return self.title
