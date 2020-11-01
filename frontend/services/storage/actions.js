@@ -1,5 +1,6 @@
 // https://blog.usejournal.com/persisting-user-authentication-in-a-react-native-app-778e028ac816
 import AsyncStorage from "@react-native-community/async-storage";
+import { API } from "../fetcher";
 
 // =======================================================================
 // ROOT
@@ -29,16 +30,39 @@ export const error = (error) => ({
   error,
 });
 
-export const getUserToken = () => (dispatch) =>
+export const getUserToken = () => (dispatch) => {
+  const verifyToken = (data) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", `Token ${data}`);
+
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(`${API}auth/user/`, requestOptions)
+      .then((response) => response.json())
+      .then((json) => {
+        dispatch(loading(false));
+        if (json.id) {
+          dispatch(getToken(data));
+          console.log("Token verified.");
+        } else {
+          console.log("Invalid token.");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  };
   AsyncStorage.getItem("userToken")
     .then((data) => {
-      dispatch(loading(false));
-      dispatch(getToken(data));
+      verifyToken(data);
     })
     .catch((err) => {
       dispatch(loading(false));
       dispatch(error(err.message || "ERROR"));
     });
+};
 
 export const saveUserToken = (data) => (dispatch) =>
   AsyncStorage.setItem("userToken", data)
@@ -90,6 +114,8 @@ export const setVideoID = (data) => (dispatch) => dispatch(videoID(data));
 
 export const setVideoRef = (ref) => (dispatch) => dispatch(videoRef(ref));
 
-export const setPlaybackSpeed = (speed) => (dispatch) => dispatch(playbackSpeed(speed));
+export const setPlaybackSpeed = (speed) => (dispatch) =>
+  dispatch(playbackSpeed(speed));
 
-export const setVideoAudioPlay = (num) => (dispatch) => dispatch(videoAudioPlay(num));
+export const setVideoAudioPlay = (num) => (dispatch) =>
+  dispatch(videoAudioPlay(num));

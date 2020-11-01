@@ -167,7 +167,11 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
           <ProfileStack.Screen
             name="profile"
             options={({ navigation }) => ({
-              title: "",
+              headerTitle: "videolectures.net",
+              headerTitleStyle: {
+                fontFamily: "SF-UI-semibold",
+                fontSize: 24,
+              },
               headerRight: () => (
                 <TouchableOpacity
                   style={{
@@ -235,7 +239,7 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
             let iconName: string = "";
 
             if (route.name === "Home") {
-              iconName = focused ? "md-grid" : "md-grid";
+              iconName = focused ? "ios-home" : "ios-home";
             } else if (route.name === "Profile") {
               iconName = focused ? "ios-person" : "ios-person";
             } else if (route.name == "Search") {

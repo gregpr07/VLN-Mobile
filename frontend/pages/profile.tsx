@@ -1,84 +1,92 @@
-import React, {useEffect, useState} from "react";
-import {Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View,} from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  Dimensions,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-import {useFocusEffect, useTheme} from "@react-navigation/native";
-import {connect, useSelector} from "react-redux";
-import {API} from "../services/fetcher";
-import {numberWithCommas, shorterText} from "../services/functions";
+import { useFocusEffect, useTheme } from "@react-navigation/native";
+import { connect, useSelector } from "react-redux";
+import { API } from "../services/fetcher";
+import { numberWithCommas, shorterText } from "../services/functions";
 import Constants from "expo-constants";
-import {setVideoID} from "../services/storage/actions";
+import { setVideoID } from "../services/storage/actions";
 
 const { width, height } = Dimensions.get("window");
 
-const padding = 24;
+const padding = 14;
 function ProfileScreen({ navigation, setVidID }) {
-
   const { colors, dark } = useTheme();
 
   const [activeTab, setActiveTab] = useState("starred");
-  const tokenState = useSelector(state => state.token);
+  const tokenState = useSelector((state) => state.token);
   const [starredLectures, setStarredLectures] = useState([]);
   const [notes, setNotes] = useState([]);
 
   useFocusEffect(
-      React.useCallback(() => {
-          const myHeaders = new Headers();
-          myHeaders.append("Authorization", `Token ${tokenState.token}`);
+    React.useCallback(() => {
+      const myHeaders = new Headers();
+      myHeaders.append("Authorization", `Token ${tokenState.token}`);
 
-          const requestOptions = {
-              method: 'GET',
-              headers: myHeaders,
-              redirect: 'follow'
-          };
+      const requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow",
+      };
 
-          fetch(API + "starred/", requestOptions)
-              .then(response => response.json())
-              .then(json => {
-                  const lectures = json["lectures"];
-                  setStarredLectures(lectures);
-              })
-              .catch(error => console.log('error', error));
+      fetch(API + "starred/", requestOptions)
+        .then((response) => response.json())
+        .then((json) => {
+          const lectures = json["lectures"];
+          setStarredLectures(lectures);
+        })
+        .catch((error) => console.log("error", error));
 
-          fetch(API + "/noted/", requestOptions)
-              .then(response => response.json())
-              .then(json => {
-                  const notes = json["lectures"];
-                  setNotes(notes);
-              })
-              .catch(error => console.log('error', error));
-      }, [])
+      fetch(API + "/noted/", requestOptions)
+        .then((response) => response.json())
+        .then((json) => {
+          const notes = json["lectures"];
+          setNotes(notes);
+        })
+        .catch((error) => console.log("error", error));
+    }, [])
   );
 
   const [userData, setUserData] = useState({
-      profileImage: "https://i.kym-cdn.com/photos/images/original/001/561/356/734.jpg",
-      name: "",
-      title: "",
-    }
-  );
+    profileImage:
+      "https://i.kym-cdn.com/photos/images/original/001/561/356/734.jpg",
+    name: "",
+    title: "",
+  });
 
   useEffect(() => {
+    //! POGLEJ V ACTIONS -> GETUSERTOKEN - lahko nardis globally tole ce hocs
+
     const myHeaders = new Headers();
     myHeaders.append("Authorization", `Token ${tokenState.token}`);
 
     const requestOptions = {
-      method: 'GET',
+      method: "GET",
       headers: myHeaders,
-      redirect: 'follow'
+      redirect: "follow",
     };
 
     fetch("http://vln-mobile.ijs.si/api/auth/user/", requestOptions)
-        .then(response => response.json())
-        .then(json => {
-          console.log("Fetching user data.");
-          console.log(json);
-          setUserData({
-            ...userData,
-            name: json.first_name + " " + json.last_name,
-            title: "@" + json.username,
-          })
-
-        })
-        .catch(error => console.log('error', error));
+      .then((response) => response.json())
+      .then((json) => {
+        console.log("Fetching user data.");
+        console.log(json);
+        setUserData({
+          ...userData,
+          name: json.first_name + " " + json.last_name,
+          title: "@" + json.username,
+        });
+      })
+      .catch((error) => console.log("error", error));
   }, []);
 
   const Header = () => {
@@ -92,6 +100,8 @@ function ProfileScreen({ navigation, setVidID }) {
           },
           shadowRadius: 19,
           shadowOpacity: 1,
+
+          paddingTop: 16,
         }}
       >
         <Image
@@ -115,142 +125,159 @@ function ProfileScreen({ navigation, setVidID }) {
     );
   };
 
-    const Menu = () => {
-        return (
-            <View style={styles.navsContainer}>
-                <View style={[styles.navItem, styles.navLeft]} onTouchStart={() => setActiveTab("starred")}>
-                    <Text style={[styles.navText, activeTab == "starred" ? styles.active : {}]}>
-                      Starred
-                    </Text>
-                </View>
-                <View style={[styles.navItem]} onTouchStart={() => setActiveTab("notes")}>
-                    <Text style={[styles.navText, activeTab == "notes" ? styles.active : {}]}>
-                        Notes
-                    </Text>
-                </View>
-                <View style={[styles.navItem, styles.navRight]} onTouchStart={() => setActiveTab("history")}>
-                    <Text style={[styles.navText, activeTab == "history" ? styles.active : {}]}>
-                        History
-                    </Text>
-                </View>
-            </View>
-        )
-    }
+  const Menu = () => {
+    return (
+      <View style={styles.navsContainer}>
+        <View
+          style={[styles.navItem, styles.navLeft]}
+          onTouchStart={() => setActiveTab("starred")}
+        >
+          <Text
+            style={[
+              styles.navText,
+              activeTab == "starred" ? styles.active : {},
+            ]}
+          >
+            Starred
+          </Text>
+        </View>
+        <View
+          style={[styles.navItem]}
+          onTouchStart={() => setActiveTab("notes")}
+        >
+          <Text
+            style={[styles.navText, activeTab == "notes" ? styles.active : {}]}
+          >
+            Notes
+          </Text>
+        </View>
+        <View
+          style={[styles.navItem, styles.navRight]}
+          onTouchStart={() => setActiveTab("history")}
+        >
+          <Text
+            style={[
+              styles.navText,
+              activeTab == "history" ? styles.active : {},
+            ]}
+          >
+            History
+          </Text>
+        </View>
+      </View>
+    );
+  };
 
-    const styles = StyleSheet.create({
-      userName: {
-        fontSize: 30,
-        textAlign: "center",
-        fontFamily: "SF-UI-semibold",
-        color: colors.text,
-      },
-      userTag: {
-        fontSize: 18,
-        fontFamily: "SF-UI-semibold",
-        textAlign: "center",
-        lineHeight: 40,
-        color: colors.text,
-        marginTop: -5,
-      },
-      navsContainer: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        alignItems: 'flex-start',
-        margin: 20,
-      },
-      navItem: {
-        padding: 10,
-        paddingBottom: 13,
-        width: "33.33%",
-        backgroundColor: colors.card,
-      },
-      navLeft: {
-        borderTopLeftRadius: 10,
-        borderBottomLeftRadius: 10,
-        borderRightWidth: 1,
-        borderColor: colors.shadow,
-      },
-      navRight: {
-        borderTopRightRadius: 10,
-        borderBottomRightRadius: 10,
-        borderLeftWidth: 1,
-        borderColor: colors.shadow,
-      },
-      navText: {
-        fontFamily: "SF-UI-medium",
-        fontSize: 14,
-        fontWeight: "normal",
-        fontStyle: "normal",
-        letterSpacing: 1,
-        textAlign: "center",
-        color: colors.text,
-        textTransform: "uppercase",
-      },
-      active: {
-        fontWeight: "bold",
-      },
-      card: {
-        marginHorizontal: 20,
-        backgroundColor: colors.card,
-        borderRadius: 10,
-        marginBottom: 20,
-      },
-      cardBody: {
-          padding: 10,
-      },
-      container: {
-        flex: 1,
+  const styles = StyleSheet.create({
+    userName: {
+      fontSize: 30,
+      textAlign: "center",
+      fontFamily: "SF-UI-semibold",
+      color: colors.text,
+    },
+    userTag: {
+      fontSize: 18,
+      fontFamily: "SF-UI-semibold",
+      textAlign: "center",
+      color: colors.text,
+      marginBottom: padding / 2,
+    },
+    navsContainer: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      alignItems: "flex-start",
+      margin: padding,
+    },
+    navItem: {
+      padding: 10,
+      paddingBottom: 13,
+      width: "33.33%",
+      backgroundColor: colors.card,
+    },
+    navLeft: {
+      borderTopLeftRadius: 10,
+      borderBottomLeftRadius: 10,
+      borderRightWidth: 1,
+      borderColor: colors.shadow,
+    },
+    navRight: {
+      borderTopRightRadius: 10,
+      borderBottomRightRadius: 10,
+      borderLeftWidth: 1,
+      borderColor: colors.shadow,
+    },
+    navText: {
+      fontFamily: "SF-UI-medium",
+      fontSize: 14,
+      fontWeight: "normal",
+      fontStyle: "normal",
+      letterSpacing: 1,
+      textAlign: "center",
+      color: colors.secondary,
 
-        paddingTop: Constants.statusBarHeight,
-      },
-      h1: {
-        fontSize: 36,
-        textAlign: "center",
-        fontFamily: "SF-UI-semibold",
-      },
+      textTransform: "uppercase",
+    },
+    active: {
+      fontFamily: "SF-UI-semibold",
+      color: colors.text,
+    },
 
-      h3: {
-        fontSize: 14,
-        fontFamily: "SF-UI-semibold",
-        textAlign: "center",
-      },
-      h4: {
-        paddingBottom: 2,
-        fontSize: 14,
-        fontFamily: "SF-UI-medium",
-        color: colors.text,
-      },
-      h5: {
-        fontSize: 12,
-        fontFamily: "SF-UI-medium",
-      },
+    cardBody: {
+      paddingLeft: padding,
+    },
+    container: {
+      flex: 1,
 
-      gray: {
-        color: "#828282",
-      },
-      recommendation: {
-        flexDirection: "row",
-      },
-      default_card: {
-        shadowColor: colors.shadow,
-        shadowOffset: {
-          width: 0,
-          height: 12,
-        },
-        shadowRadius: 19,
-        shadowOpacity: 1,
+      paddingTop: Constants.statusBarHeight,
+    },
+    h1: {
+      fontSize: 36,
+      textAlign: "center",
+      fontFamily: "SF-UI-semibold",
+    },
 
-        backgroundColor: colors.card,
-        //padding: padding,
-        borderRadius: 15,
-        marginBottom: 10,
+    h3: {
+      fontSize: 14,
+      fontFamily: "SF-UI-semibold",
+      textAlign: "center",
+    },
+    h4: {
+      paddingBottom: 2,
+      fontSize: 14,
+      fontFamily: "SF-UI-medium",
+      color: colors.text,
+    },
+    h5: {
+      fontSize: 12,
+      fontFamily: "SF-UI-medium",
+    },
 
-        marginRight: padding,
-        maxWidth: 500,
-
-        flex: 1,
+    gray: {
+      color: "#828282",
+    },
+    recommendation: {
+      flexDirection: "row",
+    },
+    default_card: {
+      shadowColor: colors.shadow,
+      shadowOffset: {
+        width: 0,
+        height: 12,
       },
-    });
+      shadowRadius: 19,
+      shadowOpacity: 1,
+
+      backgroundColor: colors.card,
+      //padding: padding,
+      borderRadius: 15,
+      marginBottom: 10,
+
+      marginRight: padding,
+      maxWidth: 500,
+
+      flex: 1,
+    },
+  });
 
   const Separator = () => (
     <Text
@@ -281,8 +308,8 @@ function ProfileScreen({ navigation, setVidID }) {
           source={
             item.thumbnail
               ? {
-                uri: item.thumbnail,
-              }
+                  uri: item.thumbnail,
+                }
               : dark
               ? require("../assets/icons/videolecture-net-dark.png")
               : require("../assets/icons/videolecture-net-light.png")
@@ -323,26 +350,30 @@ function ProfileScreen({ navigation, setVidID }) {
         <View style={styles.card}>
           <View style={styles.cardBody}>
             <View>
-              {activeTab == "starred" &&
+              {activeTab == "starred" && (
                 <View>
-                  {starredLectures.map((lecture) => {
-                    return renderItem(lecture);
-                  })}
+                  {starredLectures
+                    ? starredLectures.map((lecture) => {
+                        return renderItem(lecture);
+                      })
+                    : null}
                 </View>
-              }
-              {activeTab == "notes" &&
+              )}
+              {activeTab == "notes" && (
                 <View>
-                  {notes.map((lecture) => {
-                    return renderItem(lecture);
-                  })}
+                  {notes
+                    ? notes.map((lecture) => {
+                        return renderItem(lecture);
+                      })
+                    : null}
                 </View>
-              }
-              {activeTab == "history" &&
+              )}
+              {activeTab == "history" && (
                 <Text>
                   History
                   {/* TODO: implement me in backend first */}
                 </Text>
-              }
+              )}
             </View>
           </View>
         </View>
