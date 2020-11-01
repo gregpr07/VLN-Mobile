@@ -102,6 +102,7 @@ const Author = ({ navigation, route }: any) => {
         navigation={navigation}
         colors={colors}
         padding={padding}
+        HeaderPadding={padding}
       />
 
       <Text

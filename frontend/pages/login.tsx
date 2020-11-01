@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableHighlight,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { connect } from "react-redux";
 import { saveUserToken } from "../services/storage/actions";
@@ -21,6 +22,7 @@ const SignInScreen = ({ token, saveToken }: any) => {
   const { colors, dark } = useTheme();
 
   const [isError, setIsError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
@@ -28,6 +30,7 @@ const SignInScreen = ({ token, saveToken }: any) => {
     saveToken(token)
       .then(() => {
         console.log("logged in");
+        setIsError(false);
       })
       .catch((error: any) => {
         setIsError(error);
@@ -36,6 +39,7 @@ const SignInScreen = ({ token, saveToken }: any) => {
 
   const postLogin = () => {
     if (userName && password) {
+      setLoading(true);
       fetch(`${API}auth/login/`, {
         method: "POST",
         body: JSON.stringify({
@@ -46,8 +50,13 @@ const SignInScreen = ({ token, saveToken }: any) => {
           "Content-Type": "application/json",
         },
       })
-        .then((res) => (res.status === 200 ? res.json() : null))
-        .then((json) => (json ? _signInAsync(json.token) : setIsError(true)));
+        .then((res) => res.json())
+        .then((json) => {
+          json.token
+            ? _signInAsync(json.token)
+            : setIsError(json.non_field_errors[0]);
+          setLoading(false);
+        });
     }
   };
 
@@ -64,6 +73,11 @@ const SignInScreen = ({ token, saveToken }: any) => {
       fontFamily: "SF-UI-medium",
       alignContent: "center",
       color: colors.text,
+    },
+    h4: {
+      fontSize: 18,
+      fontFamily: "SF-UI-medium",
+      alignContent: "center",
     },
     bold: {
       fontFamily: "SF-UI-semibold",
@@ -101,6 +115,21 @@ const SignInScreen = ({ token, saveToken }: any) => {
         Enter your login details to access your account
       </Text>
       <View style={{ paddingVertical: 75 }}>
+        {isError ? (
+          <Text
+            style={[
+              styles.h4,
+              {
+                maxWidth: 300,
+                textAlign: "center",
+                marginBottom: 14,
+                color: colors.primary,
+              },
+            ]}
+          >
+            {isError}
+          </Text>
+        ) : null}
         <TextInput
           value={userName}
           autoCompleteType={"username"}
@@ -168,7 +197,20 @@ const SignInScreen = ({ token, saveToken }: any) => {
             letterSpacing: 1,
           }}
         >
-          LOGIN
+          {" "}
+          {loading ? (
+            <ActivityIndicator
+              //? 15 is for centering - very hacky!!
+              style={{
+                left: width / 2 - 15,
+                top: height / 2,
+                position: "absolute",
+              }}
+              size="small"
+            />
+          ) : (
+            "LOGIN"
+          )}
         </Text>
       </TouchableHighlight>
     </View>

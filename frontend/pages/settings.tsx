@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {Button, StyleSheet, View, Text, ScrollView} from "react-native";
+import { Button, StyleSheet, View, Text, ScrollView } from "react-native";
 import { connect } from "react-redux";
 import { removeUserToken } from "../services/storage/actions";
 import Constants from "expo-constants";
@@ -7,6 +7,8 @@ import {
   TouchableHighlight,
   TouchableOpacity,
 } from "react-native-gesture-handler";
+
+import { API } from "../services/fetcher";
 
 import { useTheme } from "@react-navigation/native";
 import { color } from "react-native-reanimated";
@@ -19,6 +21,20 @@ const SignOutScreen = ({ token, removeUserToken }: any) => {
   const [error, setError] = useState(false);
 
   const _signOutAsync = () => {
+    console.log(token);
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", `Token ${token.token}`);
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(API + "auth/logout/", requestOptions).then((res) =>
+      console.log("Removed server token")
+    );
+
     removeUserToken()
       .then(() => {
         console.log("logged out");

@@ -35,7 +35,7 @@ const Event = ({ navigation, route }: any) => {
     h3: {
       fontSize: 17,
       fontFamily: "SF-UI-medium",
-      color: colors.text,
+      color: colors.secondary,
       padding: padding,
     },
     default_card: {

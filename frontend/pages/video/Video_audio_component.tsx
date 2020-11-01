@@ -160,9 +160,11 @@ const VideoAudio = ({
   //console.log(SpringAnim)
   return (
     <Animated.View
-      style={{
-        transform: [{ translateY: SpringAnim }],
-      }}
+      style={
+        {
+          //transform: [{ translateY: SpringAnim }],
+        }
+      }
     >
       {/*       <ViewPager
         initialPage={initPager}

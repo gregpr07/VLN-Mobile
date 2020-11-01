@@ -35,7 +35,7 @@ import RecommendedVids from "./video/Recommendations";
 import Notes from "./video/Notes";
 import VideoHeader from "./video/VideoHeader";
 
-import { numberWithCommas } from "../services/functions";
+import { numberWithCommas, shorterText } from "../services/functions";
 
 import Categories from "../components/CategoriesList";
 
@@ -306,7 +306,7 @@ function VideoScreen({
                 <Text
                   style={[styles.h5, { paddingTop: 4, color: colors.primary }]}
                 >
-                  {lecture.event.caption}
+                  {shorterText(lecture.event.caption, 40)}
                 </Text>
               </TouchableOpacity>
             ) : null}
@@ -567,7 +567,7 @@ function VideoScreen({
         ) : null}
       </ScrollView>
 
-      {showNotes ? null : <SwitchToNotes />}
+      {!showNotes && token ? <SwitchToNotes /> : null}
     </View>
   );
 }

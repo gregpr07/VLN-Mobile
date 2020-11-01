@@ -69,7 +69,7 @@ const Authors = ({ padding, navigation, authors, HeaderPadding = 0 }) => {
           fontSize: 16,
           fontFamily: "SF-UI-medium",
           textAlign: "center",
-          height: 32,
+          height: 40,
         }}
       >
         {item.name}
