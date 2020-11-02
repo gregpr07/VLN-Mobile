@@ -7,10 +7,13 @@ import {
   TouchableHighlight,
   Dimensions,
   ActivityIndicator,
+  Button,
 } from "react-native";
 import { connect } from "react-redux";
 import { saveUserToken } from "../services/storage/actions";
 import Constants from "expo-constants";
+
+import * as WebBrowser from "expo-web-browser";
 
 import { API } from "../services/fetcher";
 
@@ -60,6 +63,12 @@ const SignInScreen = ({ token, saveToken }: any) => {
           setLoading(false);
         });
     }
+  };
+
+  const _handlePressButtonAsync = async () => {
+    await WebBrowser.openBrowserAsync(
+      "http://videolectures.net/site/accounts/register/"
+    );
   };
 
   let pass: any;
@@ -215,6 +224,21 @@ const SignInScreen = ({ token, saveToken }: any) => {
             </Text>
           </TouchableHighlight>
         </View>
+        <TouchableHighlight onPress={_handlePressButtonAsync}>
+          <Text
+            style={[
+              styles.h3,
+              {
+                marginTop: 50,
+                color: colors.text,
+                textAlign: "center",
+                textDecorationLine: "underline",
+              },
+            ]}
+          >
+            ... or register
+          </Text>
+        </TouchableHighlight>
       </ScrollView>
     </Container>
   );

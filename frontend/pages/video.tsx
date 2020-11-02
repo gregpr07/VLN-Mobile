@@ -324,16 +324,11 @@ function VideoScreen({
   }); */
   const quitNotes = () => {
     setShowNotes(false);
-    SpringIn();
-    FadeIn();
   };
   // when press it switches to notes, on long press it goes to add new note screen
   const SwitchToNotes = () => {
     const handleSwitch = () => {
-      if (token) {
-        setShowNotes(true);
-        SpringOut();
-      } else navigation.navigate("login");
+      setShowNotes(true);
     };
 
     return (
@@ -370,38 +365,6 @@ function VideoScreen({
   // ANIMATIONS
 
   const [titleHeight, setTitleHeight] = useState(0);
-
-  const SpringAnim = useRef(new Animated.Value(0)).current;
-  const OpacityAnim = useRef(new Animated.Value(1)).current;
-
-  const SPRING_VAL = titleHeight;
-  const SpringIn = () => {
-    SpringAnim.setValue(-SPRING_VAL);
-    Animated.spring(SpringAnim, {
-      toValue: 0,
-      //duration: 500,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const SpringOut = () => {
-    // Will change fadeAnim value to 0 in 5 seconds
-    SpringAnim.setValue(SPRING_VAL);
-    Animated.spring(SpringAnim, {
-      toValue: 0,
-      //duration: 500,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const FadeIn = () => {
-    OpacityAnim.setValue(0);
-    Animated.spring(OpacityAnim, {
-      toValue: 1,
-      //duration: 400,
-      useNativeDriver: true,
-    }).start();
-  };
 
   const padding = 12;
   const styles = StyleSheet.create({
@@ -510,29 +473,21 @@ function VideoScreen({
       <View style={styles.container}>
         <WarningModal />
         {lecture ? (
-          showNotes ? null : (
-            <Animated.View
-              onLayout={(event) => {
-                setTitleHeight(event.nativeEvent.layout.height);
-              }}
-              style={{
-                opacity: OpacityAnim,
-                paddingHorizontal: padding,
-              }}
-            >
-              <VideoHeader
-                styles={styles}
-                padding={padding}
-                lecture={lecture}
-              />
-            </Animated.View>
-          )
+          <View
+            onLayout={(event) => {
+              setTitleHeight(event.nativeEvent.layout.height);
+            }}
+            style={{
+              paddingHorizontal: padding,
+            }}
+          >
+            <VideoHeader styles={styles} padding={padding} lecture={lecture} />
+          </View>
         ) : null}
 
         {/* VideoAudio */}
         <ScrollView showsVerticalScrollIndicator={false}>
           <VideoAudioComponent
-            SpringAnim={SpringAnim}
             //initPager={initPager}
             videoHeight={videoHeight}
             videostyle={styles.video}
@@ -573,7 +528,7 @@ function VideoScreen({
           ) : null}
         </ScrollView>
 
-        {!showNotes ? <SwitchToNotes /> : null}
+        {!showNotes ? token ? <SwitchToNotes /> : null : null}
       </View>
     </Container>
   );
