@@ -6,7 +6,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import { StatusBar } from "expo-status-bar";
 
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
 import VideoScreen from "./pages/video";
 import SearchScreen from "./pages/search";
 import HomeScreen from "./pages/homescreen";
@@ -240,17 +240,17 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
             let iconName: string = "";
 
             if (route.name === "Home") {
-              iconName = focused ? "ios-home" : "ios-home";
+              iconName = "md-home";
             } else if (route.name === "Profile") {
-              iconName = focused ? "ios-person" : "ios-person";
+              iconName = "md-person";
             } else if (route.name == "Search") {
-              iconName = "ios-search";
+              iconName = "md-search";
             } else if (route.name == "DEV") {
-              iconName = "ios-bug";
+              iconName = "md-bug";
             } else if (route.name == "Player") {
-              iconName = "ios-play-circle";
+              iconName = "md-play";
             } else if (route.name === "Video") {
-              iconName = focused ? "ios-videocam" : "ios-videocam";
+              iconName = "md-videocam";
             }
 
             // You can return any component that you like here!
@@ -259,8 +259,9 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
         })}
         tabBarOptions={{
           activeTintColor: themeIsDark ? colors.orangish : colors.orangish,
-          inactiveTintColor: themeIsDark ? "white" : "gray",
+          inactiveTintColor: themeIsDark ? "white" : "grey",
           showLabel: false,
+
           style: {
             borderTopWidth: 0,
 

@@ -15,6 +15,7 @@ import Constants from "expo-constants";
 import { API } from "../services/fetcher";
 
 import { useTheme } from "@react-navigation/native";
+import { ScrollView } from "react-native-gesture-handler";
 
 const { width, height } = Dimensions.get("window");
 
@@ -79,9 +80,6 @@ const SignInScreen = ({ token, saveToken }: any) => {
       fontFamily: "SF-UI-medium",
       alignContent: "center",
     },
-    bold: {
-      fontFamily: "SF-UI-semibold",
-    },
     input: {
       width: 315,
       height: 70,
@@ -101,119 +99,121 @@ const SignInScreen = ({ token, saveToken }: any) => {
   });
 
   return (
-    <View style={styles.container}>
-      <Text
-        style={[
-          styles.h3,
-          {
-            maxWidth: 250,
-            textAlign: "center",
-            marginTop: 3,
-          },
-        ]}
-      >
-        Enter your login details to access your account
-      </Text>
-      <View style={{ paddingVertical: 75 }}>
-        {isError ? (
-          <Text
-            style={[
-              styles.h4,
-              {
-                maxWidth: 300,
-                textAlign: "center",
-                marginBottom: 14,
-                color: colors.primary,
-              },
-            ]}
-          >
-            {isError}
-          </Text>
-        ) : null}
-        <TextInput
-          value={userName}
-          autoCompleteType={"username"}
-          autoFocus
-          autoCorrect={false}
-          returnKeyType={"next"}
-          autoCapitalize={"none"}
-          onSubmitEditing={() => pass.focus()}
-          placeholder={"Username"}
-          placeholderTextColor={colors.secondary}
-          clearButtonMode={"while-editing"}
-          onChangeText={(text) => setUserName(text)}
-          keyboardAppearance={dark ? "dark" : "light"}
+    <ScrollView>
+      <View style={styles.container}>
+        <Text
           style={[
-            styles.input,
+            styles.h3,
             {
-              borderTopRightRadius: 15,
-              borderTopLeftRadius: 15,
-              marginBottom: 1,
+              maxWidth: 250,
+              textAlign: "center",
+              marginTop: 3,
             },
           ]}
-        />
-        <TextInput
-          ref={(ref) => (pass = ref)}
-          value={password}
-          autoCompleteType={"password"}
-          autoCorrect={false}
-          onChangeText={(text) => setPassword(text)}
-          clearTextOnFocus={true}
-          returnKeyType={"send"}
-          autoCapitalize={"none"}
-          placeholder={"Password"}
-          placeholderTextColor={colors.secondary}
-          onSubmitEditing={postLogin}
-          keyboardAppearance={dark ? "dark" : "light"}
-          style={[
-            styles.input,
-            { borderBottomRightRadius: 15, borderBottomLeftRadius: 15 },
-          ]}
-          secureTextEntry
-        />
-      </View>
-      <TouchableHighlight
-        onPress={postLogin}
-        style={{
-          width: 315,
-          height: 58,
-          borderRadius: 15,
-          backgroundColor: "#5468ff",
-          shadowColor: "rgba(84, 104, 255, 0.3)",
-          shadowOffset: {
-            width: 0,
-            height: 10,
-          },
-          shadowRadius: 25,
-          shadowOpacity: 1,
-          justifyContent: "center",
-        }}
-      >
-        <Text
+        >
+          Enter your login details to access your account
+        </Text>
+        <View style={{ paddingVertical: 75 }}>
+          {isError ? (
+            <Text
+              style={[
+                styles.h4,
+                {
+                  maxWidth: 300,
+                  textAlign: "center",
+                  marginBottom: 14,
+                  color: colors.primary,
+                },
+              ]}
+            >
+              {isError}
+            </Text>
+          ) : null}
+          <TextInput
+            value={userName}
+            autoCompleteType={"username"}
+            //autoFocus
+            autoCorrect={false}
+            returnKeyType={"next"}
+            autoCapitalize={"none"}
+            onSubmitEditing={() => pass.focus()}
+            placeholder={"Username"}
+            placeholderTextColor={colors.secondary}
+            clearButtonMode={"while-editing"}
+            onChangeText={(text) => setUserName(text)}
+            keyboardAppearance={dark ? "dark" : "light"}
+            style={[
+              styles.input,
+              {
+                borderTopRightRadius: 15,
+                borderTopLeftRadius: 15,
+                marginBottom: 1,
+              },
+            ]}
+          />
+          <TextInput
+            ref={(ref) => (pass = ref)}
+            value={password}
+            autoCompleteType={"password"}
+            autoCorrect={false}
+            onChangeText={(text) => setPassword(text)}
+            clearTextOnFocus={true}
+            returnKeyType={"send"}
+            autoCapitalize={"none"}
+            placeholder={"Password"}
+            placeholderTextColor={colors.secondary}
+            onSubmitEditing={postLogin}
+            keyboardAppearance={dark ? "dark" : "light"}
+            style={[
+              styles.input,
+              { borderBottomRightRadius: 15, borderBottomLeftRadius: 15 },
+            ]}
+            secureTextEntry
+          />
+        </View>
+        <TouchableHighlight
+          onPress={postLogin}
           style={{
-            textAlign: "center",
-            fontFamily: "SF-UI-medium",
-            color: "white",
-            letterSpacing: 1,
+            width: 315,
+            height: 58,
+            borderRadius: 15,
+            backgroundColor: "#5468ff",
+            shadowColor: "rgba(84, 104, 255, 0.3)",
+            shadowOffset: {
+              width: 0,
+              height: 10,
+            },
+            shadowRadius: 25,
+            shadowOpacity: 1,
+            justifyContent: "center",
           }}
         >
-          {" "}
-          {loading ? (
-            <ActivityIndicator
-              //? 15 is for centering - very hacky!!
-              style={{
-                left: width / 2 - 15,
-                top: height / 2,
-                position: "absolute",
-              }}
-              size="small"
-            />
-          ) : (
-            "LOGIN"
-          )}
-        </Text>
-      </TouchableHighlight>
-    </View>
+          <Text
+            style={{
+              textAlign: "center",
+              fontFamily: "SF-UI-medium",
+              color: "white",
+              letterSpacing: 1,
+            }}
+          >
+            {" "}
+            {loading ? (
+              <ActivityIndicator
+                //? 15 is for centering - very hacky!!
+                style={{
+                  left: width / 2 - 15,
+                  top: height / 2,
+                  position: "absolute",
+                }}
+                size="small"
+              />
+            ) : (
+              "LOGIN"
+            )}
+          </Text>
+        </TouchableHighlight>
+      </View>
+    </ScrollView>
   );
 };
 
