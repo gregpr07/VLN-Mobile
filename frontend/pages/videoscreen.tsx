@@ -18,6 +18,7 @@ import { HeaderText } from "../components/TextHeader";
 
 import { connect } from "react-redux";
 import { setVideoID } from "../services/storage/actions";
+import Container from "../components/Container";
 
 import {
   ScrollView,
@@ -191,12 +192,14 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
   });
 
   return (
-    <ScrollView style={styles.container}>
-      <HeaderText text="Explore" />
-      <Videos videos={latestLectures} section={"Latest lectures"} />
-      <Videos videos={mostViewed} section={"Most viewed"} />
-      <Videos videos={mostStarred} section={"Most starred"} />
-    </ScrollView>
+    <Container>
+      <ScrollView style={styles.container}>
+        <HeaderText text="Explore" />
+        <Videos videos={latestLectures} section={"Latest lectures"} />
+        <Videos videos={mostViewed} section={"Most viewed"} />
+        <Videos videos={mostStarred} section={"Most starred"} />
+      </ScrollView>
+    </Container>
   );
 };
 

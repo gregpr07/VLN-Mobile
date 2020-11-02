@@ -24,6 +24,7 @@ import { HeaderText } from "../components/TextHeader";
 
 import AuthorList from "../components/AuthorList";
 import EventList from "../components/EventList";
+import Container from "../components/Container";
 
 //import { color } from "react-native-reanimated";
 
@@ -178,37 +179,39 @@ export default function HomeScreen({ navigation }: any) {
   };
 
   return (
-    <ScrollView
-      style={{
-        marginTop: Constants.statusBarHeight,
-      }}
-      showsVerticalScrollIndicator={false}
-    >
-      <Header />
-      {authors_most_viewd ? (
-        <View
-          style={{
-            marginTop: 30 - padding,
-          }}
-        >
-          <View style={{ flexDirection: "row", marginHorizontal: padding }}>
-            <Text style={[styles.h3, { flex: 1, color: colors.text }]}>
-              Top authors
-            </Text>
-            {/*             <Text style={[styles.h3, { color: colors.secondary }]}>
+    <Container>
+      <ScrollView
+        style={{
+          marginTop: Constants.statusBarHeight,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
+        <Header />
+        {authors_most_viewd ? (
+          <View
+            style={{
+              marginTop: 30 - padding,
+            }}
+          >
+            <View style={{ flexDirection: "row", marginHorizontal: padding }}>
+              <Text style={[styles.h3, { flex: 1, color: colors.text }]}>
+                Top authors
+              </Text>
+              {/*             <Text style={[styles.h3, { color: colors.secondary }]}>
               Show all
             </Text> */}
+            </View>
+            <AuthorList
+              navigation={navigation}
+              padding={padding}
+              authors={authors_most_viewd.results}
+              HeaderPadding={padding}
+            />
           </View>
-          <AuthorList
-            navigation={navigation}
-            padding={padding}
-            authors={authors_most_viewd.results}
-            HeaderPadding={padding}
-          />
-        </View>
-      ) : null}
-      <Categories />
-    </ScrollView>
+        ) : null}
+        <Categories />
+      </ScrollView>
+    </Container>
   );
 }
 

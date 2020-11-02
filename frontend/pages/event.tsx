@@ -10,6 +10,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import Cats from "../components/CategoriesList";
 import Lectures from "../components/LecturesList";
 import AuthorList from "../components/AuthorList";
+import Container from "../components/Container";
 
 const padding = 12;
 
@@ -99,15 +100,17 @@ const Event = ({ navigation, route }: any) => {
   };
 
   return (
-    <Lectures
-      navigation={navigation}
-      HeaderComponent={ListHeaderComponent}
-      padding={padding}
-      styles={styles}
-      //lectures={category.lectures}
-      fetchurl=""
-      default_lectures={eventinfo.lectures}
-    />
+    <Container>
+      <Lectures
+        navigation={navigation}
+        HeaderComponent={ListHeaderComponent}
+        padding={padding}
+        styles={styles}
+        //lectures={category.lectures}
+        fetchurl=""
+        default_lectures={eventinfo.lectures}
+      />
+    </Container>
   );
 };
 

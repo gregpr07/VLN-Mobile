@@ -33,6 +33,7 @@ import { setVideoID } from "../services/storage/actions";
 import Cats from "../components/CategoriesList";
 import AuthorList from "../components/AuthorList";
 import EventList from "../components/EventList";
+import Container from "../components/Container";
 
 let CURRENT_PAGE_LEC: number;
 let LOADED_ALL_LEC: boolean;
@@ -323,89 +324,91 @@ const SearchScreen = ({
   const searchHeight = 52 + padding;
 
   return (
-    <View style={styles.container}>
-      {/* <Authors /> */}
-      {/* {lecture ? ( */}
+    <Container>
+      <View style={styles.container}>
+        {/* <Authors /> */}
+        {/* {lecture ? ( */}
 
-      <HeaderText text="Search" />
+        <HeaderText text="Search" />
 
-      <Animated.View
-        style={{
-          transform: [
-            {
-              translateY: scrollY.interpolate({
-                inputRange: [-1, 0, searchHeight, searchHeight + 1],
-                outputRange: [0, 0, -searchHeight, -searchHeight],
-              }),
-            },
-          ],
-        }}
-      >
-        <View style={styles.SearchBar}>
-          <TextInput
-            style={styles.textinput}
-            onChangeText={(text) => onChangeText(text)}
-            value={inputValue}
-            autoFocus={true}
-            onSubmitEditing={handleSubmit}
-            clearButtonMode={"while-editing"}
-            placeholder={"What are you searching for?"}
-            placeholderTextColor={colors.secondary}
-            keyboardAppearance={dark ? "dark" : "light"}
-          />
-          <TouchableOpacity onPress={handleSubmit}>
-            <View style={styles.searchicon}>
-              <Ionicons
-                name={"ios-search"}
-                size={30}
-                style={{ paddingHorizontal: 12 }}
-                color={"white"}
-              />
-            </View>
-          </TouchableOpacity>
-        </View>
-      </Animated.View>
-
-      <View
-        style={{
-          flex: 1,
-          //paddingLeft: padding,
-          paddingTop: padding,
-          zIndex: -1000,
-        }}
-      >
-        <Animated.FlatList
-          ref={listflat}
-          data={lecture}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          onEndReached={loadMoreLecs}
-          ListHeaderComponent={<ListHeader />}
-          //getNativeScrollRef={(ref) => (flatlistRef = ref)}
-          keyboardDismissMode={"on-drag"}
-          numColumns={width / 600 > 1 ? 2 : 1}
-          scrollEventThrottle={1}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-            { useNativeDriver: true }
-          )}
-        />
-      </View>
-
-      {/* ) : null} */}
-
-      {loading ? (
-        <ActivityIndicator
-          //? 15 is for centering - very hacky!!
+        <Animated.View
           style={{
-            left: width / 2 - 15,
-            top: height / 2,
-            position: "absolute",
+            transform: [
+              {
+                translateY: scrollY.interpolate({
+                  inputRange: [-1, 0, searchHeight, searchHeight + 1],
+                  outputRange: [0, 0, -searchHeight, -searchHeight],
+                }),
+              },
+            ],
           }}
-          size="small"
-        />
-      ) : null}
-    </View>
+        >
+          <View style={styles.SearchBar}>
+            <TextInput
+              style={styles.textinput}
+              onChangeText={(text) => onChangeText(text)}
+              value={inputValue}
+              autoFocus={true}
+              onSubmitEditing={handleSubmit}
+              clearButtonMode={"while-editing"}
+              placeholder={"What are you searching for?"}
+              placeholderTextColor={colors.secondary}
+              keyboardAppearance={dark ? "dark" : "light"}
+            />
+            <TouchableOpacity onPress={handleSubmit}>
+              <View style={styles.searchicon}>
+                <Ionicons
+                  name={"ios-search"}
+                  size={30}
+                  style={{ paddingHorizontal: 12 }}
+                  color={"white"}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </Animated.View>
+
+        <View
+          style={{
+            flex: 1,
+            //paddingLeft: padding,
+            paddingTop: padding,
+            zIndex: -1000,
+          }}
+        >
+          <Animated.FlatList
+            ref={listflat}
+            data={lecture}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+            onEndReached={loadMoreLecs}
+            ListHeaderComponent={<ListHeader />}
+            //getNativeScrollRef={(ref) => (flatlistRef = ref)}
+            keyboardDismissMode={"on-drag"}
+            numColumns={width / 600 > 1 ? 2 : 1}
+            scrollEventThrottle={1}
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+              { useNativeDriver: true }
+            )}
+          />
+        </View>
+
+        {/* ) : null} */}
+
+        {loading ? (
+          <ActivityIndicator
+            //? 15 is for centering - very hacky!!
+            style={{
+              left: width / 2 - 15,
+              top: height / 2,
+              position: "absolute",
+            }}
+            size="small"
+          />
+        ) : null}
+      </View>
+    </Container>
   );
 };
 

@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { TouchableOpacity, Text } from "react-native";
+import { TouchableOpacity, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {
+  createBottomTabNavigator,
+  BottomTabBarProps,
+} from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 
+import { TabBar } from "./components/CustomTabbar";
+
 import { StatusBar } from "expo-status-bar";
+
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import VideoScreen from "./pages/video";
@@ -31,6 +38,7 @@ import { colors, LightTheme, DarkTheme } from "./services/themes";
 
 import { useColorScheme } from "react-native-appearance";
 import { BASEURL } from "./services/fetcher";
+import { color } from "react-native-reanimated";
 
 const Tabs = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -69,6 +77,7 @@ const PlayerStackScreen = () => {
 };
 
 const App = ({ token, getUserToken, videoID, videoRef }: any) => {
+  const insets = useSafeAreaInsets();
   // fonts
   /*   let [fontsLoaded] = useFonts({
     SF_UI_BLACK: require("./assets/fonts/HKGrotesk-black.otf"),
@@ -229,50 +238,14 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
   const linking = {
     prefixes: [BASEURL, "localhost:5000/"],
   };
+
   return (
     <NavigationContainer
       linking={linking}
       theme={themeIsDark ? DarkTheme : LightTheme}
     >
       <Tabs.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName: string = "";
-
-            if (route.name === "Home") {
-              iconName = "md-home";
-            } else if (route.name === "Profile") {
-              iconName = "md-person";
-            } else if (route.name == "Search") {
-              iconName = "md-search";
-            } else if (route.name == "DEV") {
-              iconName = "md-bug";
-            } else if (route.name == "Player") {
-              iconName = "md-play";
-            } else if (route.name === "Video") {
-              iconName = "md-videocam";
-            }
-
-            // You can return any component that you like here!
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
-        })}
-        tabBarOptions={{
-          activeTintColor: themeIsDark ? colors.orangish : colors.orangish,
-          inactiveTintColor: themeIsDark ? "white" : "grey",
-          showLabel: false,
-
-          style: {
-            borderTopWidth: 0,
-
-            shadowOffset: {
-              width: 5,
-              height: 10,
-            },
-            shadowColor: "black",
-            shadowOpacity: 0.5,
-          },
-        }}
+        tabBar={(props: BottomTabBarProps) => <TabBar {...props} />}
       >
         <Tabs.Screen name="Home" component={HomeStackScreen} />
         <Tabs.Screen name="Video" component={VideoStackScreen} />
@@ -284,6 +257,12 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
         <Tabs.Screen name="Profile" component={ProfileStackScreen} />
         {/*  <Tabs.Screen name="DEV" component={DevOnlyComponent} /> */}
       </Tabs.Navigator>
+      <View
+        style={{
+          paddingBottom: (insets.bottom / 4) * 3,
+          backgroundColor: themeIsDark ? colors.dark : "white",
+        }}
+      />
       <StatusBar style={themeIsDark ? "light" : "dark"} />
     </NavigationContainer>
   );

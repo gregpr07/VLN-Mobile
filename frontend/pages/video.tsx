@@ -38,6 +38,7 @@ import VideoHeader from "./video/VideoHeader";
 import { numberWithCommas, shorterText } from "../services/functions";
 
 import Categories from "../components/CategoriesList";
+import Container from "../components/Container";
 
 //? using let because we don't want the screen to re-render because of video
 
@@ -505,70 +506,76 @@ function VideoScreen({
   }
 
   return (
-    <View style={styles.container}>
-      <WarningModal />
-      {lecture ? (
-        showNotes ? null : (
-          <Animated.View
-            onLayout={(event) => {
-              setTitleHeight(event.nativeEvent.layout.height);
-            }}
-            style={{
-              opacity: OpacityAnim,
-              paddingHorizontal: padding,
-            }}
-          >
-            <VideoHeader styles={styles} padding={padding} lecture={lecture} />
-          </Animated.View>
-        )
-      ) : null}
-
-      {/* VideoAudio */}
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <VideoAudioComponent
-          SpringAnim={SpringAnim}
-          //initPager={initPager}
-          videoHeight={videoHeight}
-          videostyle={styles.video}
-          playVideoORAudio={playVideoORAudio}
-          slides={slides}
-          lecture={lecture}
-        />
+    <Container>
+      <View style={styles.container}>
+        <WarningModal />
         {lecture ? (
-          showNotes ? (
-            <Notes
-              styles={styles}
-              padding={padding}
-              quitNotes={quitNotes}
-              showNotes={showNotes}
-              setShowNotes={setShowNotes}
-            />
-          ) : (
-            <View style={{ paddingHorizontal: padding }}>
-              <Categories
-                cats={lecture.categories}
-                navigation={navigation}
-                colors={colors}
-                padding={padding}
-              />
-
-              <Description />
-
-              {/* recommendations */}
-
-              <RecommendedVids
+          showNotes ? null : (
+            <Animated.View
+              onLayout={(event) => {
+                setTitleHeight(event.nativeEvent.layout.height);
+              }}
+              style={{
+                opacity: OpacityAnim,
+                paddingHorizontal: padding,
+              }}
+            >
+              <VideoHeader
                 styles={styles}
-                colors={colors}
-                lecture={lecture}
                 padding={padding}
+                lecture={lecture}
               />
-            </View>
+            </Animated.View>
           )
         ) : null}
-      </ScrollView>
 
-      {!showNotes && token ? <SwitchToNotes /> : null}
-    </View>
+        {/* VideoAudio */}
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <VideoAudioComponent
+            SpringAnim={SpringAnim}
+            //initPager={initPager}
+            videoHeight={videoHeight}
+            videostyle={styles.video}
+            playVideoORAudio={playVideoORAudio}
+            slides={slides}
+            lecture={lecture}
+          />
+          {lecture ? (
+            showNotes ? (
+              <Notes
+                styles={styles}
+                padding={padding}
+                quitNotes={quitNotes}
+                showNotes={showNotes}
+                setShowNotes={setShowNotes}
+              />
+            ) : (
+              <View style={{ paddingHorizontal: padding }}>
+                <Categories
+                  cats={lecture.categories}
+                  navigation={navigation}
+                  colors={colors}
+                  padding={padding}
+                />
+
+                <Description />
+
+                {/* recommendations */}
+
+                <RecommendedVids
+                  styles={styles}
+                  colors={colors}
+                  lecture={lecture}
+                  padding={padding}
+                />
+              </View>
+            )
+          ) : null}
+        </ScrollView>
+
+        {!showNotes ? <SwitchToNotes /> : null}
+      </View>
+    </Container>
   );
 }
 

@@ -22,6 +22,7 @@ import Categories from "../components/CategoriesList";
 import Lectures from "../components/LecturesList";
 
 import { shorterText, numberWithCommas } from "../services/functions";
+import Container from "../components/Container";
 
 const padding = 14;
 
@@ -148,14 +149,16 @@ const Author = ({ navigation, route }: any) => {
   });
 
   return (
-    <Lectures
-      navigation={navigation}
-      HeaderComponent={ListHeaderComponent}
-      padding={padding}
-      styles={styles}
-      //lectures={author.lectures}
-      fetchurl={`author/${authorID}/lectures_most_viewed/`}
-    />
+    <Container>
+      <Lectures
+        navigation={navigation}
+        HeaderComponent={ListHeaderComponent}
+        padding={padding}
+        styles={styles}
+        //lectures={author.lectures}
+        fetchurl={`author/${authorID}/lectures_most_viewed/`}
+      />
+    </Container>
   );
 };
 

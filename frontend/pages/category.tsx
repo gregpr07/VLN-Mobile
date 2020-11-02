@@ -16,6 +16,7 @@ import { ActivityView } from "../components/Components";
 import SubCats from "../components/CategoriesList";
 import Lectures from "../components/LecturesList";
 import AuthorList from "../components/AuthorList";
+import Container from "../components/Container";
 
 const Category = ({ navigation, route }: any) => {
   const { colors, dark } = useTheme();
@@ -119,14 +120,16 @@ const Category = ({ navigation, route }: any) => {
   );
 
   return (
-    <Lectures
-      navigation={navigation}
-      HeaderComponent={ListHeaderComponent}
-      padding={padding}
-      styles={styles}
-      //lectures={category.lectures}
-      fetchurl={`category/${categoryID}/lectures_most_viewed/`}
-    />
+    <Container>
+      <Lectures
+        navigation={navigation}
+        HeaderComponent={ListHeaderComponent}
+        padding={padding}
+        styles={styles}
+        //lectures={category.lectures}
+        fetchurl={`category/${categoryID}/lectures_most_viewed/`}
+      />
+    </Container>
   );
 };
 

@@ -15,6 +15,7 @@ import { API } from "../services/fetcher";
 import { numberWithCommas, shorterText } from "../services/functions";
 import Constants from "expo-constants";
 import { setVideoID } from "../services/storage/actions";
+import Container from "../components/Container";
 
 const { width, height } = Dimensions.get("window");
 
@@ -340,46 +341,48 @@ function ProfileScreen({ navigation, setVidID }) {
   );
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <Header />
-      <View style={{ paddingTop: 15 }}>
-        <Text style={styles.userName}>{userData.name}</Text>
-        <Text style={[styles.userTag]}>{userData.title}</Text>
-      </View>
-      <Menu />
-      <View>
-        <View style={styles.card}>
-          <View style={styles.cardBody}>
-            <View>
-              {activeTab == "starred" && (
-                <View>
-                  {starredLectures
-                    ? starredLectures.map((lecture) => {
-                        return renderItem(lecture);
-                      })
-                    : null}
-                </View>
-              )}
-              {activeTab == "notes" && (
-                <View>
-                  {notes
-                    ? notes.map((lecture) => {
-                        return renderItem(lecture);
-                      })
-                    : null}
-                </View>
-              )}
-              {activeTab == "history" && (
-                <Text>
-                  History
-                  {/* TODO: implement me in backend first */}
-                </Text>
-              )}
+    <Container>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <Header />
+        <View style={{ paddingTop: 15 }}>
+          <Text style={styles.userName}>{userData.name}</Text>
+          <Text style={[styles.userTag]}>{userData.title}</Text>
+        </View>
+        <Menu />
+        <View>
+          <View style={styles.card}>
+            <View style={styles.cardBody}>
+              <View>
+                {activeTab == "starred" && (
+                  <View>
+                    {starredLectures
+                      ? starredLectures.map((lecture) => {
+                          return renderItem(lecture);
+                        })
+                      : null}
+                  </View>
+                )}
+                {activeTab == "notes" && (
+                  <View>
+                    {notes
+                      ? notes.map((lecture) => {
+                          return renderItem(lecture);
+                        })
+                      : null}
+                  </View>
+                )}
+                {activeTab == "history" && (
+                  <Text>
+                    History
+                    {/* TODO: implement me in backend first */}
+                  </Text>
+                )}
+              </View>
             </View>
           </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </Container>
   );
 }
 

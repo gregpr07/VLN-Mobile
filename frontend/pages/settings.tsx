@@ -12,6 +12,7 @@ import { API } from "../services/fetcher";
 
 import { useTheme } from "@react-navigation/native";
 import { color } from "react-native-reanimated";
+import Container from "../components/Container";
 
 const padding = 20;
 
@@ -78,41 +79,43 @@ const SignOutScreen = ({ token, removeUserToken }: any) => {
     },
   });
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <View style={{ marginVertical: 25, width: "100%" }}>
-          <View style={styles.card}>
-            <Text style={styles.h3}>Prefered playback speed</Text>
-            <Text style={styles.h3}>Prefered : slides/video</Text>
-            <Text style={styles.h3}>Play in background (true/false)</Text>
+    <Container>
+      <ScrollView>
+        <View style={styles.container}>
+          <View style={{ marginVertical: 25, width: "100%" }}>
+            <View style={styles.card}>
+              <Text style={styles.h3}>Prefered playback speed</Text>
+              <Text style={styles.h3}>Prefered : slides/video</Text>
+              <Text style={styles.h3}>Play in background (true/false)</Text>
+            </View>
+            <View style={styles.card}>
+              <Text style={styles.h3}>Update email</Text>
+              <Text style={styles.h3}>Change password</Text>
+              <Text style={styles.h3}>Remove user data</Text>
+              <Text style={styles.h3}>Do not track</Text>
+              <Text style={styles.h3}>Privacy and terms (GDPR)</Text>
+              <Text style={styles.h3}>Contact us</Text>
+            </View>
           </View>
-          <View style={styles.card}>
-            <Text style={styles.h3}>Update email</Text>
-            <Text style={styles.h3}>Change password</Text>
-            <Text style={styles.h3}>Remove user data</Text>
-            <Text style={styles.h3}>Do not track</Text>
-            <Text style={styles.h3}>Privacy and terms (GDPR)</Text>
-            <Text style={styles.h3}>Contact us</Text>
-          </View>
+          <TouchableOpacity onPress={_signOutAsync}>
+            <Text
+              style={[
+                {
+                  lineHeight: 22,
+                  letterSpacing: 1,
+                  textAlign: "center",
+                  color: colors.primary,
+                  fontSize: 16,
+                },
+                styles.bold,
+              ]}
+            >
+              Sign out
+            </Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={_signOutAsync}>
-          <Text
-            style={[
-              {
-                lineHeight: 22,
-                letterSpacing: 1,
-                textAlign: "center",
-                color: colors.primary,
-                fontSize: 16,
-              },
-              styles.bold,
-            ]}
-          >
-            Sign out
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </Container>
   );
 };
 
