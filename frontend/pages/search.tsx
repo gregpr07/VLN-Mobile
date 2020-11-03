@@ -348,7 +348,7 @@ const SearchScreen = ({
               style={styles.textinput}
               onChangeText={(text) => onChangeText(text)}
               value={inputValue}
-              autoFocus={true}
+              /* autoFocus={true} */
               onSubmitEditing={handleSubmit}
               clearButtonMode={"while-editing"}
               placeholder={"What are you searching for?"}

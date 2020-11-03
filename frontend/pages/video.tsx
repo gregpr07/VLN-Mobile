@@ -73,7 +73,9 @@ function VideoScreen({
         setLecture(json);
         setLoading(false);
       });
-      noHeadFetcher("slide/lecture/" + videoID).then((json) => setSlides(json));
+      noHeadFetcher("slide/lecture/" + videoID + "/?limit=500").then((json) =>
+        setSlides(json)
+      );
     }
   }, [videoID]);
 

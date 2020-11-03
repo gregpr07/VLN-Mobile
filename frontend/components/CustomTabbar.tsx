@@ -60,7 +60,7 @@ export const TabBar = ({
       position: "absolute",
       top: 0,
       left: 10,
-      backgroundColor: colors.secondary,
+      backgroundColor: colors.primary,
       borderRadius: 10,
     },
   });

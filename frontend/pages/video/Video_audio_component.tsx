@@ -23,7 +23,7 @@ let component: any;
 
 let currentPositionMillis: number = 0;
 
-let currentSlide: number;
+let currentSlide: number = 0;
 
 const VideoAudio = ({
   SpringAnim,
@@ -41,10 +41,13 @@ const VideoAudio = ({
 }: any) => {
   const { colors, dark } = useTheme();
 
+  const slidesRef = useRef(null);
+
   useEffect(() => {
     if (videoID && videoRef) {
       playVideoORAudio(videoAudioPlay, currentPositionMillis);
     }
+    moveToCurrentSlide();
   }, [videoAudioPlay]);
 
   const getCurrentSlide = () => {
@@ -59,21 +62,29 @@ const VideoAudio = ({
     return newslides.length - 1;
   };
 
+  const moveToCurrentSlide = () => {
+    //! change timestamp
+    //handleSlideChange();
+    const gotSlide = getCurrentSlide();
+    console.log(gotSlide, currentSlide);
+    if (gotSlide !== currentSlide && gotSlide !== null) {
+      //setCurrSlide(gotSlide);
+
+      /* slidesRef.current.scrollToIndex({ index: gotSlide }); */
+
+      currentSlide = gotSlide;
+      if (slidesRef.current) {
+        console.log("scrolling to index " + currentSlide);
+        slidesRef.current.scrollToIndex({ index: currentSlide });
+      }
+    }
+  };
+
   // this is set when dealing with video loop
   const onPlaybackStatusUpdate = (status: any) => {
     currentPositionMillis = status.positionMillis;
 
-    //! change timestamp
-    //handleSlideChange();
-    const gotSlide = getCurrentSlide();
-    if (gotSlide !== currentSlide && gotSlide !== null && slidesRef.current) {
-      //setCurrSlide(gotSlide);
-
-      console.log("slide should change to: " + gotSlide);
-
-      slidesRef.current.scrollToIndex({ index: gotSlide });
-      currentSlide = gotSlide;
-    }
+    moveToCurrentSlide();
   };
 
   async function _handleVideoRef(ref: any) {
@@ -94,8 +105,6 @@ const VideoAudio = ({
       }
     }
   }
-
-  const slidesRef = useRef(null);
 
   /*   const handleVideoAudioChange = (pos: number) => {
     if (videoRef && videoID) {
@@ -141,14 +150,13 @@ const VideoAudio = ({
             renderItem={RenderSlide}
             style={[
               videostyle,
-              videoAudioPlay === 1 ? null : { height: 0 },
+              videoAudioPlay === 1 ? null : { display: "none" },
               { backgroundColor: colors.background },
             ]}
+            initialScrollIndex={currentSlide}
             horizontal
             keyExtractor={(item) => item.image + item.id}
-            onScrollToIndexFailed={(index) =>
-              console.log("failed to scroll to " + index)
-            }
+            onScrollToIndexFailed={(item) => console.log(item.index)}
           />
         </TouchableHighlight>
       );
@@ -235,7 +243,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   setVidID: (num: number) => dispatch(setVideoID(num)),
   setVidRef: (data: any) => dispatch(setVideoRef(data)),
-  setCurrSlide: (num: number) => dispatch(setCurrentSlide(num)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps, null, {
