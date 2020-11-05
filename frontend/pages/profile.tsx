@@ -44,6 +44,7 @@ function ProfileScreen({ navigation, setVidID }) {
         .then((json) => {
           const lectures = json["lectures"];
           setStarredLectures(lectures);
+          console.log(lectures);
         })
         .catch((error) => console.log("error", error));
 
@@ -52,6 +53,7 @@ function ProfileScreen({ navigation, setVidID }) {
         .then((json) => {
           const notes = json["lectures"];
           setNotes(notes);
+          console.log(notes);
         })
         .catch((error) => console.log("error", error));
     }, [])
@@ -223,7 +225,6 @@ function ProfileScreen({ navigation, setVidID }) {
       fontFamily: "SF-UI-bold",
       color: colors.text,
     },
-
     cardBody: {
       paddingLeft: padding,
     },
@@ -278,6 +279,9 @@ function ProfileScreen({ navigation, setVidID }) {
       maxWidth: 500,
 
       flex: 1,
+    },
+    padded: {
+      padding: 15,
     },
   });
 
@@ -355,11 +359,17 @@ function ProfileScreen({ navigation, setVidID }) {
               <View>
                 {activeTab == "starred" && (
                   <View>
-                    {starredLectures
+                    {starredLectures && starredLectures.length > 0
                       ? starredLectures.map((lecture) => {
                           return renderItem(lecture);
                         })
-                      : null}
+                      :
+                      <View style={styles.default_card}>
+                        <View style={[styles.cardBody, styles.padded]}>
+                          <Text>You do not have any starred lectures.</Text>
+                        </View>
+                      </View>
+                    }
                   </View>
                 )}
                 {activeTab == "notes" && (
@@ -368,7 +378,12 @@ function ProfileScreen({ navigation, setVidID }) {
                       ? notes.map((lecture) => {
                           return renderItem(lecture);
                         })
-                      : null}
+                      :
+                      <View style={styles.default_card}>
+                        <View style={[styles.cardBody, styles.padded]}>
+                          <Text>You do not have any notes yet.</Text>
+                        </View>
+                      </View>}
                   </View>
                 )}
                 {activeTab == "history" && (
