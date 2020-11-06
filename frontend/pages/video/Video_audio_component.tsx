@@ -66,7 +66,7 @@ const VideoAudio = ({
     //! change timestamp
     //handleSlideChange();
     const gotSlide = getCurrentSlide();
-    console.log(gotSlide, currentSlide);
+    /* console.log(gotSlide, currentSlide); */
     if (gotSlide !== currentSlide && gotSlide !== null) {
       //setCurrSlide(gotSlide);
 
@@ -74,7 +74,7 @@ const VideoAudio = ({
 
       currentSlide = gotSlide;
       if (slidesRef.current) {
-        console.log("scrolling to index " + currentSlide);
+        /*  console.log("scrolling to index " + currentSlide); */
         slidesRef.current.scrollToIndex({ index: currentSlide });
       }
     }

@@ -174,7 +174,7 @@ const Notes = ({
       <View
       /* keyboardShouldPersistTaps="handled" */
       >
-        <View style={{}}>
+        <View style={{ marginRight: -10 }}>
           <View style={{ flex: 1, flexDirection: "row" }}>
             <TextInput
               style={{
@@ -195,7 +195,10 @@ const Notes = ({
               placeholderTextColor="#BDBDBD"
               keyboardAppearance={dark ? "dark" : "light"}
             />
-            <TouchableOpacity onPress={() => quitNotes()}>
+            <TouchableOpacity
+              onPress={() => quitNotes()}
+              style={{ paddingHorizontal: 10 }}
+            >
               <Ionicons name={"ios-close"} size={30} color={colors.primary} />
             </TouchableOpacity>
           </View>

@@ -86,7 +86,7 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
           shadowColor: colors.shadow,
           shadowOffset: {
             width: 0,
-            height: 12,
+            height: 0,
           },
           shadowRadius: 19,
           shadowOpacity: 1,

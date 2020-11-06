@@ -38,7 +38,7 @@ export const BottomMenuItem = ({ iconName, isCurrent }: Props) => {
       <Ionicons
         name={giveIconName(iconName)}
         size={26}
-        style={{ color: isCurrent ? colors.text : colors.secondary }}
+        style={{ color: isCurrent ? colors.text : colors.third }}
       />
     </View>
   );

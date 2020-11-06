@@ -182,7 +182,7 @@ function ProfileScreen({ navigation, setVidID }) {
       fontSize: 18,
       fontFamily: "SF-UI-semibold",
       textAlign: "center",
-      color: colors.text,
+      color: colors.secondary,
       marginBottom: padding / 2,
     },
     navsContainer: {
@@ -211,7 +211,7 @@ function ProfileScreen({ navigation, setVidID }) {
       borderColor: colors.shadow,
     },
     navText: {
-      fontFamily: "SF-UI-medium",
+      fontFamily: "SF-UI-semibold",
       fontSize: 16,
       fontWeight: "normal",
       fontStyle: "normal",
@@ -222,8 +222,8 @@ function ProfileScreen({ navigation, setVidID }) {
       textTransform: "uppercase",
     },
     active: {
-      fontFamily: "SF-UI-bold",
       color: colors.text,
+      fontSize: 17,
     },
     cardBody: {
       paddingLeft: padding,
@@ -359,31 +359,32 @@ function ProfileScreen({ navigation, setVidID }) {
               <View>
                 {activeTab == "starred" && (
                   <View>
-                    {starredLectures && starredLectures.length > 0
-                      ? starredLectures.map((lecture) => {
-                          return renderItem(lecture);
-                        })
-                      :
+                    {starredLectures && starredLectures.length > 0 ? (
+                      starredLectures.map((lecture) => {
+                        return renderItem(lecture);
+                      })
+                    ) : (
                       <View style={styles.default_card}>
                         <View style={[styles.cardBody, styles.padded]}>
                           <Text>You do not have any starred lectures.</Text>
                         </View>
                       </View>
-                    }
+                    )}
                   </View>
                 )}
                 {activeTab == "notes" && (
                   <View>
-                    {notes
-                      ? notes.map((lecture) => {
-                          return renderItem(lecture);
-                        })
-                      :
+                    {notes ? (
+                      notes.map((lecture) => {
+                        return renderItem(lecture);
+                      })
+                    ) : (
                       <View style={styles.default_card}>
                         <View style={[styles.cardBody, styles.padded]}>
                           <Text>You do not have any notes yet.</Text>
                         </View>
-                      </View>}
+                      </View>
+                    )}
                   </View>
                 )}
                 {activeTab == "history" && (
