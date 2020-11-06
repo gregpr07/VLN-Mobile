@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TouchableOpacity, Text, View } from "react-native";
+import { TouchableOpacity, Text, View, Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import {
   createBottomTabNavigator,
@@ -261,6 +261,8 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
         style={{
           paddingBottom: (insets.bottom / 4) * 3,
           backgroundColor: themeIsDark ? colors.dark : "white",
+
+          marginLeft: Platform.OS === "web" ? "10vw" : null,
         }}
       />
       <StatusBar style={themeIsDark ? "light" : "dark"} />

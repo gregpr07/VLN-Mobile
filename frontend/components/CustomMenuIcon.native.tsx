@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, useWindowDimensions } from "react-native";
+import { View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 type Props = {
@@ -10,9 +10,6 @@ type Props = {
 import { useTheme } from "@react-navigation/native";
 
 export const BottomMenuItem = ({ iconName, isCurrent }: Props) => {
-  const windowWidth = useWindowDimensions().width;
-  const windowHeight = useWindowDimensions().height;
-
   const { colors, dark } = useTheme();
   const giveIconName = (name: string) => {
     if (name === "Home") {
@@ -35,8 +32,7 @@ export const BottomMenuItem = ({ iconName, isCurrent }: Props) => {
         height: "100%",
         justifyContent: "center",
         alignItems: "center",
-        paddingTop: "5vh",
-        flexDirection: "row",
+        paddingTop: 6,
       }}
     >
       <Ionicons
@@ -44,19 +40,6 @@ export const BottomMenuItem = ({ iconName, isCurrent }: Props) => {
         size={26}
         style={{ color: isCurrent ? colors.text : colors.third }}
       />
-      <Text
-        style={{
-          fontSize: 20,
-          fontFamily: "SF-UI-medium",
-          lineHeight: 20,
-          color: isCurrent ? colors.text : colors.third,
-          paddingLeft: 10,
-
-          display: windowWidth < 1000 ? "none" : "flex",
-        }}
-      >
-        {iconName}
-      </Text>
     </View>
   );
 };

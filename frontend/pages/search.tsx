@@ -12,6 +12,7 @@ import {
   Dimensions,
   Button,
   Animated,
+  Platform,
 } from "react-native";
 import { shorterText, numberWithCommas } from "../services/functions";
 
@@ -247,7 +248,7 @@ const SearchScreen = ({
 
       //marginTop: Constants.statusBarHeight,
 
-      width: width - 2 * padding,
+      width: Platform.OS === "web" ? "90%" : width - 2 * padding,
 
       backgroundColor: colors.card,
 
