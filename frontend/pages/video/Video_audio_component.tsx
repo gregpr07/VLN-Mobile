@@ -7,6 +7,8 @@ import {
   FlatList,
   ImageBackground,
   Platform,
+  useWindowDimensions,
+  Text,
 } from "react-native";
 
 import { connect } from "react-redux";
@@ -14,10 +16,15 @@ import { connect } from "react-redux";
 /* import ViewPager from "@react-native-community/viewpager"; */
 import { Video } from "expo-av";
 
-import { setVideoID, setVideoRef } from "../../services/storage/actions";
+import {
+  setVideoID,
+  setVideoRef,
+  setShowSlides,
+} from "../../services/storage/actions";
 
 import { compare } from "../../services/functions";
 import { useTheme } from "@react-navigation/native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 let component: any;
 
@@ -38,8 +45,11 @@ const VideoAudio = ({
   videoID,
   lecture,
   videoAudioPlay,
+  showSlides,
+  setShowS,
 }: any) => {
   const { colors, dark } = useTheme();
+  const windowWidth = useWindowDimensions().width;
 
   const slidesRef = useRef(null);
 
@@ -115,7 +125,7 @@ const VideoAudio = ({
   const AudioSlides = () => {
     //const slidesarray = slides.map((slide) => slide.url);
 
-    const [playing, setPlaying] = useState(true);
+    /*     const [playing, setPlaying] = useState(true);
 
     async function handlePausePlay() {
       if (playing) {
@@ -124,16 +134,34 @@ const VideoAudio = ({
         await audioRef.playAsync();
       }
       setPlaying(!playing);
-    }
+    } */
+    const handleSlidePress = async (index: number) => {
+      const audioplaying = (await audioRef.getStatusAsync()).isLoaded;
+      const videoplaying = (await videoRef.getStatusAsync()).isLoaded;
 
-    const RenderSlide = ({ item }) => (
-      <ImageBackground
-        source={{
-          uri: item.image,
-        }}
-        style={[videostyle, { backgroundColor: colors.background }]}
-        resizeMode="contain"
-      />
+      const timestamp = slides.results[index].timestamp;
+
+      if (videoplaying) {
+        videoRef.setPositionAsync(timestamp);
+      }
+      if (audioplaying) {
+        audioRef.setPositionAsync(timestamp);
+      }
+    };
+
+    const RenderSlide = ({ item, index }) => (
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={(item) => handleSlidePress(index)}
+      >
+        <ImageBackground
+          source={{
+            uri: item.image,
+          }}
+          style={[videostyle, { backgroundColor: colors.background }]}
+          resizeMode="contain"
+        />
+      </TouchableOpacity>
     );
 
     if (slides) {
@@ -143,22 +171,24 @@ const VideoAudio = ({
 
       return (
         //! write this by hand
-        <TouchableHighlight onPress={handlePausePlay}>
-          <FlatList
-            ref={slidesRef}
-            data={slides.results}
-            renderItem={RenderSlide}
-            style={[
-              videostyle,
-              videoAudioPlay === 1 ? null : { display: "none" },
-              { backgroundColor: colors.background },
-            ]}
-            initialScrollIndex={currentSlide}
-            horizontal
-            keyExtractor={(item) => item.image + item.id}
-            onScrollToIndexFailed={(item) => console.log(item.index)}
-          />
-        </TouchableHighlight>
+
+        <FlatList
+          ref={slidesRef}
+          data={slides.results}
+          renderItem={RenderSlide}
+          style={[
+            videostyle,
+            videoAudioPlay === 1 || showSlides ? null : { display: "none" },
+            { backgroundColor: colors.background },
+          ]}
+          initialScrollIndex={currentSlide}
+          showsHorizontalScrollIndicator={false}
+          horizontal
+          keyExtractor={(item) => item.image + item.id}
+          onScrollToIndexFailed={(item) => console.log(item.index)}
+          //pagingEnabled={true}
+          snapToInterval={windowWidth}
+        />
       );
     } else {
       return null;
@@ -238,11 +268,13 @@ const mapStateToProps = (state) => ({
   videoRef: state.video.videoRef,
   audioRef: state.video.audioRef,
   videoAudioPlay: state.video.videoAudioPlay,
+  showSlides: state.video.showSlides,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   setVidID: (num: number) => dispatch(setVideoID(num)),
   setVidRef: (data: any) => dispatch(setVideoRef(data)),
+  setShowS: (data: any) => dispatch(setShowSlides(data)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps, null, {

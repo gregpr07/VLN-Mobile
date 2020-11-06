@@ -110,6 +110,11 @@ export const videoAudioPlay = (videoAudioPlay) => ({
   videoAudioPlay,
 });
 
+export const showSlides = (showSlides) => ({
+  type: "SHOW_SLIDES",
+  showSlides,
+});
+
 export const setVideoID = (data) => (dispatch) => dispatch(videoID(data));
 
 export const setVideoRef = (ref) => (dispatch) => dispatch(videoRef(ref));
@@ -119,3 +124,5 @@ export const setPlaybackSpeed = (speed) => (dispatch) =>
 
 export const setVideoAudioPlay = (num) => (dispatch) =>
   dispatch(videoAudioPlay(num));
+
+export const setShowSlides = (bol) => (dispatch) => dispatch(showSlides(bol));
