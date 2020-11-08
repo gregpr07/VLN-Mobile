@@ -9,9 +9,13 @@ import {
   Platform,
   useWindowDimensions,
   Text,
+  Image,
+  Modal,
 } from "react-native";
 
 import { connect } from "react-redux";
+
+import ImageViewer from "react-native-image-zoom-viewer";
 
 /* import ViewPager from "@react-native-community/viewpager"; */
 import { Video } from "expo-av";
@@ -51,6 +55,9 @@ const VideoAudio = ({
   const { colors, dark } = useTheme();
   const windowWidth = useWindowDimensions().width;
 
+  const [currentSlideState, setCurrentSlideState] = useState(currentSlide);
+  const [lightboxShown, setLightboxShown] = useState(false);
+
   const slidesRef = useRef(null);
 
   useEffect(() => {
@@ -61,15 +68,18 @@ const VideoAudio = ({
   }, [videoAudioPlay]);
 
   const getCurrentSlide = () => {
-    const newslides = slides
-      ? slides.results
-          .sort(compare)
-          .filter((slide) => slide.timestamp < currentPositionMillis)
-      : [];
-    if (!newslides.length) {
-      return null;
+    if (slides) {
+      const newslides = slides
+        ? slides.results
+            .sort(compare)
+            .filter((slide) => slide.timestamp < currentPositionMillis)
+        : [];
+      if (!newslides.length) {
+        return null;
+      }
+      if (slides.results.length >= newslides.length)
+        return newslides.length - 1;
     }
-    return newslides.length - 1;
   };
 
   const moveToCurrentSlide = () => {
@@ -87,6 +97,7 @@ const VideoAudio = ({
         /*  console.log("scrolling to index " + currentSlide); */
         slidesRef.current.scrollToIndex({ index: currentSlide });
       }
+      setCurrentSlideState(gotSlide);
     }
   };
 
@@ -149,46 +160,133 @@ const VideoAudio = ({
       }
     };
 
+    const images = [
+      {
+        // Simplest usage.
+        url: "https://avatars2.githubusercontent.com/u/7970947?v=3&s=460",
+
+        // width: number
+        // height: number
+        // Optional, if you know the image size, you can set the optimization performance
+
+        // You can pass props to <Image />.
+        props: {
+          // headers: ...
+        },
+      },
+    ];
+
     const RenderSlide = ({ item, index }) => (
       <TouchableOpacity
         activeOpacity={0.8}
-        onPress={(item) => handleSlidePress(index)}
+        onLongPress={() => {
+          handleSlidePress(index);
+        }}
+        onPress={() => {
+          /* currentSlide = index; */
+          setLightboxShown(true);
+        }}
       >
-        <ImageBackground
+        <Image
           source={{
             uri: item.image,
           }}
-          style={[videostyle, { backgroundColor: colors.background }]}
-          resizeMode="contain"
+          style={{
+            ...videostyle,
+            backgroundColor: colors.background,
+            resizeMode: "contain",
+            zIndex: 1000,
+          }}
         />
       </TouchableOpacity>
     );
 
+    const SlidesFooter = ({ index }) => (
+      <TouchableOpacity
+        onPress={() => {
+          setLightboxShown(false);
+          handleSlidePress(index);
+        }}
+        style={{
+          paddingBottom: 20,
+          width: windowWidth,
+        }}
+      >
+        <Text
+          style={{
+            color: "white",
+            textAlign: "center",
+            fontSize: 20,
+            fontFamily: "SF-UI-medium",
+            lineHeight: 20,
+          }}
+        >
+          {index === currentSlideState
+            ? "This is current slide"
+            : "Go to this slide"}
+        </Text>
+      </TouchableOpacity>
+    );
+
+    const SlideHeader = () => (
+      <TouchableOpacity
+        onPress={() => setLightboxShown(false)}
+        style={{ position: "absolute", paddingTop: 50 }}
+      >
+        <Text style={{ color: "white" }}>Exit</Text>
+      </TouchableOpacity>
+    );
+
     if (slides) {
-      /*       const slides_results = slides.results.map((res) => {
-        return { image: res.image, id: res.id };
-      }); */
+      const slides_results = slides.results.map((res) => {
+        return { url: res.image, id: res.id, title: res.title };
+      });
 
       return (
         //! write this by hand
 
-        <FlatList
-          ref={slidesRef}
-          data={slides.results}
-          renderItem={RenderSlide}
-          style={[
-            videostyle,
-            videoAudioPlay === 1 || showSlides ? null : { display: "none" },
-            { backgroundColor: colors.background },
-          ]}
-          initialScrollIndex={currentSlide}
-          showsHorizontalScrollIndicator={false}
-          horizontal
-          keyExtractor={(item) => item.image + item.id}
-          onScrollToIndexFailed={(item) => console.log(item.index)}
-          //pagingEnabled={true}
-          snapToInterval={windowWidth}
-        />
+        <>
+          <Modal visible={lightboxShown} transparent={true}>
+            <ImageViewer
+              imageUrls={slides_results}
+              enableSwipeDown
+              swipeDownThreshold={50}
+              onCancel={() => setLightboxShown(false)}
+              index={currentSlideState}
+              //renderHeader={() => <SlideHeader />}
+              footerContainerStyle={{
+                position: "absolute",
+                zIndex: 9999,
+              }}
+              useNativeDriver
+              //backgroundColor={"#00000000"}
+              renderFooter={(index) => <SlidesFooter index={index} />}
+            />
+          </Modal>
+          <FlatList
+            ref={slidesRef}
+            data={slides.results}
+            renderItem={RenderSlide}
+            style={[
+              /* videostyle, */
+              (videoAudioPlay === 1 || showSlides) && slides.results
+                ? null
+                : { display: "none" },
+              {
+                backgroundColor: colors.background,
+                zIndex: 1000,
+              },
+            ]}
+            initialScrollIndex={currentSlide}
+            showsHorizontalScrollIndicator={false}
+            horizontal
+            keyExtractor={(item) => item.image + item.id}
+            onScrollToIndexFailed={(item) => console.log(item.index)}
+            //pagingEnabled={true}
+            scrollEnabled={false}
+            snapToInterval={windowWidth}
+          />
+        </>
       );
     } else {
       return null;
