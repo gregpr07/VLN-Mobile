@@ -87,10 +87,22 @@ function VideoScreen({
 
   //* VIDEO AND AUDIO REFERENCES
 
+  const forcePlay = () => {
+    videoRef
+      .getStatusAsync()
+      .then((obj) => (obj.isLoaded ? videoRef.playAsync() : null));
+  };
+
   useEffect(() => {
-    if (videoID && videoRef) {
-      playVideoORAudio(videoAudioPlay, 0);
-    }
+    const playByForce = async () => {
+      if (videoID && videoRef) {
+        await playVideoORAudio(videoAudioPlay, 0);
+
+        forcePlay();
+      }
+    };
+
+    playByForce();
   }, [videoRef]);
 
   useEffect(() => {
@@ -134,7 +146,11 @@ function VideoScreen({
   }
 
   // currently 0 is video 1 is audio but this might change
-  async function playVideoORAudio(page: number, currentPositionMillis: number) {
+  async function playVideoORAudio(
+    page: number,
+    currentPositionMillis: number,
+    init = false
+  ) {
     console.log("playvideooraudio called");
     try {
       let initStatus = {
@@ -344,9 +360,9 @@ function VideoScreen({
       >
         <TouchableOpacity
           style={{
-            paddingHorizontal: 16,
+            paddingHorizontal: 14,
             paddingVertical: 12,
-            borderRadius: 20,
+            borderRadius: 14,
             backgroundColor: "#5468ff",
             shadowColor: colors.shadow,
             shadowOffset: {
@@ -358,7 +374,7 @@ function VideoScreen({
           }}
           onPress={handleSwitch}
         >
-          <Feather name={"edit"} size={30} color={"white"} />
+          <Feather name={"edit"} size={24} color={"white"} />
         </TouchableOpacity>
       </View>
     );
@@ -497,6 +513,7 @@ function VideoScreen({
             slides={slides}
             lecture={lecture}
           />
+
           {lecture ? (
             showNotes ? (
               <Notes

@@ -257,7 +257,7 @@ const SignInScreen = ({ token, saveToken }: any) => {
               name={"external-link"}
               size={24}
               style={{ paddingLeft: 6 }}
-              color={"white"}
+              color={colors.text}
             />
           </View>
         </TouchableHighlight>

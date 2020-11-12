@@ -127,25 +127,7 @@ const VideoAudio = ({
     }
   }
 
-  /*   const handleVideoAudioChange = (pos: number) => {
-    if (videoRef && videoID) {
-      playVideoORAudio(pos, currentPositionMillis);
-    }
-  }; */
-
   const AudioSlides = () => {
-    //const slidesarray = slides.map((slide) => slide.url);
-
-    /*     const [playing, setPlaying] = useState(true);
-
-    async function handlePausePlay() {
-      if (playing) {
-        await audioRef.pauseAsync();
-      } else {
-        await audioRef.playAsync();
-      }
-      setPlaying(!playing);
-    } */
     const handleSlidePress = async (index: number) => {
       const audioplaying = (await audioRef.getStatusAsync()).isLoaded;
       const videoplaying = (await videoRef.getStatusAsync()).isLoaded;
@@ -159,22 +141,6 @@ const VideoAudio = ({
         audioRef.setPositionAsync(timestamp);
       }
     };
-
-    const images = [
-      {
-        // Simplest usage.
-        url: "https://avatars2.githubusercontent.com/u/7970947?v=3&s=460",
-
-        // width: number
-        // height: number
-        // Optional, if you know the image size, you can set the optimization performance
-
-        // You can pass props to <Image />.
-        props: {
-          // headers: ...
-        },
-      },
-    ];
 
     const RenderSlide = ({ item, index }) => (
       <TouchableOpacity

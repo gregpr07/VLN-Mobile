@@ -178,6 +178,7 @@ const VideoHeader = ({
         swipeDirection={["left", "down"]}
         animationIn="bounceInLeft"
         animationOut="bounceOutLeft"
+        animationInTiming={750}
       >
         <View
           style={{

@@ -119,7 +119,7 @@ const SignOutScreen = ({ token, removeUserToken }: any) => {
                 name={"log-out"}
                 size={30}
                 style={{ paddingLeft: 6 }}
-                color={"white"}
+                color={colors.text}
               />
             </View>
           </TouchableOpacity>

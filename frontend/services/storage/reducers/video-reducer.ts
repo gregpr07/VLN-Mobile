@@ -17,7 +17,7 @@ const videoReducer = (
     videoRef: null,
     audioRef: new Audio.Sound(),
     videoAudioPlay: 0,
-    showSlides: false,
+    showSlides: true,
     showNotes: false,
     playbackSpeed: 1,
   },
