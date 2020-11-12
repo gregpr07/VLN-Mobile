@@ -1,6 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, Feather } from "@expo/vector-icons";
 
 type Props = {
   iconName: string;
@@ -13,17 +13,17 @@ export const BottomMenuItem = ({ iconName, isCurrent }: Props) => {
   const { colors, dark } = useTheme();
   const giveIconName = (name: string) => {
     if (name === "Home") {
-      return "ios-home";
+      return "home";
     } else if (name === "Profile") {
-      return "md-person";
+      return "user";
     } else if (name == "Search") {
-      return "ios-search";
+      return "search";
     } else if (name == "DEV") {
       return "md-bug";
     } else if (name == "Player") {
-      return "ios-play";
+      return "monitor";
     } else if (name === "Video") {
-      return "ios-videocam";
+      return "compass";
     }
   };
   return (
@@ -32,10 +32,10 @@ export const BottomMenuItem = ({ iconName, isCurrent }: Props) => {
         height: "100%",
         justifyContent: "center",
         alignItems: "center",
-        paddingTop: 6,
+        paddingTop: 8,
       }}
     >
-      <Ionicons
+      <Feather
         name={giveIconName(iconName)}
         size={26}
         style={{ color: isCurrent ? colors.text : colors.third }}

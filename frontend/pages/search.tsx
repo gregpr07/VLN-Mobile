@@ -18,7 +18,7 @@ import { shorterText, numberWithCommas } from "../services/functions";
 
 import Constants from "expo-constants";
 
-import { Ionicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 
 const { width, height } = Dimensions.get("window");
 
@@ -233,8 +233,8 @@ const SearchScreen = ({
       color: colors.text,
     },
     h5: {
-      fontSize: 12,
-      fontFamily: "SF-UI-medium",
+      fontSize: 14,
+      fontFamily: "SF-UI-semibold",
     },
 
     gray: {
@@ -358,10 +358,10 @@ const SearchScreen = ({
             />
             <TouchableOpacity onPress={handleSubmit}>
               <View style={styles.searchicon}>
-                <Ionicons
-                  name={"ios-search"}
+                <Feather
+                  name={"search"}
                   size={30}
-                  style={{ paddingHorizontal: 12 }}
+                  style={{ paddingHorizontal: 9 }}
                   color={"white"}
                 />
               </View>

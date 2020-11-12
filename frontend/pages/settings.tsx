@@ -14,7 +14,9 @@ import { useTheme } from "@react-navigation/native";
 import { color } from "react-native-reanimated";
 import Container from "../components/Container";
 
-const padding = 20;
+import { Feather } from "@expo/vector-icons";
+
+const padding = 12;
 
 const SignOutScreen = ({ token, removeUserToken }: any) => {
   const { colors, dark } = useTheme();
@@ -98,20 +100,28 @@ const SignOutScreen = ({ token, removeUserToken }: any) => {
             </View>
           </View>
           <TouchableOpacity onPress={_signOutAsync}>
-            <Text
-              style={[
-                {
-                  lineHeight: 22,
-                  letterSpacing: 1,
-                  textAlign: "center",
-                  color: colors.primary,
-                  fontSize: 16,
-                },
-                styles.bold,
-              ]}
-            >
-              Sign out
-            </Text>
+            <View style={{ flexDirection: "row" }}>
+              <Text
+                style={[
+                  {
+                    lineHeight: 30,
+                    letterSpacing: 1,
+                    textAlign: "center",
+                    color: colors.text,
+                    fontSize: 16,
+                  },
+                  styles.bold,
+                ]}
+              >
+                Sign out
+              </Text>
+              <Feather
+                name={"log-out"}
+                size={30}
+                style={{ paddingLeft: 6 }}
+                color={"white"}
+              />
+            </View>
           </TouchableOpacity>
         </View>
       </ScrollView>

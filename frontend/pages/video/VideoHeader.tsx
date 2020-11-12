@@ -5,7 +5,7 @@ import Modal from "react-native-modal";
 
 import { connect } from "react-redux";
 
-import { Ionicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 
 import { useTheme } from "@react-navigation/native";
 
@@ -206,7 +206,7 @@ const VideoHeader = ({
                 Video settings
               </Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <Ionicons name={"md-close"} size={24} color={colors.primary} />
+                <Feather name={"x"} size={24} color={colors.primary} />
               </TouchableOpacity>
             </View>
             <Text style={[styles.h4, { color: colors.text }]}>
@@ -278,15 +278,15 @@ const VideoHeader = ({
       >
         {token ? (
           starred ? (
-            <Ionicons
-              name={"ios-star"}
+            <Feather
+              name={"star"}
               size={20}
-              color={colors.text}
+              color={colors.primary}
               onPress={() => setStar(false)}
             />
           ) : (
-            <Ionicons
-              name={"ios-star-outline"}
+            <Feather
+              name={"star"}
               size={20}
               color={colors.text}
               onPress={() => setStar(true)}
@@ -300,7 +300,7 @@ const VideoHeader = ({
         onPress={() => setModalVisible(!modalVisible)}
         style={{ paddingHorizontal: padding / 2, paddingVertical: padding }}
       >
-        <Ionicons name={"ios-options"} size={20} color={colors.text} />
+        <Feather name={"sliders"} size={20} color={colors.text} />
       </TouchableOpacity>
       <SettingsModal />
     </View>

@@ -52,7 +52,7 @@ export default function HomeScreen({ navigation }: any) {
           <Text style={[styles.h3, { flex: 1, color: colors.text }]}>
             Events
           </Text>
-          <Text style={[styles.h3, { color: colors.secondary }]}>Show all</Text>
+          {/* <Text style={[styles.h3, { color: colors.secondary }]}>Show all</Text> */}
         </View>
         <EventList
           events={events.results}
@@ -130,7 +130,7 @@ export default function HomeScreen({ navigation }: any) {
             <View style={{ paddingHorizontal: 16, paddingVertical: 10 }}>
               <Text
                 style={{
-                  fontSize: 14,
+                  fontSize: 16,
 
                   fontFamily: "SF-UI-medium",
                   letterSpacing: 0,
@@ -156,7 +156,7 @@ export default function HomeScreen({ navigation }: any) {
           <Text style={[styles.h3, { flex: 1, color: colors.text }]}>
             Categories
           </Text>
-          <Text style={[styles.h3, { color: colors.secondary }]}>Show all</Text>
+          {/* <Text style={[styles.h3, { color: colors.secondary }]}>Show all</Text> */}
         </View>
 
         <SafeAreaView>

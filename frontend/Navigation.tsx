@@ -13,7 +13,7 @@ import { StatusBar } from "expo-status-bar";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Ionicons, AntDesign } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import VideoScreen from "./pages/video";
 import SearchScreen from "./pages/search";
 import HomeScreen from "./pages/homescreen";
@@ -138,10 +138,10 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
       paddingLeft: 12,
     },
     headerBackImage: ({ tintColor }) => (
-      <Ionicons
-        name={"md-arrow-back"}
+      <Feather
+        name={"arrow-left"}
         size={24}
-        style={{ marginLeft: 20 }}
+        style={{ marginLeft: 12 }}
         color={themeIsDark ? colors.paleGrey : colors.darkGreyBlue}
       />
     ),
@@ -191,8 +191,8 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
                   }}
                   onPress={() => navigation.push("settings")}
                 >
-                  <Ionicons
-                    name={"md-settings"}
+                  <Feather
+                    name={"settings"}
                     size={24}
                     color={themeIsDark ? colors.paleGrey : colors.darkGreyBlue}
                   />
@@ -214,8 +214,8 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
                   }}
                   onPress={() => setThemeIsDark(!themeIsDark)}
                 >
-                  <Ionicons
-                    name={"md-sunny"}
+                  <Feather
+                    name={themeIsDark ? "moon" : "sun"}
                     size={24}
                     color={themeIsDark ? colors.paleGrey : colors.darkGreyBlue}
                   />
@@ -228,7 +228,29 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
       ) : (
         <ProfileStack.Screen
           name="login"
-          options={{ headerShown: false }}
+          options={({ navigation }) => ({
+            headerTitle: "videolectures.net",
+            headerTitleStyle: {
+              fontFamily: "SF-UI-semibold",
+              fontSize: 24,
+            },
+            headerRight: () => (
+              <TouchableOpacity
+                style={{
+                  height: 24,
+                  width: 24,
+                  marginRight: 20,
+                }}
+                onPress={() => setThemeIsDark(!themeIsDark)}
+              >
+                <Feather
+                  name={themeIsDark ? "moon" : "sun"}
+                  size={24}
+                  color={themeIsDark ? colors.paleGrey : colors.darkGreyBlue}
+                />
+              </TouchableOpacity>
+            ),
+          })}
           component={LoginScreen}
         />
       )}

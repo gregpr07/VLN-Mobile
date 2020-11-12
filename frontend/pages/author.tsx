@@ -143,8 +143,8 @@ const Author = ({ navigation, route }: any) => {
       color: colors.text,
     },
     h5: {
-      fontSize: 12,
-      fontFamily: "SF-UI-medium",
+      fontSize: 14,
+      fontFamily: "SF-UI-semibold",
     },
   });
 

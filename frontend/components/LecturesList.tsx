@@ -140,7 +140,7 @@ const Lectures = ({
             <Text
               style={{
                 fontSize: 12,
-                fontFamily: "SF-UI-medium",
+                fontFamily: "SF-UI-semibold",
                 color: colors.secondary,
               }}
             >

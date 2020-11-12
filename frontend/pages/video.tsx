@@ -21,7 +21,7 @@ import { Audio } from "expo-av";
 
 import Constants from "expo-constants";
 
-import { Ionicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 
 import { fetcher, noHeadFetcher } from "../services/fetcher";
 
@@ -358,7 +358,7 @@ function VideoScreen({
           }}
           onPress={handleSwitch}
         >
-          <Ionicons name={"ios-create"} size={30} color={"white"} />
+          <Feather name={"edit"} size={30} color={"white"} />
         </TouchableOpacity>
       </View>
     );

@@ -13,6 +13,8 @@ import { connect } from "react-redux";
 import { saveUserToken } from "../services/storage/actions";
 import Constants from "expo-constants";
 
+import { Feather } from "@expo/vector-icons";
+
 import * as WebBrowser from "expo-web-browser";
 
 import { API } from "../services/fetcher";
@@ -77,10 +79,10 @@ const SignInScreen = ({ token, saveToken }: any) => {
     container: {
       flex: 1,
       alignItems: "center",
-      paddingTop: Constants.statusBarHeight + 16,
+      paddingTop: 16,
     },
     h3: {
-      fontSize: 20,
+      fontSize: 18,
       fontFamily: "SF-UI-medium",
       alignContent: "center",
       color: colors.text,
@@ -224,20 +226,40 @@ const SignInScreen = ({ token, saveToken }: any) => {
             </Text>
           </TouchableHighlight>
         </View>
-        <TouchableHighlight onPress={_handlePressButtonAsync}>
-          <Text
-            style={[
-              styles.h3,
-              {
-                marginTop: 50,
-                color: colors.text,
-                textAlign: "center",
-                textDecorationLine: "underline",
-              },
-            ]}
+        <TouchableHighlight
+          onPress={_handlePressButtonAsync}
+          style={{ flex: 1, alignContent: "center" }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              alignSelf: "center",
+              flex: 1,
+              paddingTop: 30,
+            }}
           >
-            ... or register
-          </Text>
+            <Text
+              style={[
+                {
+                  lineHeight: 30,
+                  letterSpacing: 1,
+                  textAlign: "center",
+                  color: colors.text,
+                  fontSize: 16,
+                  fontFamily: "SF-UI-semibold",
+                },
+              ]}
+            >
+              register
+            </Text>
+            <Feather
+              name={"external-link"}
+              size={24}
+              style={{ paddingLeft: 6 }}
+              color={"white"}
+            />
+          </View>
         </TouchableHighlight>
       </ScrollView>
     </Container>
