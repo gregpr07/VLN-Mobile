@@ -11,6 +11,7 @@ import {
   Text,
   Image,
   Modal,
+  Button,
 } from "react-native";
 
 import { connect } from "react-redux";
@@ -19,6 +20,8 @@ import ImageViewer from "react-native-image-zoom-viewer";
 
 /* import ViewPager from "@react-native-community/viewpager"; */
 import { Video } from "expo-av";
+
+import OnlyVideo from "./OnlyVideo";
 
 import {
   setVideoID,
@@ -107,25 +110,6 @@ const VideoAudio = ({
 
     moveToCurrentSlide();
   };
-
-  async function _handleVideoRef(ref: any) {
-    if (videoRef !== ref && ref) {
-      //ref.loadAsync()
-      try {
-        await ref.getStatusAsync();
-        component = ref;
-        setVidRef(ref);
-
-        if (Platform.OS !== "web") {
-          ref.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-        }
-
-        audioRef.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-      } catch (e) {
-        console.log("cant set video ref");
-      }
-    }
-  }
 
   const AudioSlides = () => {
     const handleSlidePress = async (index: number) => {
@@ -298,14 +282,7 @@ const VideoAudio = ({
           }
           resizeMode="contain"
         > */}
-        <Video
-          ref={(component) => _handleVideoRef(component)}
-          //isLooping={false}
-          style={videostyle}
-          source={{ uri: lecture ? lecture.video : "" }}
-          useNativeControls={true}
-          resizeMode="contain"
-        />
+        <OnlyVideo onPlaybackStatusUpdate={onPlaybackStatusUpdate} />
       </View>
 
       {/*   </ImageBackground>
