@@ -154,7 +154,7 @@ const VideoAudio = ({
     const SlidesFooter = ({ index }) => (
       <TouchableOpacity
         onPress={() => {
-          setLightboxShown(false);
+          //setLightboxShown(false);
           handleSlidePress(index);
         }}
         style={{
@@ -209,7 +209,7 @@ const VideoAudio = ({
                 zIndex: 9999,
               }}
               useNativeDriver
-              //backgroundColor={"#00000000"}
+              backgroundColor={"#00000099"}
               renderFooter={(index) => <SlidesFooter index={index} />}
             />
           </Modal>

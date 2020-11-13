@@ -31,6 +31,7 @@ export const TabBar = ({
       toValue: index * tabWidth,
       velocity: 10,
       useNativeDriver: true,
+      speed: 25,
     }).start();
   };
 
