@@ -38,7 +38,7 @@ import { colors, LightTheme, DarkTheme } from "./services/themes";
 
 import { useColorScheme } from "react-native-appearance";
 import { BASEURL } from "./services/fetcher";
-import { color } from "react-native-reanimated";
+import * as Linking from "expo-linking";
 
 const Tabs = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -77,6 +77,7 @@ const PlayerStackScreen = () => {
 };
 
 //! linking
+
 const config = {
   screens: {
     Home: {
@@ -100,9 +101,10 @@ const config = {
     },
   },
 };
+const prefix = Linking.makeUrl("/");
 
 const linking = {
-  prefixes: [BASEURL],
+  prefixes: [prefix],
   config,
 };
 //!
@@ -265,7 +267,7 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
         <ProfileStack.Screen
           name="login"
           options={({ navigation }) => ({
-            headerTitle: "videolectures.net",
+            headerTitle: Platform.OS === "web" ? null : "videolectures.net",
             headerTitleStyle: {
               fontFamily: "SF-UI-semibold",
               fontSize: 24,
