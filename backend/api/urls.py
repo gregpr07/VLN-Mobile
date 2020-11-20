@@ -23,6 +23,10 @@ urlpatterns = [
     path('starred/', StarredLecturesView.as_view()),
     path('star/<int:lecture_id>/', StarLectureView.as_view()),
     path('unstar/<int:lecture_id>/', UnstarLectureView.as_view()),
+    path('history/', HistoryLectureView.as_view()),
+    path('history_add/', HistoryLectureAddView.as_view()),
+    path('history_clear/', HistoryLectureClearView.as_view()),
+    path('left_off/<int:lecture_id>/', LeftOffLectureView.as_view()),
 
     url("^auth/user/$", UserAPI.as_view()),
     url("^auth/login/$", LoginAPI.as_view()),

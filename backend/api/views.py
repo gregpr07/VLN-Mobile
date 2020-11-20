@@ -3,13 +3,14 @@ from rest_framework import mixins, viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
+from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from api.models import Lecture, Note, Slide, Author, Event, Playlist, Category
+from api.models import Lecture, Note, Slide, Author, Event, Playlist, Category, LectureView
 from api.serializers import LectureSerializer, NoteSerializer, SlideSerializer, AuthorSerializer, \
     EventSerializer, PlaylistSerializer, CategorySerializer, SimpleAuthorSerializer, SimpleCategorySerializer, \
-    SimpleLectureSerializer, SimpleEventSerializer
+    SimpleLectureSerializer, SimpleEventSerializer, NotedLectureSerializer, LectureViewSerializer
 
 
 # Custom ViewSet
@@ -185,8 +186,9 @@ class NotedLecturesView(APIView):
     def get(request):
         lectures = Lecture.objects.filter(notes__user=request.user).distinct()
 
+        # TODO: pagination
         return Response({
-            "lectures": SimpleLectureSerializer(lectures, many=True).data
+            "lectures": NotedLectureSerializer(lectures, many=True, context={'request': request}).data
         })
 
 
@@ -197,6 +199,7 @@ class StarredLecturesView(APIView):
     def get(request):
         lectures = Lecture.objects.filter(stargazers=request.user)
 
+        # TODO: pagination
         return Response({
             "lectures": SimpleLectureSerializer(lectures, many=True).data
         })
@@ -235,4 +238,76 @@ class UnstarLectureView(APIView):
 
         return Response({
             "starred": "false"
+        })
+
+
+class HistoryLectureView(APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    @staticmethod
+    def get(request):
+        views = LectureView.objects.filter(user=request.user)
+
+        # TODO: pagination
+        return Response({
+            "history": LectureViewSerializer(views, many=True).data
+        })
+
+
+class HistoryLectureAddView(APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    @staticmethod
+    def post(request, format=None):
+        data = request.data
+        lecture = data.get('lecture')
+        start_timestamp = data.get('start_timestamp')
+        end_timestamp = data.get('end_timestamp')
+
+        if lecture is None or start_timestamp is None or end_timestamp is None:
+            return Response({"detail": "Please provide lecture, start_timestamp and end_timestamp."},
+                            status=HTTP_400_BAD_REQUEST)
+
+        if not Lecture.objects.filter(id=lecture).exists():
+            return Response({
+                "detail": "Not found."
+            })
+
+        # Create a new LectureView and save it.
+        LectureView.objects.create(user=request.user, lecture=Lecture.objects.get(id=lecture),
+                                   start_timestamp=start_timestamp, end_timestamp=end_timestamp)
+
+        return Response({
+            "detail": "Successfully added a new history element."
+        })
+
+
+class HistoryLectureClearView(APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    @staticmethod
+    def post(request, format=None):
+
+        # Delete all the user's LectureViews
+        LectureView.objects.filter(user=request.user).delete()
+
+        return Response({
+            "detail": "History cleared.",
+        })
+
+
+class LeftOffLectureView(APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    @staticmethod
+    def get(request, lecture_id):
+        if not Lecture.objects.filter(id=lecture_id).exists():
+            return Response({
+                "detail": "Not found."
+            })
+
+        last_view = LectureView.objects.filter(user=request.user, lecture=Lecture.objects.get(id=lecture_id)).first()
+
+        return Response({
+            "left_off": 0 if last_view is None else last_view.end_timestamp
         })
