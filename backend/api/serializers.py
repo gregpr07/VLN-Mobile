@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from api.models import Lecture, Slide, Note, Author, Event, Playlist, Category
+from api.models import Lecture, Slide, Note, Author, Event, Playlist, Category, LectureView
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -109,7 +109,8 @@ class SimpleEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ('id', 'title', 'image', 'caption')
-        
+
+
 class CaptionEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
@@ -132,6 +133,9 @@ class LectureSerializer(serializers.ModelSerializer):
         if user.is_authenticated:
             serialized_data["starred"] = user in instance.stargazers.all()
 
+            last_view = LectureView.objects.filter(user=request.user, lecture=instance).first()
+            serialized_data["left_off"] = 0 if last_view is None else last_view.end_timestamp
+
         return serialized_data
 
     class Meta:
@@ -146,7 +150,27 @@ class SimpleLectureSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lecture
-        fields = ('id', 'title', 'thumbnail', 'author', 'views','event')
+        fields = ('id', 'title', 'thumbnail', 'author', 'views', 'event')
+
+
+class NotedLectureSerializer(SimpleLectureSerializer):
+
+    def to_representation(self, instance):
+        request = self.context['request']
+        user = request.user
+
+        serialized_data = super().to_representation(instance)
+        serialized_data["noted"] = Note.objects.filter(user=user, lecture=instance.id).count()
+
+        return serialized_data
+
+
+class LectureViewSerializer(serializers.ModelSerializer):
+    lecture = SimpleLectureSerializer()
+
+    class Meta:
+        model = LectureView
+        fields = ['lecture', 'visited', 'start_timestamp', 'end_timestamp']
 
 
 class SlideSerializer(serializers.ModelSerializer):

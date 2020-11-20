@@ -1,0 +1,1 @@
+- some endpoints should be POST and not GET (+ add to documentation) (eg. star, unstar)

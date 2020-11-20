@@ -143,6 +143,20 @@ class Lecture(models.Model):
         return self.title
 
 
+class LectureView(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    lecture = models.ForeignKey(Lecture, on_delete=models.CASCADE)
+    visited = models.DateTimeField(auto_now_add=True)
+    start_timestamp = models.IntegerField(default=0)
+    end_timestamp = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['-visited']
+
+    def __str__(self):
+        return str(self.user.username) + ' in ' + str(self.lecture.title) + ' on ' + str(self.visited)
+
+
 class Slide(models.Model):
     lecture = models.ForeignKey(
         Lecture, on_delete=models.CASCADE, related_name='slides')

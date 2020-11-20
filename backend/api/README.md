@@ -75,6 +75,10 @@ fetch("http://127.0.0.1:8000/api/note/lecture/1/", requestOptions)
 1. :warning: User starred lectures (http://127.0.0.1:8000/api/starred/)
 1. :warning: Star (http://127.0.0.1:8000/api/star/lecture_id/)
 1. :warning: Unstar (http://127.0.0.1:8000/api/unstar/lecture_id/)
+1. :warning: User lecture history (http://127.0.0.1:8000/api/history/)
+1. :warning: User lecture history add (http://127.0.0.1:8000/api/history_add/)
+1. :warning: User lecture history clear (http://127.0.0.1:8000/api/history_clear/)
+1. :warning: User left off lecture (http://127.0.0.1:8000/api/left_off/lecture_id/)
 
 :warning: If you're logged in List & Detail will also return 'starred' boolean field, which let's you know if the user starred the lecture.
 

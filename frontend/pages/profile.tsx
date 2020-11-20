@@ -26,6 +26,7 @@ function ProfileScreen({ navigation, setVidID }) {
   const [activeTab, setActiveTab] = useState("starred");
   const tokenState = useSelector((state) => state.token);
   const [starredLectures, setStarredLectures] = useState([]);
+  const [lectureHistory, setLectureHistory] = useState([]);
   const [notes, setNotes] = useState([]);
 
   useFocusEffect(
@@ -51,11 +52,25 @@ function ProfileScreen({ navigation, setVidID }) {
       fetch(API + "/noted/", requestOptions)
         .then((response) => response.json())
         .then((json) => {
+          console.log("noted")
           const notes = json["lectures"];
           setNotes(notes);
           console.log(notes);
         })
         .catch((error) => console.log("error", error));
+
+      fetch(API + "/history/", requestOptions)
+        .then((response) => response.json())
+        .then((json) => {
+          let lectures = [];
+          for (let i = 0; i < json["history"].length; i++) {
+            lectures.push(json["history"][i]["lecture"]);
+          }
+          setLectureHistory(lectures);
+          console.log(history);
+        })
+        .catch((error) => console.log("error", error));
+
     }, [])
   );
 
@@ -223,7 +238,7 @@ function ProfileScreen({ navigation, setVidID }) {
     },
     active: {
       color: colors.text,
-      fontSize: 17,
+      fontSize: 16,
     },
     cardBody: {
       paddingLeft: padding,
@@ -303,7 +318,7 @@ function ProfileScreen({ navigation, setVidID }) {
     });
   };
 
-  const renderItem = (item: any) => (
+  const renderItem = (item: any, isNote: boolean) => (
     <View style={styles.default_card} key={item.id}>
       <TouchableOpacity
         onPress={() => _handleResultsClick(item)}
@@ -336,7 +351,7 @@ function ProfileScreen({ navigation, setVidID }) {
             <Text style={[styles.h5, { color: colors.secondary }]}>
               {item.author.name}
               <Separator />
-              {numberWithCommas(item.views)}
+              {isNote ? <Text>{item.noted} {item.noted == 1 ? "note" : "notes"}</Text> : numberWithCommas(item.views)}
             </Text>
           </View>
         </View>
@@ -361,12 +376,12 @@ function ProfileScreen({ navigation, setVidID }) {
                   <View>
                     {starredLectures && starredLectures.length > 0 ? (
                       starredLectures.map((lecture) => {
-                        return renderItem(lecture);
+                        return renderItem(lecture, false);
                       })
                     ) : (
                       <View style={styles.default_card}>
                         <View style={[styles.cardBody, styles.padded]}>
-                          <Text>You do not have any starred lectures.</Text>
+                          <Text style={{color: colors.text}}>You do not have any starred lectures.</Text>
                         </View>
                       </View>
                     )}
@@ -376,22 +391,31 @@ function ProfileScreen({ navigation, setVidID }) {
                   <View>
                     {notes ? (
                       notes.map((lecture) => {
-                        return renderItem(lecture);
+                        return renderItem(lecture, true);
                       })
                     ) : (
                       <View style={styles.default_card}>
                         <View style={[styles.cardBody, styles.padded]}>
-                          <Text>You do not have any notes yet.</Text>
+                          <Text style={{color: colors.text}}>You do not have any notes yet.</Text>
                         </View>
                       </View>
                     )}
                   </View>
                 )}
                 {activeTab == "history" && (
-                  <Text>
-                    History
-                    {/* TODO: implement me in backend first */}
-                  </Text>
+                  <View>
+                    {lectureHistory && lectureHistory.length > 0 ? (
+                      lectureHistory.map((lecture) => {
+                        return renderItem(lecture, false);
+                      })
+                    ) : (
+                      <View style={styles.default_card}>
+                        <View style={[styles.cardBody, styles.padded]}>
+                          <Text style={{color: colors.text}}>You haven't watched any lectures yet.</Text>
+                        </View>
+                      </View>
+                    )}
+                  </View>
                 )}
               </View>
             </View>
