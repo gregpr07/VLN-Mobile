@@ -8,6 +8,8 @@ import {
   SafeAreaView,
   FlatList,
   Image,
+  TouchableOpacity,
+  ScrollView,
 } from "react-native";
 const { width, height } = Dimensions.get("window");
 import Constants from "expo-constants";
@@ -19,12 +21,6 @@ import { HeaderText } from "../components/TextHeader";
 import { connect } from "react-redux";
 import { setVideoID } from "../services/storage/actions";
 import Container from "../components/Container";
-
-import {
-  ScrollView,
-  TouchableHighlight,
-  TouchableOpacity,
-} from "react-native-gesture-handler";
 
 import { useTheme } from "@react-navigation/native";
 
@@ -51,6 +47,7 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
   }, []);
 
   const _handleResultsClick = async (item) => {
+    console.log(videoRef);
     if (videoRef) {
       await videoRef.unloadAsync();
       await audioRef.unloadAsync();
@@ -96,34 +93,32 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
         }}
       >
         <TouchableOpacity onPress={() => _handleResultsClick(item)}>
-          <>
-            <Image
-              source={{
-                uri: item.thumbnail,
-              }}
-              style={{
-                width: "100%",
-                height: VID_HEIGHT,
-                borderTopLeftRadius: 8,
-                borderTopRightRadius: 8,
-                resizeMode: "cover",
-                //marginBottom: 5,
-              }}
-            />
-            <View style={{ padding: 10 }}>
-              <Text style={[styles.h4, { height: 36 }]}>
-                {shorterText(item.title, 60)}
-              </Text>
+          <Image
+            source={{
+              uri: item.thumbnail,
+            }}
+            style={{
+              width: "100%",
+              height: VID_HEIGHT,
+              borderTopLeftRadius: 8,
+              borderTopRightRadius: 8,
+              resizeMode: "cover",
+              //marginBottom: 5,
+            }}
+          />
+          <View style={{ padding: 10 }}>
+            <Text style={[styles.h4, { height: 36 }]}>
+              {shorterText(item.title, 60)}
+            </Text>
 
-              <View>
-                <Text style={[styles.h5, { color: colors.secondary }]}>
-                  {item.author.name}
-                  <Separator />
-                  {numberWithCommas(item.views)}
-                </Text>
-              </View>
+            <View>
+              <Text style={[styles.h5, { color: colors.secondary }]}>
+                {item.author.name}
+                <Separator />
+                {numberWithCommas(item.views)}
+              </Text>
             </View>
-          </>
+          </View>
         </TouchableOpacity>
       </View>
     );
@@ -152,6 +147,7 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
             snapToInterval={VID_WIDTH + padding}
             showsHorizontalScrollIndicator={false}
             decelerationRate={0}
+            initialNumToRender={7}
           />
         </SafeAreaView>
       </View>

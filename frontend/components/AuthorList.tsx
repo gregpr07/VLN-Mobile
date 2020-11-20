@@ -89,6 +89,7 @@ const Authors = ({ padding, navigation, authors, HeaderPadding = 0 }) => {
     <SafeAreaView>
       <FlatList
         data={authors.filter((aut) => aut.name !== "none")}
+        extraData={"selected"}
         ListHeaderComponent={() => (
           <View style={{ paddingLeft: HeaderPadding }} />
         )}
@@ -99,6 +100,7 @@ const Authors = ({ padding, navigation, authors, HeaderPadding = 0 }) => {
         snapToInterval={AUTHOR_WIDTH + SEPARATOR_WIDTH}
         showsHorizontalScrollIndicator={false}
         decelerationRate={0}
+        initialNumToRender={10}
       />
     </SafeAreaView>
   );

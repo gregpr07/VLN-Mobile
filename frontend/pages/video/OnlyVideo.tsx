@@ -27,9 +27,9 @@ const OnlyVideo = ({
         await ref.getStatusAsync();
         setVidRef(ref);
 
-        if (Platform.OS !== "web") {
-          ref.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-        }
+        /* if (Platform.OS !== "web") { */
+        ref.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
+        /* } */
 
         audioRef.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
       } catch (e) {

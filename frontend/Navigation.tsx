@@ -76,6 +76,37 @@ const PlayerStackScreen = () => {
   );
 };
 
+//! linking
+const config = {
+  screens: {
+    Home: {
+      screens: {
+        home: "",
+      },
+    },
+    Video: {
+      screens: {
+        Videos: "explore",
+      },
+    },
+    Player: "video",
+    Search: "search",
+    Profile: {
+      screens: {
+        profile: "profile",
+        settings: "settings",
+        login: "login",
+      },
+    },
+  },
+};
+
+const linking = {
+  prefixes: [BASEURL],
+  config,
+};
+//!
+
 const App = ({ token, getUserToken, videoID, videoRef }: any) => {
   const insets = useSafeAreaInsets();
   // fonts
@@ -125,6 +156,11 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
       shadowColor: "transparent",
       elevation: 0,
       borderBottomWidth: 0,
+      transform: [
+        {
+          translateY: Platform.OS === "web" ? 70 : 0,
+        },
+      ],
     },
     //headerTintColor: themeIsDark ? colors.dark : colors.darkGreyBlue,
     headerTitleStyle: {
@@ -135,7 +171,7 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
       color: themeIsDark ? colors.paleGrey : colors.darkGreyBlue,
       fontSize: 20,
       shadowOpacity: 0,
-      paddingLeft: 12,
+      /* paddingLeft: 12, */
     },
     headerBackImage: ({ tintColor }) => (
       <Feather
@@ -177,7 +213,7 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
           <ProfileStack.Screen
             name="profile"
             options={({ navigation }) => ({
-              headerTitle: "videolectures.net",
+              headerTitle: Platform.OS === "web" ? null : "videolectures.net",
               headerTitleStyle: {
                 fontFamily: "SF-UI-semibold",
                 fontSize: 24,
@@ -256,10 +292,6 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
       )}
     </ProfileStack.Navigator>
   );
-
-  const linking = {
-    prefixes: [BASEURL, "localhost:5000/"],
-  };
 
   return (
     <NavigationContainer

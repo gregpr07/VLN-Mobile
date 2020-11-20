@@ -54,7 +54,6 @@ const Event = ({ navigation, route }: any) => {
       borderRadius: 15,
 
       margin: padding,
-      maxWidth: 500,
 
       flex: 1,
     },

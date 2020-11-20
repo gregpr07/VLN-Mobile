@@ -1,12 +1,15 @@
 import React, { useState } from "react";
-import { Button, StyleSheet, View, Text, ScrollView } from "react-native";
+import {
+  Button,
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { connect } from "react-redux";
 import { removeUserToken } from "../services/storage/actions";
 import Constants from "expo-constants";
-import {
-  TouchableHighlight,
-  TouchableOpacity,
-} from "react-native-gesture-handler";
 
 import { API } from "../services/fetcher";
 

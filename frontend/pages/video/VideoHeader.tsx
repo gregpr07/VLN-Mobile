@@ -278,21 +278,12 @@ const VideoHeader = ({
         onPress={() => console.log(lecture)}
       >
         {token ? (
-          starred ? (
-            <Feather
-              name={"star"}
-              size={20}
-              color={colors.primary}
-              onPress={() => setStar(false)}
-            />
-          ) : (
-            <Feather
-              name={"star"}
-              size={20}
-              color={colors.text}
-              onPress={() => setStar(true)}
-            />
-          )
+          <Feather
+            name={"star"}
+            size={20}
+            color={starred ? colors.primary : colors.text}
+            onPress={() => setStar(starred ? false : true)}
+          />
         ) : (
           <></>
         )}

@@ -52,7 +52,7 @@ function ProfileScreen({ navigation, setVidID }) {
       fetch(API + "/noted/", requestOptions)
         .then((response) => response.json())
         .then((json) => {
-          console.log("noted")
+          console.log("noted");
           const notes = json["lectures"];
           setNotes(notes);
           console.log(notes);
@@ -70,7 +70,6 @@ function ProfileScreen({ navigation, setVidID }) {
           console.log(history);
         })
         .catch((error) => console.log("error", error));
-
     }, [])
   );
 
@@ -111,14 +110,6 @@ function ProfileScreen({ navigation, setVidID }) {
     const ProfileImage = () => (
       <View
         style={{
-          shadowColor: colors.shadow,
-          shadowOffset: {
-            width: 0,
-            height: 12,
-          },
-          shadowRadius: 19,
-          shadowOpacity: 1,
-
           paddingTop: 16,
         }}
       >
@@ -146,9 +137,9 @@ function ProfileScreen({ navigation, setVidID }) {
   const Menu = () => {
     return (
       <View style={styles.navsContainer}>
-        <View
+        <TouchableOpacity
           style={[styles.navItem, styles.navLeft]}
-          onTouchStart={() => setActiveTab("starred")}
+          onPress={() => setActiveTab("starred")}
         >
           <Text
             style={[
@@ -158,20 +149,20 @@ function ProfileScreen({ navigation, setVidID }) {
           >
             Starred
           </Text>
-        </View>
-        <View
+        </TouchableOpacity>
+        <TouchableOpacity
           style={[styles.navItem]}
-          onTouchStart={() => setActiveTab("notes")}
+          onPress={() => setActiveTab("notes")}
         >
           <Text
             style={[styles.navText, activeTab == "notes" ? styles.active : {}]}
           >
             Notes
           </Text>
-        </View>
-        <View
+        </TouchableOpacity>
+        <TouchableOpacity
           style={[styles.navItem, styles.navRight]}
-          onTouchStart={() => setActiveTab("history")}
+          onPress={() => setActiveTab("history")}
         >
           <Text
             style={[
@@ -181,7 +172,7 @@ function ProfileScreen({ navigation, setVidID }) {
           >
             History
           </Text>
-        </View>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -351,7 +342,13 @@ function ProfileScreen({ navigation, setVidID }) {
             <Text style={[styles.h5, { color: colors.secondary }]}>
               {item.author.name}
               <Separator />
-              {isNote ? <Text>{item.noted} {item.noted == 1 ? "note" : "notes"}</Text> : numberWithCommas(item.views)}
+              {isNote ? (
+                <Text>
+                  {item.noted} {item.noted == 1 ? "note" : "notes"}
+                </Text>
+              ) : (
+                numberWithCommas(item.views)
+              )}
             </Text>
           </View>
         </View>
@@ -381,7 +378,9 @@ function ProfileScreen({ navigation, setVidID }) {
                     ) : (
                       <View style={styles.default_card}>
                         <View style={[styles.cardBody, styles.padded]}>
-                          <Text style={{color: colors.text}}>You do not have any starred lectures.</Text>
+                          <Text style={{ color: colors.text }}>
+                            You do not have any starred lectures.
+                          </Text>
                         </View>
                       </View>
                     )}
@@ -396,7 +395,9 @@ function ProfileScreen({ navigation, setVidID }) {
                     ) : (
                       <View style={styles.default_card}>
                         <View style={[styles.cardBody, styles.padded]}>
-                          <Text style={{color: colors.text}}>You do not have any notes yet.</Text>
+                          <Text style={{ color: colors.text }}>
+                            You do not have any notes yet.
+                          </Text>
                         </View>
                       </View>
                     )}
@@ -411,7 +412,9 @@ function ProfileScreen({ navigation, setVidID }) {
                     ) : (
                       <View style={styles.default_card}>
                         <View style={[styles.cardBody, styles.padded]}>
-                          <Text style={{color: colors.text}}>You haven't watched any lectures yet.</Text>
+                          <Text style={{ color: colors.text }}>
+                            You haven't watched any lectures yet.
+                          </Text>
                         </View>
                       </View>
                     )}

@@ -248,7 +248,7 @@ const SearchScreen = ({
 
       //marginTop: Constants.statusBarHeight,
 
-      width: Platform.OS === "web" ? "90%" : width - 2 * padding,
+      width: Platform.OS === "web" ? "95%" : width - 2 * padding,
 
       backgroundColor: colors.card,
 
@@ -322,7 +322,7 @@ const SearchScreen = ({
   const scrollY = useRef(new Animated.Value(0)).current;
   const listflat = useRef(undefined);
 
-  const searchHeight = 52 + padding;
+  const searchHeight = 40 + padding;
 
   return (
     <Container>

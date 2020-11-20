@@ -6,6 +6,7 @@ import {
   Animated,
   StyleSheet,
   Image,
+  useWindowDimensions,
 } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { BottomMenuItem } from "./CustomMenuIcon";
@@ -22,42 +23,47 @@ export const TabBar = ({
 }: BottomTabBarProps) => {
   const { colors, dark } = useTheme();
 
+  const totalWidth = useWindowDimensions().width;
+  const totalHeight = useWindowDimensions().height;
+
   const [translateValue] = useState(new Animated.Value(0));
-  const totalHeight = Dimensions.get("window").height;
-  const tabHeight =
-    /* Math.min(totalWidth, MAXIMUM_WIDTH) */ totalHeight / state.routes.length;
+
+  const tabHeight = 100;
 
   const style = StyleSheet.create({
     tabContainer: {
-      height: totalHeight,
-      shadowColor: colors.shadow,
-      shadowOffset: {
-        width: 0,
-        height: 12,
-      },
-      shadowRadius: 19,
-      shadowOpacity: 1,
-      backgroundColor: colors.card,
-      borderTopRightRadius: 14,
+      width: totalWidth,
+
+      backgroundColor: colors.background,
+      borderBottomLeftRadius: 14,
       borderBottomRightRadius: 14,
       elevation: 10,
       position: "absolute",
-      //bottom: 0,
-      left: 0,
+      top: 0,
 
-      width: "10vw",
+      height: 70,
     },
   });
 
   return (
-    <View
-      style={[
-        style.tabContainer,
-        {
-          height: totalHeight,
-        },
-      ]}
-    >
+    <View style={[style.tabContainer, {}]}>
+      <View style={{ margin: 14, position: "relative", left: 0, width: 200 }}>
+        <Image
+          source={
+            dark
+              ? require("../assets/icons/videolecture-net-dark.png")
+              : require("../assets/icons/videolecture-net-light.png")
+          }
+          style={{
+            width: "100%",
+            height: 50,
+            resizeMode: "contain",
+
+            position: "absolute",
+            left: 0,
+          }}
+        />
+      </View>
       <View
       /*         style={{
           width: totalWidth,
@@ -65,7 +71,7 @@ export const TabBar = ({
           maxWidth: MAXIMUM_WIDTH,
         }} */
       >
-        <View style={{ flexDirection: "column" }}>
+        <View style={{ flexDirection: "row", marginLeft: "40vw" }}>
           {state.routes.map((route, index) => {
             const { options } = descriptors[route.key];
             const label =
@@ -115,25 +121,6 @@ export const TabBar = ({
             );
           })}
         </View>
-      </View>
-      <View
-        style={{ margin: 14, position: "absolute", bottom: 0, width: "100%" }}
-      >
-        <Image
-          source={
-            dark
-              ? require("../assets/icons/videolecture-net-dark.png")
-              : require("../assets/icons/videolecture-net-light.png")
-          }
-          style={{
-            width: "100%",
-            height: 50,
-            resizeMode: "contain",
-
-            position: "absolute",
-            bottom: 0,
-          }}
-        />
       </View>
     </View>
   );

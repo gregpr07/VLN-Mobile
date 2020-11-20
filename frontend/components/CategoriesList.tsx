@@ -61,6 +61,7 @@ const Categories = ({ cats, navigation, padding, HeaderPadding = 0 }: any) => {
       //snapToInterval={AUTHOR_WIDTH + SEPARATOR_WIDTH}
       showsHorizontalScrollIndicator={false}
       decelerationRate={0}
+      initialNumToRender={7}
     />
   );
 };
