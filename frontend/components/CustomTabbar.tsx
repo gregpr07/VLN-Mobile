@@ -47,31 +47,22 @@ export const TabBar = ({
 
   return (
     <View style={[style.tabContainer, {}]}>
-      <View style={{ margin: 14, position: "relative", left: 0, width: 200 }}>
-        <Image
-          source={
-            dark
-              ? require("../assets/icons/videolecture-net-dark.png")
-              : require("../assets/icons/videolecture-net-light.png")
-          }
-          style={{
-            width: totalWidth > 600 ? "100%" : 100,
-            height: 60,
-            resizeMode: "contain",
-
-            position: "absolute",
-            left: 0,
-          }}
-        />
-      </View>
+      <View style={{ margin: 14, position: "relative", left: 0 }}></View>
       <View
-      /*         style={{
+        style={{
           width: totalWidth,
           justifyContent: "center",
-          maxWidth: MAXIMUM_WIDTH,
-        }} */
+          flexDirection: "row",
+        }}
       >
-        <View style={{ flexDirection: "row", marginLeft: "40vw" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            maxWidth: 1000,
+            flex: 1,
+          }}
+        >
           {state.routes.map((route, index) => {
             const { options } = descriptors[route.key];
             const label =

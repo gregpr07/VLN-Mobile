@@ -386,7 +386,7 @@ const SearchScreen = ({
             ListHeaderComponent={<ListHeader />}
             //getNativeScrollRef={(ref) => (flatlistRef = ref)}
             keyboardDismissMode={"on-drag"}
-            numColumns={width / 600 > 1 ? 2 : 1}
+            numColumns={Math.floor(width / 600)}
             scrollEventThrottle={1}
             onScroll={Animated.event(
               [{ nativeEvent: { contentOffset: { y: scrollY } } }],

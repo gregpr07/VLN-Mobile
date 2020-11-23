@@ -1,20 +1,12 @@
 import React, { useState, useEffect } from "react";
-import {
-  Text,
-  View,
-  Button,
-  StyleSheet,
-  Dimensions,
-  SafeAreaView,
-  FlatList,
-  Image,
-} from "react-native";
+import { Text, Platform, View } from "react-native";
 
 import { useTheme } from "@react-navigation/native";
 
 const padding = 14;
 export const HeaderText = ({ text }) => {
   const { colors, dark } = useTheme();
+  if (Platform.OS === "web") return <View style={{ marginBottom: 36 }} />;
   return (
     <Text
       style={{

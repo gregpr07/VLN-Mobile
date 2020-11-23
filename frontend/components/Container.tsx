@@ -1,8 +1,6 @@
 import { View, useWindowDimensions, Platform } from "react-native";
 import React from "react";
 
-import WebFooter from "./webOnlyComponent/WebFooter";
-
 export default (props) => {
   const windowHeight = useWindowDimensions().height;
 
@@ -15,7 +13,6 @@ export default (props) => {
       }}
     >
       {props.children}
-      {/* {Platform.OS === "web" ? <WebFooter /> : null} */}
     </View>
   );
 };

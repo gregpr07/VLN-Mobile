@@ -8,6 +8,7 @@ import {
   Image,
   SafeAreaView,
   FlatList,
+  Platform,
 } from "react-native";
 
 // expo
@@ -25,6 +26,7 @@ import { HeaderText } from "../components/TextHeader";
 import AuthorList from "../components/AuthorList";
 import EventList from "../components/EventList";
 import Container from "../components/Container";
+import WebFooter from "../components/webOnlyComponent/WebFooter";
 
 //import { color } from "react-native-reanimated";
 
@@ -38,7 +40,57 @@ export default function HomeScreen({ navigation }: any) {
     noHeadFetcher
   );
 
-  const Header = () =>
+  const WebHeader = () => {
+    if (Platform.OS === "web") {
+      return (
+        <View style={{ padding: 40, paddingVertical: 70, paddingBottom: 30 }}>
+          <View
+            style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}
+          >
+            <Text
+              style={[
+                styles.h1,
+                {
+                  color: colors.text,
+                  textAlign: "center",
+                  paddingBottom: 24,
+                  maxWidth: 700,
+                },
+              ]}
+            >
+              VideoLectures.NET is an award-winning free and open access
+              educational video lectures repository.
+            </Text>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "center",
+            }}
+          >
+            <Image
+              source={
+                dark
+                  ? require("../assets/icons/videolecture-net-dark.png")
+                  : require("../assets/icons/videolecture-net-light.png")
+              }
+              style={{
+                width: 400,
+                height: 60,
+                resizeMode: "contain",
+
+                position: "relative",
+                left: 0,
+              }}
+            />
+          </View>
+        </View>
+      );
+    } else return null;
+  };
+
+  const EventsAuthors = () =>
     events ? (
       <View>
         <HeaderText text="Home" />
@@ -186,7 +238,8 @@ export default function HomeScreen({ navigation }: any) {
         }}
         showsVerticalScrollIndicator={false}
       >
-        <Header />
+        <WebHeader />
+        <EventsAuthors />
         {authors_most_viewd ? (
           <View
             style={{
@@ -210,6 +263,7 @@ export default function HomeScreen({ navigation }: any) {
           </View>
         ) : null}
         <Categories />
+        <WebFooter />
       </ScrollView>
     </Container>
   );

@@ -10,6 +10,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Platform,
 } from "react-native";
 const { width, height } = Dimensions.get("window");
 import Constants from "expo-constants";
@@ -131,7 +132,6 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
           </Text>
           {/* <Text style={[styles.h2, { color: colors.secondary }]}>Show all</Text> */}
         </View>
-
         <SafeAreaView>
           <FlatList
             data={videos}
@@ -152,6 +152,36 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
         </SafeAreaView>
       </View>
     );
+  };
+
+  const WebHeader = () => {
+    if (Platform.OS === "web") {
+      return (
+        <View style={{ padding: 40, paddingVertical: 70, paddingBottom: 0 }}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              style={[
+                styles.h1,
+                {
+                  color: colors.text,
+                  textAlign: "center",
+                  paddingBottom: 24,
+                  maxWidth: 700,
+                },
+              ]}
+            >
+              Explore our video repository through our video choices
+            </Text>
+          </View>
+        </View>
+      );
+    } else return null;
   };
 
   const styles = StyleSheet.create({
@@ -190,6 +220,7 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
   return (
     <Container>
       <ScrollView style={styles.container}>
+        <WebHeader />
         <HeaderText text="Explore" />
         <Videos videos={latestLectures} section={"Latest lectures"} />
         <Videos videos={mostViewed} section={"Most viewed"} />
