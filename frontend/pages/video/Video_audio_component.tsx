@@ -282,7 +282,10 @@ const VideoAudio = ({
           }
           resizeMode="contain"
         > */}
-        <OnlyVideo onPlaybackStatusUpdate={onPlaybackStatusUpdate} />
+        <OnlyVideo
+          onPlaybackStatusUpdate={onPlaybackStatusUpdate}
+          lecture={lecture}
+        />
       </View>
 
       {/*   </ImageBackground>

@@ -55,8 +55,8 @@ export const TabBar = ({
               : require("../assets/icons/videolecture-net-light.png")
           }
           style={{
-            width: "100%",
-            height: 50,
+            width: totalWidth > 600 ? "100%" : 100,
+            height: 60,
             resizeMode: "contain",
 
             position: "absolute",

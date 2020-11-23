@@ -16,7 +16,6 @@ const OnlyVideo = ({
   audioRef,
   setVidRef,
   onPlaybackStatusUpdate,
-  lecture,
 }) => {
   const { width, height } = useWindowDimensions();
   const videoHeight = (width / 16) * 9;
@@ -49,8 +48,7 @@ const OnlyVideo = ({
         width: width, // - 2 * padding,
         maxWidth: "100%",
       }}
-      source={{ uri: lecture ? lecture.video : "" }}
-      shouldPlay
+      /* source={{ uri: lecture ? lecture.video : "" }} */
       useNativeControls={true}
       resizeMode="contain"
     />
