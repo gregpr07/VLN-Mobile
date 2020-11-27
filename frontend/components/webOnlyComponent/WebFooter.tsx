@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 
-import { View, FlatList, Image } from "react-native";
+import { View, FlatList, Image, Platform } from "react-native";
 import { useTheme } from "@react-navigation/native";
 
 const WebFooter = () => {
+  if (Platform.OS !== "web") return null;
+
   const { colors, dark } = useTheme();
   return (
     <View

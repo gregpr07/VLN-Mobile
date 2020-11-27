@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Button, Share } from "react-native";
 
 import Modal from "react-native-modal";
 
@@ -8,6 +8,8 @@ import { connect } from "react-redux";
 import { Feather } from "@expo/vector-icons";
 
 import { useTheme } from "@react-navigation/native";
+
+import * as Linking from "expo-linking";
 
 import {
   setPlaybackSpeed,
@@ -27,6 +29,7 @@ const VideoHeader = ({
   token,
   showSlides,
   setShowS,
+  videoID,
 }) => {
   const { colors, dark } = useTheme();
 
@@ -257,6 +260,28 @@ const VideoHeader = ({
     setStarred(star);
   };
 
+  const onShare = async () => {
+    const link = Linking.makeUrl("video", { id: videoID });
+    try {
+      const result = await Share.share({
+        /*   message:
+          "React Native | A framework for building native apps using React",
+ */ url: link,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <View style={{ flexDirection: "row" }}>
       <Text
@@ -273,6 +298,12 @@ const VideoHeader = ({
       >
         {lecture.title}
       </Text>
+      <TouchableOpacity
+        onPress={() => onShare()}
+        style={{ paddingHorizontal: padding / 2, paddingVertical: padding }}
+      >
+        <Feather name={"share"} size={20} color={colors.text} />
+      </TouchableOpacity>
       <TouchableOpacity
         style={{ paddingHorizontal: padding / 2, paddingVertical: padding }}
         onPress={() => console.log(lecture)}
@@ -304,6 +335,7 @@ const mapStateToProps = (state) => ({
   playbackSpeed: state.video.playbackSpeed,
   videoAudioPlay: state.video.videoAudioPlay,
   showSlides: state.video.showSlides,
+  videoID: state.video.videoID,
 });
 
 const mapDispatchToProps = (dispatch) => ({

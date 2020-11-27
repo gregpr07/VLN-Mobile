@@ -32,7 +32,7 @@ import { AppLoading } from "expo";
 import * as Font from "expo-font";
 
 import { connect } from "react-redux";
-import { getUserToken } from "./services/storage/actions";
+import { getUserToken, setVideoID } from "./services/storage/actions";
 
 import { colors, LightTheme, DarkTheme } from "./services/themes";
 
@@ -109,15 +109,32 @@ const linking = {
 };
 //!
 
-const App = ({ token, getUserToken, videoID, videoRef }: any) => {
-  const insets = useSafeAreaInsets();
-  // fonts
-  /*   let [fontsLoaded] = useFonts({
-    SF_UI_BLACK: require("./assets/fonts/HKGrotesk-black.otf"),
-  }); */
+const App = ({ token, getUserToken, videoID, videoRef, setVidID }: any) => {
+  //! linking with redux
+  const _handleUrl = ({ url }) => {
+    console.log(url);
+    let { path, queryParams } = Linking.parse(url);
+    if (videoID !== queryParams.id) {
+      setVidID(queryParams.id);
+    }
+  };
 
+  Linking.addEventListener("url", _handleUrl);
+  //!
+
+  async function getInitialURL() {
+    // Check if app was opened from a deep link
+    const url = await Linking.getInitialURL();
+
+    if (url != null) {
+      _handleUrl({ url });
+    }
+  }
+
+  const insets = useSafeAreaInsets();
   useEffect(() => {
     getUserToken();
+    getInitialURL();
   }, []);
 
   // fonts tutorial -  https://medium.com/@hemanshuM/add-custom-font-in-your-react-native-expo-app-88005a341f5c
@@ -130,8 +147,6 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
       "SF-UI-regular": require("./assets/fonts/HKGrotesk-Regular.otf"),
       "SF-UI-medium": require("./assets/fonts/HKGrotesk-Medium.otf"),
       "SF-UI-semibold": require("./assets/fonts/HKGrotesk-SemiBold.otf"),
-      //"SF-UI-thin": require("./assets/fonts/HKGrotesk-Thin.otf"),
-      //"SF-UI-ultralight": require("./assets/fonts/HKGrotesk-ultralight.otf"),
     });
   };
 
@@ -298,6 +313,7 @@ const App = ({ token, getUserToken, videoID, videoRef }: any) => {
   return (
     <NavigationContainer
       linking={linking}
+      fallback={<Text>Loading...</Text>}
       theme={themeIsDark ? DarkTheme : LightTheme}
     >
       <Tabs.Navigator
@@ -334,6 +350,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   getUserToken: () => dispatch(getUserToken()),
+  setVidID: (num: number) => dispatch(setVideoID(num)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
