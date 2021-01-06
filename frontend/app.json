@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "VideoLectures-mobile",
-    "slug": "videolectures-mobile",
+    "name": "VideoLectures.NET",
+    "slug": "videolectures-NET",
     "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -20,7 +20,7 @@
       "infoPlist": {
         "UIBackgroundModes": ["audio"]
       },
-      "bundleIdentifier": "com.videolectures.mobile",
+      "bundleIdentifier": "si.ijs.videolectures.net",
       "buildNumber": "1.0.1"
     },
     "android": {
@@ -30,6 +30,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "description": "This is a concept of videolectures mobile application"
+    "description": "This is a videolectures mobile application"
   }
 }
