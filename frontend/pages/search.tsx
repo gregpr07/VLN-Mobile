@@ -40,12 +40,12 @@ let CURRENT_PAGE_LEC: number;
 let LOADED_ALL_LEC: boolean;
 
 const SearchScreen = ({
-  navigation,
-  videoID,
-  setVidID,
-  videoRef,
-  audioRef,
-}: any) => {
+                        navigation,
+                        videoID,
+                        setVidID,
+                        videoRef,
+                        audioRef,
+                      }: any) => {
   const { colors, dark } = useTheme();
 
   //! NOT USING BECAUSE FLATLIST DOESN'T SUPPORT CHANGING ON THE FLY
@@ -155,8 +155,8 @@ const SearchScreen = ({
           source={
             item.thumbnail
               ? {
-                  uri: item.thumbnail,
-                }
+                uri: item.thumbnail,
+              }
               : dark
               ? require("../assets/icons/videolecture-net-dark.png")
               : require("../assets/icons/videolecture-net-light.png")
@@ -186,7 +186,7 @@ const SearchScreen = ({
   );
 
   const ListHeader = () => (
-    <View style={{ marginTop: 70 }}>
+    <View>
       {events ? (
         <EventList events={events} padding={padding} navigation={navigation} />
       ) : null}
@@ -257,7 +257,6 @@ const SearchScreen = ({
       paddingRight: 10,
 
       marginHorizontal: padding,
-      marginBottom: padding,
 
       shadowColor: colors.shadow,
       shadowOffset: {
@@ -269,7 +268,7 @@ const SearchScreen = ({
 
       flexDirection: "row",
 
-      position: "absolute",
+      // position: "absolute",  // do not set it to absolute, this breaks it on Android
     },
     textinput: {
       height: 70,
@@ -280,6 +279,7 @@ const SearchScreen = ({
       color: dark ? "white" : "#838f92",
 
       flex: 1,
+      zIndex: 1,
     },
     searchicon: {
       marginVertical: 10,
