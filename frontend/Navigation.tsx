@@ -268,7 +268,7 @@ const App = ({ token, getUserToken, videoID, videoRef, setVidID }: any) => {
                   onPress={() => setThemeIsDark(!themeIsDark)}
                 >
                   <Feather
-                    name={themeIsDark ? "moon" : "sun"}
+                    name={themeIsDark ? "sun" : "moon"}
                     size={24}
                     color={themeIsDark ? colors.paleGrey : colors.darkGreyBlue}
                   />
@@ -297,7 +297,7 @@ const App = ({ token, getUserToken, videoID, videoRef, setVidID }: any) => {
                 onPress={() => setThemeIsDark(!themeIsDark)}
               >
                 <Feather
-                  name={themeIsDark ? "moon" : "sun"}
+                  name={themeIsDark ? "sun" : "moon"}
                   size={24}
                   color={themeIsDark ? colors.paleGrey : colors.darkGreyBlue}
                 />
