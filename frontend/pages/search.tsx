@@ -40,12 +40,12 @@ let CURRENT_PAGE_LEC: number;
 let LOADED_ALL_LEC: boolean;
 
 const SearchScreen = ({
-                        navigation,
-                        videoID,
-                        setVidID,
-                        videoRef,
-                        audioRef,
-                      }: any) => {
+  navigation,
+  videoID,
+  setVidID,
+  videoRef,
+  audioRef,
+}: any) => {
   const { colors, dark } = useTheme();
 
   //! NOT USING BECAUSE FLATLIST DOESN'T SUPPORT CHANGING ON THE FLY
@@ -155,8 +155,8 @@ const SearchScreen = ({
           source={
             item.thumbnail
               ? {
-                uri: item.thumbnail,
-              }
+                  uri: item.thumbnail,
+                }
               : dark
               ? require("../assets/icons/videolecture-net-dark.png")
               : require("../assets/icons/videolecture-net-light.png")
@@ -186,7 +186,7 @@ const SearchScreen = ({
   );
 
   const ListHeader = () => (
-    <View>
+    <View style={{ paddingTop: 50 }}>
       {events ? (
         <EventList events={events} padding={padding} navigation={navigation} />
       ) : null}
@@ -330,7 +330,30 @@ const SearchScreen = ({
         {/* <Authors /> */}
         {/* {lecture ? ( */}
 
-        <HeaderText text="Search" />
+        <Animated.View
+          style={{
+            position: "absolute",
+            opacity: scrollY.interpolate({
+              inputRange: [-1, 0, searchHeight, searchHeight + 1],
+              outputRange: [1, 1, 0, 0],
+            }),
+            transform: [
+              {
+                translateY: scrollY.interpolate({
+                  inputRange: [-1, 0, searchHeight, searchHeight + 1],
+                  outputRange: [
+                    searchHeight - padding,
+                    searchHeight - padding,
+                    0,
+                    0,
+                  ],
+                }),
+              },
+            ],
+          }}
+        >
+          <HeaderText text="Search" />
+        </Animated.View>
 
         <Animated.View
           style={{
@@ -338,7 +361,7 @@ const SearchScreen = ({
               {
                 translateY: scrollY.interpolate({
                   inputRange: [-1, 0, searchHeight, searchHeight + 1],
-                  outputRange: [0, 0, -searchHeight, -searchHeight],
+                  outputRange: [searchHeight, searchHeight, 0, 0],
                 }),
               },
             ],
