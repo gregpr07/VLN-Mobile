@@ -24,8 +24,9 @@
       "buildNumber": "1.0.1"
     },
     "android": {
-      "package": "com.videolectures.mobile",
-      "versionCode": 1
+      "package": "si.ijs.videolectures.net",
+      "versionCode": 1,
+      "permissions": []
     },
     "web": {
       "favicon": "./assets/favicon.png"
