@@ -246,7 +246,7 @@ const SearchScreen = ({
     SearchBar: {
       height: 70,
 
-      //marginTop: Constants.statusBarHeight,
+      marginTop: padding / 2,
 
       width: Platform.OS === "web" ? "95%" : width - 2 * padding,
 
@@ -332,6 +332,7 @@ const SearchScreen = ({
 
         <Animated.View
           style={{
+            paddingTop: Constants.statusBarHeight,
             position: "absolute",
             opacity: scrollY.interpolate({
               inputRange: [-1, 0, searchHeight, searchHeight + 1],
@@ -341,18 +342,13 @@ const SearchScreen = ({
               {
                 translateY: scrollY.interpolate({
                   inputRange: [-1, 0, searchHeight, searchHeight + 1],
-                  outputRange: [
-                    searchHeight - padding,
-                    searchHeight - padding,
-                    0,
-                    0,
-                  ],
+                  outputRange: [0, 0, -searchHeight, -searchHeight],
                 }),
               },
             ],
           }}
         >
-          <HeaderText text="Search" />
+          <HeaderText text="Search" customPaddingTop={1} />
         </Animated.View>
 
         <Animated.View
