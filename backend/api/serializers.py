@@ -86,16 +86,19 @@ class EventSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         serialized_data = super().to_representation(instance)
-        serialized_data["lectures"] = SimpleLectureSerializer(instance.get_lectures(), many=True).data
+        serialized_data["lectures"] = SimpleLectureSerializer(
+            instance.get_lectures(), many=True).data
 
         categories = []
         for category in instance.get_categories():
-            categories.append(SimpleCategorySerializer(Category.objects.get(id=category)).data)
+            categories.append(SimpleCategorySerializer(
+                Category.objects.get(id=category)).data)
         serialized_data["categories"] = categories
 
         authors = []
         for author in instance.get_authors():
-            authors.append(SimpleAuthorSerializer(Author.objects.get(id=author)).data)
+            authors.append(SimpleAuthorSerializer(
+                Author.objects.get(id=author)).data)
         serialized_data["authors"] = authors
 
         return serialized_data
@@ -114,7 +117,7 @@ class SimpleEventSerializer(serializers.ModelSerializer):
 class CaptionEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
-        fields = ('id','caption')
+        fields = ('id', 'caption')
 
 
 class LectureSerializer(serializers.ModelSerializer):
@@ -133,7 +136,8 @@ class LectureSerializer(serializers.ModelSerializer):
         if user.is_authenticated:
             serialized_data["starred"] = user in instance.stargazers.all()
 
-            last_view = LectureView.objects.filter(user=request.user, lecture=instance).first()
+            last_view = LectureView.objects.filter(
+                user=request.user, lecture=instance).first()
             serialized_data["left_off"] = 0 if last_view is None else last_view.end_timestamp
 
         return serialized_data
@@ -150,7 +154,8 @@ class SimpleLectureSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lecture
-        fields = ('id', 'title', 'thumbnail', 'author', 'views', 'event')
+        fields = ('id', 'title', 'thumbnail', 'author',
+                  'views', 'event', 'published')
 
 
 class NotedLectureSerializer(SimpleLectureSerializer):
@@ -160,7 +165,8 @@ class NotedLectureSerializer(SimpleLectureSerializer):
         user = request.user
 
         serialized_data = super().to_representation(instance)
-        serialized_data["noted"] = Note.objects.filter(user=user, lecture=instance.id).count()
+        serialized_data["noted"] = Note.objects.filter(
+            user=user, lecture=instance.id).count()
 
         return serialized_data
 

@@ -149,6 +149,17 @@ const Lectures = ({
               {numberWithCommas(item.views)}
             </Text>
           </View>
+          <View>
+            <Text
+              style={{
+                fontSize: 12,
+                fontFamily: "SF-UI-semibold",
+                color: colors.text,
+              }}
+            >
+              {item.published}
+            </Text>
+          </View>
         </View>
       </TouchableOpacity>
     </View>

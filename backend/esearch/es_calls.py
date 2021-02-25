@@ -56,6 +56,7 @@ def categoryCall(query, page=0):
 
     return formatCategoryResp(resp)
 
+
 def eventCall(query, page=0):
     def formatEventResp(resp):
         results = []
@@ -101,7 +102,8 @@ def lectureCall(query, page=0):
                     'title': hit.event.title,
                     'caption': hit.event.caption
                 },
-                #'categories': [x.name for x in hit.categories]
+                'published': hit.published,
+                # 'categories': [x.name for x in hit.categories]
             }
             results.append(obj)
         return results
@@ -124,6 +126,3 @@ def lectureCall(query, page=0):
     print(len(resp))
 
     return formatLectureResp(resp)
-
-
-
