@@ -10,6 +10,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { TabBar } from "./components/CustomTabbar";
 
 import { StatusBar } from "expo-status-bar";
+import AppLoading from "expo-app-loading";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -24,10 +25,6 @@ import LoginScreen from "./pages/login";
 import SettingScreen from "./pages/settings";
 import Category from "./pages/category";
 import Author from "./pages/author";
-
-import DevOnlyComponent from "./pages/devcomponents";
-
-import { AppLoading } from "expo";
 
 import * as Font from "expo-font";
 
@@ -120,7 +117,6 @@ const App = ({ token, getUserToken, videoID, videoRef, setVidID }: any) => {
   };
 
   Linking.addEventListener("url", _handleUrl);
-  //!
 
   async function getInitialURL() {
     // Check if app was opened from a deep link
@@ -136,6 +132,7 @@ const App = ({ token, getUserToken, videoID, videoRef, setVidID }: any) => {
     getUserToken();
     getInitialURL();
   }, []);
+  //!
 
   // fonts tutorial -  https://medium.com/@hemanshuM/add-custom-font-in-your-react-native-expo-app-88005a341f5c
   const loadFonts = () => {
