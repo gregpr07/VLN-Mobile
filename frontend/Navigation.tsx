@@ -14,17 +14,7 @@ import AppLoading from "expo-app-loading";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Feather } from "@expo/vector-icons";
-import VideoScreen from "./pages/video";
 import SearchScreen from "./pages/search";
-import HomeScreen from "./pages/homescreen";
-import ProfileScreen from "./pages/profile";
-import VideosScreen from "./pages/videoscreen";
-import Event from "./pages/event";
-import LoginScreen from "./pages/login";
-import SettingScreen from "./pages/settings";
-import Category from "./pages/category";
-import Author from "./pages/author";
 
 import * as Font from "expo-font";
 
@@ -37,41 +27,12 @@ import { useColorScheme } from "react-native-appearance";
 import { BASEURL } from "./services/fetcher";
 import * as Linking from "expo-linking";
 
+import VideoStackScreen from "./navigation/VideoStackScreen";
+import PlayerStackScreen from "./navigation/PlayerStackScreen";
+import HomeStackScreen from "./navigation/HomeStackScreen";
+import ProfileStackScreen from "./navigation/ProfileStackScreen";
+
 const Tabs = createBottomTabNavigator();
-const HomeStack = createStackNavigator();
-const VideoStack = createStackNavigator();
-const ProfileStack = createStackNavigator();
-const PlayerStack = createStackNavigator();
-
-const VideoStackScreen = () => {
-  return (
-    <VideoStack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <VideoStack.Screen name="Videos" component={VideosScreen} />
-    </VideoStack.Navigator>
-  );
-};
-
-const PlayerStackScreen = () => {
-  return (
-    <PlayerStack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <PlayerStack.Screen
-        name="Video"
-        component={VideoScreen}
-        initialParams={{
-          lectureID: false,
-        }}
-      />
-    </PlayerStack.Navigator>
-  );
-};
 
 //! linking
 
@@ -150,9 +111,7 @@ const App = ({ token, getUserToken, videoID, videoRef, setVidID }: any) => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   const scheme = useColorScheme();
-
-  // default is the system default
-  const [themeIsDark, setThemeIsDark] = useState(scheme === "dark");
+  console.log(scheme);
 
   if (!fontsLoaded) {
     return (
@@ -164,154 +123,11 @@ const App = ({ token, getUserToken, videoID, videoRef, setVidID }: any) => {
     );
   }
 
-  const HeaderOptions = {
-    headerStyle: {
-      backgroundColor: themeIsDark ? "black" : colors.whiteBackground,
-      shadowColor: "transparent",
-      elevation: 0,
-      borderBottomWidth: 0,
-      transform: [
-        {
-          translateY: Platform.OS === "web" ? 70 : 0,
-        },
-      ],
-    },
-    //headerTintColor: themeIsDark ? colors.dark : colors.darkGreyBlue,
-    headerTitleStyle: {
-      fontFamily: "SF-UI-semibold",
-      lineHeight: 22,
-      letterSpacing: 1,
-      textAlign: "center",
-      color: themeIsDark ? colors.paleGrey : colors.darkGreyBlue,
-      fontSize: 20,
-      shadowOpacity: 0,
-      /* paddingLeft: 12, */
-    },
-    headerBackImage: ({ tintColor }) => (
-      <Feather
-        name={"arrow-left"}
-        size={24}
-        style={{ marginLeft: 12 }}
-        color={themeIsDark ? colors.paleGrey : colors.darkGreyBlue}
-      />
-    ),
-
-    headerBackTitleVisible: false,
-  };
-
-  const HomeStackScreen = () => (
-    <HomeStack.Navigator screenOptions={{ ...HeaderOptions }}>
-      <HomeStack.Screen
-        name="home"
-        options={{ headerShown: false }}
-        component={HomeScreen}
-      />
-      <HomeStack.Screen
-        name="event"
-        component={Event}
-        options={({ route }) => ({ title: route.params.eventTitle })}
-      />
-      <HomeStack.Screen
-        name="category"
-        component={Category}
-        options={({ route }) => ({ title: route.params.category })}
-      />
-      <HomeStack.Screen name="author" component={Author} />
-    </HomeStack.Navigator>
-  );
-
-  const ProfileStackScreen = () => (
-    <ProfileStack.Navigator screenOptions={{ ...HeaderOptions }}>
-      {token.token ? (
-        <>
-          <ProfileStack.Screen
-            name="profile"
-            options={({ navigation }) => ({
-              headerTitle: Platform.OS === "web" ? null : "videolectures.net",
-              headerTitleStyle: {
-                fontFamily: "SF-UI-semibold",
-                fontSize: 24,
-              },
-              headerRight: () => (
-                <TouchableOpacity
-                  style={{
-                    height: 24,
-                    width: 24,
-                    marginRight: 20,
-                  }}
-                  onPress={() => navigation.push("settings")}
-                >
-                  <Feather
-                    name={"settings"}
-                    size={24}
-                    color={themeIsDark ? colors.paleGrey : colors.darkGreyBlue}
-                  />
-                </TouchableOpacity>
-              ),
-            })}
-            component={ProfileScreen}
-          />
-          <ProfileStack.Screen
-            name="settings"
-            options={({ navigation }) => ({
-              title: "Settings",
-              headerRight: () => (
-                <TouchableOpacity
-                  style={{
-                    height: 24,
-                    width: 24,
-                    marginRight: 20,
-                  }}
-                  onPress={() => setThemeIsDark(!themeIsDark)}
-                >
-                  <Feather
-                    name={themeIsDark ? "sun" : "moon"}
-                    size={24}
-                    color={themeIsDark ? colors.paleGrey : colors.darkGreyBlue}
-                  />
-                </TouchableOpacity>
-              ),
-            })}
-            component={SettingScreen}
-          />
-        </>
-      ) : (
-        <ProfileStack.Screen
-          name="login"
-          options={({ navigation }) => ({
-            headerTitle: Platform.OS === "web" ? null : "videolectures.net",
-            headerTitleStyle: {
-              fontFamily: "SF-UI-semibold",
-              fontSize: 24,
-            },
-            headerRight: () => (
-              <TouchableOpacity
-                style={{
-                  height: 24,
-                  width: 24,
-                  marginRight: 20,
-                }}
-                onPress={() => setThemeIsDark(!themeIsDark)}
-              >
-                <Feather
-                  name={themeIsDark ? "sun" : "moon"}
-                  size={24}
-                  color={themeIsDark ? colors.paleGrey : colors.darkGreyBlue}
-                />
-              </TouchableOpacity>
-            ),
-          })}
-          component={LoginScreen}
-        />
-      )}
-    </ProfileStack.Navigator>
-  );
-
   return (
     <NavigationContainer
       linking={linking}
       fallback={<Text>Loading...</Text>}
-      theme={themeIsDark ? DarkTheme : LightTheme}
+      theme={scheme === "dark" ? DarkTheme : LightTheme}
     >
       <Tabs.Navigator
         tabBar={(props: BottomTabBarProps) => <TabBar {...props} />}
@@ -329,12 +145,12 @@ const App = ({ token, getUserToken, videoID, videoRef, setVidID }: any) => {
       <View
         style={{
           paddingBottom: (insets.bottom / 4) * 3,
-          backgroundColor: themeIsDark ? colors.dark : "white",
+          backgroundColor: scheme === "dark" ? colors.dark : "white",
 
           marginLeft: Platform.OS === "web" ? "10vw" : null,
         }}
       />
-      <StatusBar style={themeIsDark ? "light" : "dark"} />
+      <StatusBar style={scheme === "dark" ? "light" : "dark"} />
     </NavigationContainer>
   );
 };

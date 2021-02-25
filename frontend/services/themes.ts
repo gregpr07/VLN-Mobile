@@ -44,7 +44,7 @@ export const LightTheme: theme = {
     background: colors.whiteBackground,
     card: "rgb(255, 255, 255)",
     text: colors.dark,
-    border: "white",
+    border: colors.paleGrey,
     notification: "rgb(255, 69, 58)",
     shadow: "rgba(60, 128, 209, 0.09)",
   },
