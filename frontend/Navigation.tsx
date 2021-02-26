@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { TouchableOpacity, Text, View, Platform } from "react-native";
+import { Text, View, Platform, Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import {
   createBottomTabNavigator,
   BottomTabBarProps,
 } from "@react-navigation/bottom-tabs";
-import { createStackNavigator } from "@react-navigation/stack";
 
 import { TabBar } from "./components/CustomTabbar";
 
+import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import AppLoading from "expo-app-loading";
+import { Asset } from "expo-asset";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -24,7 +25,6 @@ import { getUserToken, setVideoID } from "./services/storage/actions";
 import { colors, LightTheme, DarkTheme } from "./services/themes";
 
 import { useColorScheme } from "react-native-appearance";
-import { BASEURL } from "./services/fetcher";
 import * as Linking from "expo-linking";
 
 import VideoStackScreen from "./navigation/VideoStackScreen";
@@ -68,6 +68,15 @@ const linking = {
 //!
 
 const App = ({ token, getUserToken, videoID, videoRef, setVidID }: any) => {
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    //! SplashScreen.preventAutoHideAsync();
+    // idk this is already somewhere ...
+    getUserToken();
+    getInitialURL();
+  }, []);
+
   //! linking with redux
   const _handleUrl = ({ url }) => {
     console.log(url);
@@ -89,10 +98,7 @@ const App = ({ token, getUserToken, videoID, videoRef, setVidID }: any) => {
   }
 
   const insets = useSafeAreaInsets();
-  useEffect(() => {
-    getUserToken();
-    getInitialURL();
-  }, []);
+
   //!
 
   // fonts tutorial -  https://medium.com/@hemanshuM/add-custom-font-in-your-react-native-expo-app-88005a341f5c
@@ -111,7 +117,6 @@ const App = ({ token, getUserToken, videoID, videoRef, setVidID }: any) => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   const scheme = useColorScheme();
-  console.log(scheme);
 
   if (!fontsLoaded) {
     return (
@@ -122,6 +127,32 @@ const App = ({ token, getUserToken, videoID, videoRef, setVidID }: any) => {
       />
     );
   }
+
+  //* static to animated splash
+
+  const _cacheResourcesAsync = async () => {
+    SplashScreen.hideAsync();
+
+    setTimeout(() => {
+      setIsReady(true);
+    }, 1500);
+  };
+
+  if (!isReady) {
+    return (
+      <View
+        style={{ flex: 1, justifyContent: "center", alignContent: "center" }}
+      >
+        <Image
+          source={require("./assets/splash.gif")}
+          onLoad={_cacheResourcesAsync}
+          style={{ width: "100%", resizeMode: "contain" }}
+        />
+      </View>
+    );
+  }
+
+  //*
 
   return (
     <NavigationContainer
