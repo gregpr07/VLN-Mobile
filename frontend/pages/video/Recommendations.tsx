@@ -10,7 +10,11 @@ import {
 
 import { connect } from "react-redux";
 
-import { shorterText, numberWithCommas } from "../../services/functions";
+import {
+  shorterText,
+  numberWithCommas,
+  formatDate,
+} from "../../services/functions";
 
 import { setVideoID, setVideoRef } from "../../services/storage/actions";
 
@@ -96,6 +100,7 @@ const RecommendedVids = ({
             thumbnail: string;
             title: string;
             views: number;
+            published: string;
           },
           index: number
         ) => (
@@ -143,6 +148,18 @@ const RecommendedVids = ({
                   {recc.author}
                   <Separator />
                   {numberWithCommas(recc.views)}
+                </Text>
+              </View>
+              <View>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontFamily: "SF-UI-semibold",
+                    paddingTop: 2,
+                    color: colors.secondary,
+                  }}
+                >
+                  {formatDate(recc.published)}
                 </Text>
               </View>
             </View>

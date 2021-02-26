@@ -14,7 +14,11 @@ import {
   Animated,
   Platform,
 } from "react-native";
-import { shorterText, numberWithCommas } from "../services/functions";
+import {
+  shorterText,
+  numberWithCommas,
+  formatDate,
+} from "../services/functions";
 
 import Constants from "expo-constants";
 
@@ -185,10 +189,11 @@ const SearchScreen = ({
               style={{
                 fontSize: 12,
                 fontFamily: "SF-UI-semibold",
-                color: colors.text,
+                paddingTop: 2,
+                color: colors.secondary,
               }}
             >
-              {item.published}
+              {formatDate(item.published)}
             </Text>
           </View>
         </View>

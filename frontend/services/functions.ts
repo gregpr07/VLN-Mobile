@@ -49,6 +49,11 @@ export function isoFormatDMY(d: any) {
   );
 }
 
+export function formatDate(s: string) {
+  var d = new Date(s);
+  return isoFormatDMY(d);
+}
+
 export const shorterText = (text: string, length: number) => {
   return text.length > length ? text.slice(0, length) + "..." : text;
 };

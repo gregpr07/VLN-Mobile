@@ -46,13 +46,6 @@ const ProfileStackScreen = ({ token }) => {
             })}
             component={ProfileScreen}
           />
-          <ProfileStack.Screen
-            name="settings"
-            options={({ navigation }) => ({
-              title: "Settings",
-            })}
-            component={SettingScreen}
-          />
         </>
       ) : (
         <ProfileStack.Screen
@@ -63,10 +56,29 @@ const ProfileStackScreen = ({ token }) => {
               fontFamily: "SF-UI-semibold",
               fontSize: 24,
             },
+            headerRight: () => (
+              <TouchableOpacity
+                style={{
+                  height: 24,
+                  width: 24,
+                  marginRight: 20,
+                }}
+                onPress={() => navigation.push("settings")}
+              >
+                <Feather name={"settings"} size={24} color={colors.text} />
+              </TouchableOpacity>
+            ),
           })}
           component={LoginScreen}
         />
       )}
+      <ProfileStack.Screen
+        name="settings"
+        options={({ navigation }) => ({
+          title: "Settings",
+        })}
+        component={SettingScreen}
+      />
     </ProfileStack.Navigator>
   );
 };

@@ -15,7 +15,11 @@ import {
 const { width, height } = Dimensions.get("window");
 import Constants from "expo-constants";
 
-import { shorterText, numberWithCommas } from "../services/functions";
+import {
+  shorterText,
+  numberWithCommas,
+  formatDate,
+} from "../services/functions";
 
 import { HeaderText } from "../components/TextHeader";
 
@@ -119,6 +123,18 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
                 {item.author.name}
                 <Separator />
                 {numberWithCommas(item.views)}
+              </Text>
+            </View>
+            <View>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontFamily: "SF-UI-semibold",
+                  paddingTop: 2,
+                  color: colors.secondary,
+                }}
+              >
+                {formatDate(item.published)}
               </Text>
             </View>
           </View>

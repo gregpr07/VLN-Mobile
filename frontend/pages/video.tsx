@@ -23,7 +23,7 @@ import Constants from "expo-constants";
 
 import { Feather } from "@expo/vector-icons";
 
-import { fetcher, noHeadFetcher } from "../services/fetcher";
+import { fetcher, noHeadFetcher, API } from "../services/fetcher";
 
 import { connect } from "react-redux";
 import { setVideoID } from "../services/storage/actions";
@@ -41,7 +41,6 @@ import Categories from "../components/CategoriesList";
 import Container from "../components/Container";
 
 import { ActivityView } from "../components/Components";
-import { color } from "react-native-reanimated";
 
 //? using let because we don't want the screen to re-render because of video
 
@@ -69,7 +68,7 @@ function VideoScreen({
   const [slides, setSlides] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  const setAudioModes = () => {
     Audio.setAudioModeAsync({
       allowsRecordingIOS: false,
       interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
@@ -79,6 +78,35 @@ function VideoScreen({
       staysActiveInBackground: true,
       playThroughEarpieceAndroid: false,
     });
+  };
+
+  const addVideoHistory = () => {
+    if (token) {
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", `Token ${token}`);
+
+      var formdata = new FormData();
+      formdata.append("lecture", videoID);
+      //!! FIX THIS SOMEDAY
+      formdata.append("start_timestamp", "0");
+      formdata.append("end_timestamp", "12");
+
+      var requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: formdata,
+        redirect: "follow",
+      };
+
+      fetch(API + "history_add/", requestOptions)
+        .then((response) => response.text())
+        .then((result) => console.log("added video to history"))
+        .catch((error) => console.log("error", "error adding to history"));
+    }
+  };
+
+  useEffect(() => {
+    setAudioModes();
 
     if (videoID) {
       setLoading(true);
@@ -89,6 +117,8 @@ function VideoScreen({
       noHeadFetcher("slide/lecture/" + videoID + "/?limit=500").then((json) =>
         setSlides(json)
       );
+
+      addVideoHistory();
     }
   }, [videoID]);
 

@@ -93,39 +93,44 @@ const SignOutScreen = ({ token, removeUserToken }: any) => {
               <Text style={styles.h3}>Prefered : slides/video</Text>
               <Text style={styles.h3}>Play in background (true/false)</Text>
             </View>
-            <View style={styles.card}>
-              <Text style={styles.h3}>Update email</Text>
-              <Text style={styles.h3}>Change password</Text>
-              <Text style={styles.h3}>Remove user data</Text>
-              <Text style={styles.h3}>Do not track</Text>
-              <Text style={styles.h3}>Privacy and terms (GDPR)</Text>
-              <Text style={styles.h3}>Contact us</Text>
-            </View>
+            {token.token && (
+              <>
+                <View style={styles.card}>
+                  <Text style={styles.h3}>Update email</Text>
+                  <Text style={styles.h3}>Change password</Text>
+                  <Text style={styles.h3}>Remove user data</Text>
+                  <Text style={styles.h3}>Do not track</Text>
+                  <Text style={styles.h3}>Privacy and terms (GDPR)</Text>
+                  <Text style={styles.h3}>Contact us</Text>
+                </View>
+
+                <TouchableOpacity onPress={_signOutAsync}>
+                  <View style={{ flexDirection: "row", paddingLeft: 20 }}>
+                    <Text
+                      style={[
+                        {
+                          lineHeight: 30,
+                          letterSpacing: 1,
+                          textAlign: "center",
+                          color: colors.text,
+                          fontSize: 16,
+                        },
+                        styles.bold,
+                      ]}
+                    >
+                      Sign out
+                    </Text>
+                    <Feather
+                      name={"log-out"}
+                      size={24}
+                      style={{ paddingLeft: 8 }}
+                      color={colors.text}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </>
+            )}
           </View>
-          <TouchableOpacity onPress={_signOutAsync}>
-            <View style={{ flexDirection: "row" }}>
-              <Text
-                style={[
-                  {
-                    lineHeight: 30,
-                    letterSpacing: 1,
-                    textAlign: "center",
-                    color: colors.text,
-                    fontSize: 16,
-                  },
-                  styles.bold,
-                ]}
-              >
-                Sign out
-              </Text>
-              <Feather
-                name={"log-out"}
-                size={30}
-                style={{ paddingLeft: 6 }}
-                color={colors.text}
-              />
-            </View>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </Container>

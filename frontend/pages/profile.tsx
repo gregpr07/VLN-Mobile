@@ -20,7 +20,7 @@ import Container from "../components/Container";
 const { width, height } = Dimensions.get("window");
 
 const padding = 14;
-function ProfileScreen({ navigation, setVidID }) {
+function ProfileScreen({ navigation, setVidID }: any) {
   const { colors, dark } = useTheme();
 
   const [activeTab, setActiveTab] = useState("starred");
@@ -107,7 +107,7 @@ function ProfileScreen({ navigation, setVidID }) {
   }, []);
 
   const Header = () => {
-    const ProfileImage = () => (
+    /* const ProfileImage = () => (
       <View
         style={{
           paddingTop: 16,
@@ -122,14 +122,14 @@ function ProfileScreen({ navigation, setVidID }) {
           }}
         />
       </View>
-    );
+    ); */
     return (
       <View
         style={{
           alignItems: "center",
         }}
       >
-        <ProfileImage />
+        {/* <ProfileImage /> */}
       </View>
     );
   };
