@@ -70,6 +70,16 @@ function VideoScreen({
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    Audio.setAudioModeAsync({
+      allowsRecordingIOS: false,
+      interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+      playsInSilentModeIOS: true,
+      shouldDuckAndroid: true,
+      interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+      staysActiveInBackground: true,
+      playThroughEarpieceAndroid: false,
+    });
+
     if (videoID) {
       setLoading(true);
       noHeadFetcher("lecture/" + videoID + "/").then((json) => {

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "VideoLectures.NET",
+    "name": "VideoLectures",
     "slug": "videolectures-NET",
     "version": "1.0.2",
     "orientation": "portrait",
@@ -22,11 +22,11 @@
         "UIBackgroundModes": ["audio"]
       },
       "bundleIdentifier": "si.ijs.videolectures.net",
-      "buildNumber": "1.0.2"
+      "buildNumber": "1.0.3"
     },
     "android": {
       "package": "si.ijs.videolectures.net",
-      "versionCode": 2,
+      "versionCode": 3,
       "permissions": []
     },
     "web": {
