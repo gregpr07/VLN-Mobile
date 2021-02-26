@@ -40,6 +40,9 @@ import { numberWithCommas, shorterText } from "../services/functions";
 import Categories from "../components/CategoriesList";
 import Container from "../components/Container";
 
+import { ActivityView } from "../components/Components";
+import { color } from "react-native-reanimated";
+
 //? using let because we don't want the screen to re-render because of video
 
 const TABLET_WIDTH = 800;
@@ -473,17 +476,7 @@ function VideoScreen({
     );
 
   if (loading) {
-    return (
-      <ActivityIndicator
-        //? 15 is for centering - very hacky!!
-        style={{
-          left: width / 2 - 15,
-          top: height / 2,
-          position: "absolute",
-        }}
-        size="small"
-      />
-    );
+    return <ActivityView color={colors.text} />;
   }
 
   return (

@@ -27,6 +27,8 @@ import { useTheme } from "@react-navigation/native";
 
 import { noHeadFetcher } from "../services/fetcher";
 
+import { ActivityView } from "../components/Components";
+
 const padding = 14;
 const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
   const { colors, dark } = useTheme();
@@ -216,6 +218,9 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
       color: colors.text,
     },
   });
+
+  if (latestLectures == [] || mostStarred == [] || mostViewed == [])
+    return <ActivityView color={colors.text} />;
 
   return (
     <Container>

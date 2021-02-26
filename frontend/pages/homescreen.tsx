@@ -28,6 +28,8 @@ import EventList from "../components/EventList";
 import Container from "../components/Container";
 import WebFooter from "../components/webOnlyComponent/WebFooter";
 
+import { ActivityView } from "../components/Components";
+
 //import { color } from "react-native-reanimated";
 
 const padding = 14;
@@ -229,6 +231,9 @@ export default function HomeScreen({ navigation }: any) {
       </View>
     );
   };
+
+  if (!events || !authors_most_viewd)
+    return <ActivityView color={colors.text} />;
 
   return (
     <Container>
