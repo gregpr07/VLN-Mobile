@@ -509,7 +509,7 @@ function VideoScreen({
         animationOutTiming={100}
         coverScreen={false}
         backdropOpacity={1}
-        backdropColor={colors.card}
+        backdropColor={colors.background}
       >
         <Text style={styles.h1}>No lecture playing</Text>
       </Modal>
