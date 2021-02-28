@@ -19,7 +19,7 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "UIBackgroundModes": ["audio"]
+        "UIBackgroundModes": ["audio", "video"]
       },
       "bundleIdentifier": "si.ijs.videolectures.net",
       "buildNumber": "1.0.4"
