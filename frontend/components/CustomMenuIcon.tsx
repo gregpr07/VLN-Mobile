@@ -1,6 +1,6 @@
 import React from "react";
-import { View, Text, useWindowDimensions } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { View } from "react-native";
+import { Ionicons, Feather } from "@expo/vector-icons";
 
 type Props = {
   iconName: string;
@@ -10,9 +10,6 @@ type Props = {
 import { useTheme } from "@react-navigation/native";
 
 export const BottomMenuItem = ({ iconName, isCurrent }: Props) => {
-  const windowWidth = useWindowDimensions().width;
-  const windowHeight = useWindowDimensions().height;
-
   const { colors, dark } = useTheme();
   const giveIconName = (name: string) => {
     if (name === "Home") {
@@ -35,29 +32,14 @@ export const BottomMenuItem = ({ iconName, isCurrent }: Props) => {
         height: "100%",
         justifyContent: "center",
         alignItems: "center",
-
-        flexDirection: "row",
+        paddingTop: 8,
       }}
     >
       <Feather
         name={giveIconName(iconName)}
         size={26}
-        style={{ color: isCurrent ? colors.primary : colors.third }}
+        style={{ color: isCurrent ? colors.text : colors.third }}
       />
-      <Text
-        style={{
-          fontSize: 20,
-          fontFamily: "SF-UI-medium",
-          lineHeight: 20,
-          color: isCurrent ? colors.primary : colors.third,
-
-          marginLeft: 10,
-
-          display: windowWidth < 1000 ? "none" : "flex",
-        }}
-      >
-        {iconName}
-      </Text>
     </View>
   );
 };

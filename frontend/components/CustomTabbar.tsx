@@ -5,8 +5,6 @@ import {
   Dimensions,
   Animated,
   StyleSheet,
-  Image,
-  useWindowDimensions,
 } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { BottomMenuItem } from "./CustomMenuIcon";
@@ -23,46 +21,78 @@ export const TabBar = ({
 }: BottomTabBarProps) => {
   const { colors, dark } = useTheme();
 
-  const totalWidth = useWindowDimensions().width;
-  const totalHeight = useWindowDimensions().height;
-
   const [translateValue] = useState(new Animated.Value(0));
+  const totalWidth = Dimensions.get("window").width;
+  const tabWidth =
+    /* Math.min(totalWidth, MAXIMUM_WIDTH) */ totalWidth / state.routes.length;
 
-  const tabHeight = 100;
+  const animateSlider = (index: number) => {
+    Animated.spring(translateValue, {
+      toValue: index * tabWidth,
+      velocity: 10,
+      useNativeDriver: true,
+      speed: 25,
+    }).start();
+  };
+
+  useEffect(() => {
+    animateSlider(state.index);
+  }, [state.index]);
 
   const style = StyleSheet.create({
     tabContainer: {
-      width: totalWidth,
-
-      backgroundColor: colors.background,
-      borderBottomLeftRadius: 14,
-      borderBottomRightRadius: 14,
+      height: 45,
+      shadowColor: colors.shadow,
+      shadowOffset: {
+        width: 0,
+        height: 12,
+      },
+      shadowRadius: 19,
+      shadowOpacity: 1,
+      backgroundColor: colors.card,
+      borderTopRightRadius: 14,
+      borderTopLeftRadius: 14,
       elevation: 10,
       position: "absolute",
+      bottom: 0,
+    },
+    slider: {
+      height: 5,
+      position: "absolute",
       top: 0,
-
-      height: 70,
+      left: 10,
+      backgroundColor: colors.primary,
+      borderRadius: 10,
     },
   });
 
   return (
-    <View style={[style.tabContainer, {}]}>
-      <View style={{ margin: 14, position: "relative", left: 0 }}></View>
+    <View
+      style={[
+        style.tabContainer,
+        {
+          width: totalWidth,
+        },
+      ]}
+    >
       <View
-        style={{
+      /*         style={{
           width: totalWidth,
           justifyContent: "center",
-          flexDirection: "row",
-        }}
+          maxWidth: MAXIMUM_WIDTH,
+        }} */
       >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            maxWidth: 1000,
-            flex: 1,
-          }}
-        >
+        <View style={{ flexDirection: "row" }}>
+          <Animated.View
+            style={[
+              style.slider,
+              {
+                transform: [{ translateX: translateValue }],
+                width: tabWidth - 20,
+              },
+            ]}
+          />
+
           {state.routes.map((route, index) => {
             const { options } = descriptors[route.key];
             const label =
@@ -84,6 +114,7 @@ export const TabBar = ({
               if (!isFocused && !event.defaultPrevented) {
                 navigation.navigate(route.name);
               }
+              animateSlider(index);
             };
 
             const onLongPress = () => {
