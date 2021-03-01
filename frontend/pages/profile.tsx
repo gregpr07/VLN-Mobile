@@ -49,7 +49,7 @@ function ProfileScreen({ navigation, setVidID }: any) {
         })
         .catch((error) => console.log("error", error));
 
-      fetch(API + "/noted/", requestOptions)
+      fetch(API + "noted/", requestOptions)
         .then((response) => response.json())
         .then((json) => {
           console.log("noted");
@@ -59,7 +59,7 @@ function ProfileScreen({ navigation, setVidID }: any) {
         })
         .catch((error) => console.log("error", error));
 
-      fetch(API + "/history/", requestOptions)
+      fetch(API + "history/", requestOptions)
         .then((response) => response.json())
         .then((json) => {
           let lectures = [];
@@ -92,7 +92,7 @@ function ProfileScreen({ navigation, setVidID }: any) {
       redirect: "follow",
     };
 
-    fetch("http://vln-mobile.ijs.si/api/auth/user/", requestOptions)
+    fetch(API + "auth/user/", requestOptions)
       .then((response) => response.json())
       .then((json) => {
         console.log("Fetching user data.");

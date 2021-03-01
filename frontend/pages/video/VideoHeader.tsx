@@ -11,6 +11,8 @@ import { useTheme } from "@react-navigation/native";
 
 import * as Linking from "expo-linking";
 
+import { API } from "../../services/fetcher";
+
 import {
   setPlaybackSpeed,
   setVideoAudioPlay,
@@ -51,7 +53,7 @@ const VideoHeader = ({
       redirect: "follow",
     };
 
-    fetch(`http://vln-mobile.ijs.si/api/lecture/${lecture.id}/`, requestOptions)
+    fetch(`${API}lecture/${lecture.id}/`, requestOptions)
       .then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.log("error", error));
@@ -246,12 +248,7 @@ const VideoHeader = ({
       redirect: "follow",
     };
 
-    fetch(
-      "http://vln-mobile.ijs.si/api/" +
-        (star ? "star" : "unstar") +
-        `/${lecture.id}/`,
-      requestOptions
-    )
+    fetch(API + (star ? "star" : "unstar") + `/${lecture.id}/`, requestOptions)
       .then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.log("error", error));
