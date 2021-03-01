@@ -406,7 +406,7 @@ function VideoScreen({
             paddingHorizontal: 14,
             paddingVertical: 12,
             borderRadius: 14,
-            backgroundColor: "#5468ff",
+            backgroundColor: colors.button,
             shadowColor: colors.shadow,
             shadowOffset: {
               width: 0,

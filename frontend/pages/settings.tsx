@@ -70,7 +70,7 @@ const SignOutScreen = ({ token, removeUserToken }: any) => {
       width: "100%",
       borderRadius: 15,
       backgroundColor: colors.card,
-      shadowColor: "rgba(60, 128, 209, 0.09)",
+      shadowColor: colors.shadow,
       shadowOffset: {
         width: 0,
         height: 12,

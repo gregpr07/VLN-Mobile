@@ -140,7 +140,7 @@ const SearchScreen = ({
   const Separator = () => (
     <Text
       style={{
-        color: "#5468fe",
+        color: colors.button,
       }}
     >
       {" "}
@@ -303,8 +303,8 @@ const SearchScreen = ({
       width: 50,
       height: 50,
       borderRadius: 9,
-      backgroundColor: "#5468ff",
-      shadowColor: "rgba(84, 104, 255, 0.3)",
+      backgroundColor: colors.button,
+      shadowColor: colors.hardShadow,
       shadowOffset: {
         width: 0,
         height: 10,

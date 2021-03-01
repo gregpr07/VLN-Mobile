@@ -1,7 +1,7 @@
 export const colors = {
   darkGreyBlue: "#344356",
   //dark: "#171531",
-  dark: "rgb(18, 18, 19)",
+  dark: "rgb(19, 18, 18)",
   darkBlueGrey: "#232048",
   twilight: "#555093",
   darkGreyBlueTwo: "#2e2a5d",
@@ -32,28 +32,34 @@ export interface theme {
     border: string;
     notification: string;
     shadow: string;
+    button: string;
+    hardShadow: string;
   };
 }
+
+// https://coolors.co/dd8176-af5651-802b2b-401616-200b0b-000000-f05140-ffffff
 
 export const LightTheme: theme = {
   dark: false,
   colors: {
-    primary: colors.twilight,
-    secondary: colors.twilight,
+    primary: "#802B2B",
+    secondary: "rgb(154, 156, 157)",
     third: "rgb(97, 98, 100)",
     background: colors.whiteBackground,
     card: "rgb(255, 255, 255)",
     text: colors.dark,
     border: colors.paleGrey,
     notification: "rgb(255, 69, 58)",
-    shadow: "rgba(60, 128, 209, 0.09)",
+    shadow: "#F0514008",
+    button: "#F05140",
+    hardShadow: "#F0514030",
   },
 };
 
 export const DarkTheme: theme = {
   dark: true,
   colors: {
-    primary: colors.orangish,
+    primary: "#DD8176",
     secondary: "rgb(154, 156, 157)",
     third: "rgb(97, 98, 100)",
     background: "black", //colors.dark,
@@ -61,6 +67,8 @@ export const DarkTheme: theme = {
     text: "white",
     border: colors.darkBlueGrey,
     notification: "rgb(255, 69, 58)",
-    shadow: "#5468FF10",
+    shadow: "#F0514010",
+    button: "#F05140",
+    hardShadow: "#F0514030",
   },
 };

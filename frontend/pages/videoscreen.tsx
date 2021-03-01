@@ -73,7 +73,7 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
     const Separator = () => (
       <Text
         style={{
-          color: "#5468fe",
+          color: colors.button,
         }}
       >
         {" "}

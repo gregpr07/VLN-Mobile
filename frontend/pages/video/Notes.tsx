@@ -208,7 +208,7 @@ const Notes = ({
                 paddingVertical: 10,
                 marginBottom: 6,
                 borderRadius: 10,
-                backgroundColor: "#5468fe",
+                backgroundColor: colors.button,
 
                 width: 200,
 

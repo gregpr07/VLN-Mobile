@@ -294,7 +294,7 @@ function ProfileScreen({ navigation, setVidID }: any) {
   const Separator = () => (
     <Text
       style={{
-        color: "#5468fe",
+        color: colors.button,
       }}
     >
       {" "}

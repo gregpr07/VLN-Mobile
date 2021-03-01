@@ -72,7 +72,7 @@ const Lectures = ({
   const Separator = () => (
     <Text
       style={{
-        color: "#5468fe",
+        color: colors.button,
       }}
     >
       {" "}

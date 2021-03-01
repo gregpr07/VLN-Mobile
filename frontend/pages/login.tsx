@@ -7,7 +7,7 @@ import {
   TouchableHighlight,
   Dimensions,
   ActivityIndicator,
-  Button,
+  Image,
 } from "react-native";
 import { connect } from "react-redux";
 import { saveUserToken } from "../services/storage/actions";
@@ -113,6 +113,25 @@ const SignInScreen = ({ token, saveToken }: any) => {
   return (
     <Container>
       <ScrollView keyboardDismissMode="on-drag">
+        <View
+          style={{
+            alignItems: "center",
+          }}
+        >
+          <View
+            style={{
+              paddingTop: 16,
+            }}
+          >
+            <Image
+              source={require("../assets/logo.png")}
+              style={{
+                height: 150,
+                width: 150,
+              }}
+            />
+          </View>
+        </View>
         <View style={styles.container}>
           <Text
             style={[
@@ -190,8 +209,8 @@ const SignInScreen = ({ token, saveToken }: any) => {
               width: 315,
               height: 58,
               borderRadius: 15,
-              backgroundColor: "#5468ff",
-              shadowColor: "rgba(84, 104, 255, 0.3)",
+              backgroundColor: colors.button,
+              shadowColor: colors.hardShadow,
               shadowOffset: {
                 width: 0,
                 height: 10,
