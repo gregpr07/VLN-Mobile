@@ -1,5 +1,5 @@
 //export const BASEURL = "http://localhost:8000/";
-export const BASEURL = "http://vln-mobile.ijs.si/";
+export const BASEURL = "http://185.49.3.53/";
 export const API = BASEURL + "api/";
 
 //console.log(state.token.token);
