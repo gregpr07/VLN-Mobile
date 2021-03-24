@@ -14,6 +14,8 @@ import {
 // expo
 import Constants from "expo-constants";
 
+import defaultStyles from "../constants/DefaultStyleSheet";
+
 import { ScrollView } from "react-native-gesture-handler";
 
 import { useTheme } from "@react-navigation/native";
@@ -152,13 +154,8 @@ export default function HomeScreen({ navigation }: any) {
           width: CAT_WIDTH,
           borderRadius: 8,
           backgroundColor: colors.card,
-          shadowColor: colors.shadow,
-          shadowOffset: {
-            width: 0,
-            height: 12,
-          },
-          shadowRadius: 19,
-          shadowOpacity: 1,
+
+          ...defaultStyles.shadow,
 
           marginTop: 10,
           marginBottom: 30,

@@ -10,6 +10,7 @@ import {
 } from "react-native";
 
 import CarouselPlatform from "../components/Carousel";
+import defaultStyles from "../constants/DefaultStyleSheet";
 
 import { shorterText } from "../services/functions";
 
@@ -34,7 +35,11 @@ const EventList = ({ navigation, padding, events }) => {
             },
           })
         }
-        style={{ width: cardWidth, marginBottom: padding }}
+        style={{
+          width: cardWidth,
+          marginBottom: padding,
+          ...defaultStyles.shadow,
+        }}
         activeOpacity={0.75}
       >
         <ImageBackground

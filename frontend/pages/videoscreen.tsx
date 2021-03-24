@@ -15,6 +15,8 @@ import {
 const { width, height } = Dimensions.get("window");
 import Constants from "expo-constants";
 
+import defaultStyles from "../constants/DefaultStyleSheet";
+
 import {
   shorterText,
   numberWithCommas,
@@ -87,13 +89,8 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
           width: VID_WIDTH,
           borderRadius: 8,
           backgroundColor: colors.card,
-          shadowColor: colors.shadow,
-          shadowOffset: {
-            width: 0,
-            height: 0,
-          },
-          shadowRadius: 19,
-          shadowOpacity: 1,
+
+          ...defaultStyles.shadow,
 
           marginTop: 10,
           marginBottom: padding,

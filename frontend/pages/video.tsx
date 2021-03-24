@@ -15,6 +15,8 @@ import {
   Dimensions,
 } from "react-native";
 
+import defaultStyles from "../constants/DefaultStyleSheet";
+
 import Modal from "react-native-modal";
 
 import { Audio } from "expo-av";
@@ -292,7 +294,7 @@ function VideoScreen({
 
   const Description = () =>
     lecture.author ? (
-      <View style={styles.default_card}>
+      <View style={[styles.default_card, { marginVertical: padding }]}>
         <View style={{ flex: 1, flexDirection: "row" }}>
           <View>
             <TouchableOpacity
@@ -479,17 +481,11 @@ function VideoScreen({
       color: colors.text,
     },
     default_card: {
-      shadowColor: colors.shadow,
-      shadowOffset: {
-        width: 0,
-        height: 12,
-      },
-      shadowRadius: 19,
-      shadowOpacity: 1,
+      ...defaultStyles.shadow,
 
       backgroundColor: colors.card,
 
-      marginTop: padding,
+      //marginTop: padding,
 
       padding: padding,
       borderRadius: 12,

@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { connect } from "react-redux";
 import { saveUserToken } from "../services/storage/actions";
-import Constants from "expo-constants";
+import defaultStyles from "../constants/DefaultStyleSheet";
 
 import { Feather } from "@expo/vector-icons";
 
@@ -96,13 +96,7 @@ const SignInScreen = ({ token, saveToken }: any) => {
       width: 315,
       height: 70,
       backgroundColor: colors.card,
-      shadowColor: colors.shadow,
-      shadowOffset: {
-        width: 0,
-        height: 12,
-      },
-      shadowRadius: 19,
-      shadowOpacity: 1,
+      ...defaultStyles.shadow,
       paddingHorizontal: 35,
       fontFamily: "SF-UI-semibold",
 
@@ -210,13 +204,7 @@ const SignInScreen = ({ token, saveToken }: any) => {
               height: 58,
               borderRadius: 15,
               backgroundColor: colors.button,
-              shadowColor: colors.hardShadow,
-              shadowOffset: {
-                width: 0,
-                height: 10,
-              },
-              shadowRadius: 25,
-              shadowOpacity: 1,
+              ...defaultStyles.shadow,
               justifyContent: "center",
             }}
           >

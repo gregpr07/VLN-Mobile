@@ -9,6 +9,8 @@ import {
   View,
 } from "react-native";
 
+import defaultStyles from "../constants/DefaultStyleSheet";
+
 import { useFocusEffect, useTheme } from "@react-navigation/native";
 import { connect, useSelector } from "react-redux";
 import { API } from "../services/fetcher";
@@ -197,6 +199,7 @@ function ProfileScreen({ navigation, setVidID }: any) {
       alignItems: "flex-start",
       margin: padding,
       marginTop: 2 * padding,
+      ...defaultStyles.shadow,
     },
     navItem: {
       padding: 10,
@@ -268,13 +271,7 @@ function ProfileScreen({ navigation, setVidID }: any) {
       flexDirection: "row",
     },
     default_card: {
-      shadowColor: colors.shadow,
-      shadowOffset: {
-        width: 0,
-        height: 12,
-      },
-      shadowRadius: 19,
-      shadowOpacity: 1,
+      ...defaultStyles.shadow,
 
       backgroundColor: colors.card,
       //padding: padding,
@@ -365,7 +362,8 @@ function ProfileScreen({ navigation, setVidID }: any) {
           <Text style={[styles.userTag]}>{userData.title}</Text>
         </View>
         <Menu />
-        <View>
+
+        <View style={{ ...defaultStyles.shadow }}>
           <View style={styles.card}>
             <View style={styles.cardBody}>
               <View>

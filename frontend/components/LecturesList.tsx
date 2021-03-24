@@ -11,6 +11,8 @@ const { width, height } = Dimensions.get("window");
 
 import { noHeadFetcher } from "../services/fetcher";
 
+import defaultStyles from "../constants/DefaultStyleSheet";
+
 import { useTheme } from "@react-navigation/native";
 
 import {
@@ -82,13 +84,7 @@ const Lectures = ({
   const RenderItem = ({ item }: any) => (
     <View
       style={{
-        shadowColor: colors.shadow,
-        shadowOffset: {
-          width: 0,
-          height: 12,
-        },
-        shadowRadius: 19,
-        shadowOpacity: 1,
+        ...defaultStyles.shadow,
 
         marginTop: padding,
         backgroundColor: colors.card,

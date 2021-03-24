@@ -20,6 +20,8 @@ import {
   formatDate,
 } from "../services/functions";
 
+import defaultStyles from "../constants/DefaultStyleSheet";
+
 import Constants from "expo-constants";
 
 import { Feather } from "@expo/vector-icons";
@@ -274,13 +276,7 @@ const SearchScreen = ({
 
       marginHorizontal: padding,
 
-      shadowColor: colors.shadow,
-      shadowOffset: {
-        width: 0,
-        height: 12,
-      },
-      shadowRadius: 15,
-      shadowOpacity: 1,
+      ...defaultStyles.shadow,
 
       flexDirection: "row",
 
@@ -315,13 +311,7 @@ const SearchScreen = ({
       justifyContent: "center",
     },
     default_card: {
-      shadowColor: colors.shadow,
-      shadowOffset: {
-        width: 0,
-        height: 12,
-      },
-      shadowRadius: 19,
-      shadowOpacity: 1,
+      ...defaultStyles.shadow,
 
       marginBottom: padding,
       backgroundColor: colors.card,
