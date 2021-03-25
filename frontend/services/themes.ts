@@ -42,7 +42,7 @@ export interface theme {
 export const LightTheme: theme = {
   dark: false,
   colors: {
-    primary: "#802B2B",
+    primary: "#0f0f4c",
     secondary: "rgb(154, 156, 157)",
     third: "rgb(97, 98, 100)",
     background: colors.whiteBackground,
@@ -50,8 +50,8 @@ export const LightTheme: theme = {
     text: colors.dark,
     border: colors.paleGrey,
     notification: "rgb(255, 69, 58)",
-    shadow: "#F0514008",
-    button: "#F05140",
+    shadow: "#ff003510",
+    button: "#ff0035",
     hardShadow: "#F0514030",
   },
 };
@@ -59,7 +59,7 @@ export const LightTheme: theme = {
 export const DarkTheme: theme = {
   dark: true,
   colors: {
-    primary: "#DD8176",
+    primary: "#ff0035",
     secondary: "rgb(154, 156, 157)",
     third: "rgb(97, 98, 100)",
     background: "black", //colors.dark,
@@ -67,8 +67,8 @@ export const DarkTheme: theme = {
     text: "white",
     border: colors.darkBlueGrey,
     notification: "rgb(255, 69, 58)",
-    shadow: "#F0514010",
-    button: "#F05140",
+    shadow: "#ff003510",
+    button: "#ff0035",
     hardShadow: "#F0514030",
   },
 };

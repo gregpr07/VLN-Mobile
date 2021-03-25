@@ -76,8 +76,6 @@ function ProfileScreen({ navigation, setVidID }: any) {
   );
 
   const [userData, setUserData] = useState({
-    profileImage:
-      "https://i.kym-cdn.com/photos/images/original/001/561/356/734.jpg",
     name: "",
     title: "",
   });
@@ -109,29 +107,25 @@ function ProfileScreen({ navigation, setVidID }: any) {
   }, []);
 
   const Header = () => {
-    /* const ProfileImage = () => (
-      <View
-        style={{
-          paddingTop: 16,
-        }}
-      >
+    const ProfileImage = () => (
+      <View style={{}}>
         <Image
-          source={{ uri: userData.profileImage }}
+          source={require("../assets/logo.png")}
           style={{
             height: 150,
             width: 150,
-            borderRadius: 150,
+            resizeMode: "contain",
           }}
         />
       </View>
-    ); */
+    );
     return (
       <View
         style={{
           alignItems: "center",
         }}
       >
-        {/* <ProfileImage /> */}
+        <ProfileImage />
       </View>
     );
   };
@@ -291,7 +285,7 @@ function ProfileScreen({ navigation, setVidID }: any) {
   const Separator = () => (
     <Text
       style={{
-        color: colors.button,
+        color: colors.secondary,
       }}
     >
       {" "}
@@ -319,9 +313,7 @@ function ProfileScreen({ navigation, setVidID }: any) {
               ? {
                   uri: item.thumbnail,
                 }
-              : dark
-              ? require("../assets/icons/videolecture-net-dark.png")
-              : require("../assets/icons/videolecture-net-light.png")
+              : require("../assets/icons/video-thumbnail.png")
           }
           style={{
             height: 80,
@@ -330,7 +322,7 @@ function ProfileScreen({ navigation, setVidID }: any) {
 
             borderBottomLeftRadius: 12,
             borderTopLeftRadius: 12,
-            resizeMode: item.thumbnail ? "cover" : "contain",
+            resizeMode: "cover",
           }}
         />
         <View style={{ flex: 4, padding: 6, alignContent: "center" }}>

@@ -48,13 +48,7 @@ const EventList = ({ navigation, padding, events }) => {
           }}
           style={{
             height: eventHeight,
-            shadowColor: colors.shadow,
-            shadowOffset: {
-              width: 5,
-              height: 6,
-            },
-            shadowRadius: 5,
-            shadowOpacity: 0.5,
+            ...defaultStyles.shadow,
           }}
           imageStyle={{
             //maxHeight: 400,

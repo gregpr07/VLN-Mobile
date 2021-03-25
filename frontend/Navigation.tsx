@@ -133,12 +133,14 @@ const App = ({ token, getUserToken, videoID, videoRef, setVidID }: any) => {
   const _cacheResourcesAsync = async () => {
     SplashScreen.hideAsync();
 
-    setTimeout(() => {
+    setIsReady(true);
+
+    /* setTimeout(() => {
       setIsReady(true);
-    }, 1500);
+    }, 1500); */
   };
 
-  if (!isReady) {
+  /* if (!isReady) {
     return (
       <View
         style={{ flex: 1, justifyContent: "center", alignContent: "center" }}
@@ -150,7 +152,7 @@ const App = ({ token, getUserToken, videoID, videoRef, setVidID }: any) => {
         />
       </View>
     );
-  }
+  } */
 
   //*
 

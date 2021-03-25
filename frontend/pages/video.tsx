@@ -294,7 +294,7 @@ function VideoScreen({
 
   const Description = () =>
     lecture.author ? (
-      <View style={[styles.default_card, { marginVertical: padding }]}>
+      <View style={[styles.default_card, { marginBottom: padding }]}>
         <View style={{ flex: 1, flexDirection: "row" }}>
           <View>
             <TouchableOpacity
@@ -310,11 +310,13 @@ function VideoScreen({
               <Image
                 //? Shows author image otherwise thumbhnail of the video
                 //? --> good because video thumbnails are mostly author heads
-                source={{
-                  uri: lecture.author.image
-                    ? lecture.author.image
-                    : lecture.thumbnail,
-                }}
+                source={
+                  lecture.author.image
+                    ? {
+                        uri: lecture.author.image,
+                      }
+                    : require("../assets/icons/profile_image.png")
+                }
                 style={{
                   height: 75,
                   width: 75,
@@ -322,13 +324,7 @@ function VideoScreen({
 
                   marginRight: 15,
 
-                  shadowColor: colors.shadow,
-                  shadowOffset: {
-                    width: 0,
-                    height: 10,
-                  },
-                  shadowRadius: 25,
-                  shadowOpacity: 1,
+                  ...defaultStyles.shadow,
                 }}
               />
             </TouchableOpacity>
@@ -409,13 +405,7 @@ function VideoScreen({
             paddingVertical: 12,
             borderRadius: 14,
             backgroundColor: colors.button,
-            shadowColor: colors.shadow,
-            shadowOffset: {
-              width: 0,
-              height: 10,
-            },
-            shadowRadius: 25,
-            shadowOpacity: 1,
+            ...defaultStyles.shadow,
           }}
           onPress={handleSwitch}
         >
@@ -533,7 +523,10 @@ function VideoScreen({
         ) : null}
 
         {/* VideoAudio */}
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardDismissMode="on-drag"
+        >
           <VideoAudioComponent
             //initPager={initPager}
             videoHeight={videoHeight}

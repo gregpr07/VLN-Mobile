@@ -20,7 +20,7 @@ import * as WebBrowser from "expo-web-browser";
 import { API } from "../services/fetcher";
 
 import { useTheme } from "@react-navigation/native";
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import Container from "../components/Container";
 
 const { width, height } = Dimensions.get("window");
@@ -122,6 +122,7 @@ const SignInScreen = ({ token, saveToken }: any) => {
               style={{
                 height: 150,
                 width: 150,
+                resizeMode: "contain",
               }}
             />
           </View>
@@ -233,7 +234,7 @@ const SignInScreen = ({ token, saveToken }: any) => {
             </Text>
           </TouchableHighlight>
         </View>
-        <TouchableHighlight
+        <TouchableOpacity
           onPress={_handlePressButtonAsync}
           style={{ flex: 1, alignContent: "center" }}
         >
@@ -267,7 +268,7 @@ const SignInScreen = ({ token, saveToken }: any) => {
               color={colors.text}
             />
           </View>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </ScrollView>
     </Container>
   );

@@ -11,6 +11,8 @@ import {
 } from "react-native";
 const { width, height } = Dimensions.get("window");
 
+import defaultStyles from "../constants/DefaultStyleSheet";
+
 import { noHeadFetcher } from "../services/fetcher";
 
 import { useTheme } from "@react-navigation/native";
@@ -57,13 +59,7 @@ const Author = ({ navigation, route }: any) => {
       >
         <View
           style={{
-            shadowColor: colors.shadow,
-            shadowOffset: {
-              width: 0,
-              height: 12,
-            },
-            shadowRadius: 19,
-            shadowOpacity: 1,
+            ...defaultStyles.shadow,
 
             borderRadius: AUTHOR_WIDTH,
           }}

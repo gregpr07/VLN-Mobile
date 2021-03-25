@@ -142,7 +142,7 @@ const SearchScreen = ({
   const Separator = () => (
     <Text
       style={{
-        color: colors.button,
+        color: colors.secondary,
       }}
     >
       {" "}
@@ -163,18 +163,18 @@ const SearchScreen = ({
               ? {
                   uri: item.thumbnail,
                 }
-              : dark
-              ? require("../assets/icons/videolecture-net-dark.png")
-              : require("../assets/icons/videolecture-net-light.png")
+              : require("../assets/icons/video-thumbnail.png")
           }
           style={{
-            height: 80,
+            flex: 1,
+            minHeight: 80,
+            maxHeight: 90,
             maxWidth: (80 / 9) * 16,
             flex: 3,
 
             borderBottomLeftRadius: 12,
             borderTopLeftRadius: 12,
-            resizeMode: item.thumbnail ? "cover" : "contain",
+            resizeMode: "cover",
           }}
         />
         <View style={{ flex: 4, padding: 6, alignContent: "center" }}>

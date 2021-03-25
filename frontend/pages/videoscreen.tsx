@@ -69,13 +69,13 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
   };
 
   const Videos = ({ videos, section }: any) => {
-    const VID_HEIGHT = 90;
+    const VID_HEIGHT = 100;
     const VID_WIDTH = 200;
 
     const Separator = () => (
       <Text
         style={{
-          color: colors.button,
+          color: colors.secondary,
         }}
       >
         {" "}
@@ -98,9 +98,13 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
       >
         <TouchableOpacity onPress={() => _handleResultsClick(item)}>
           <Image
-            source={{
-              uri: item.thumbnail,
-            }}
+            source={
+              item.thumbnail
+                ? {
+                    uri: item.thumbnail,
+                  }
+                : require("../assets/icons/video-thumbnail.png")
+            }
             style={{
               width: "100%",
               height: VID_HEIGHT,

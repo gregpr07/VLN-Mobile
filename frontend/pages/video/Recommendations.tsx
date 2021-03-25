@@ -38,7 +38,7 @@ const RecommendedVids = ({
   const Separator = () => (
     <Text
       style={{
-        color: colors.button,
+        color: colors.secondary,
       }}
     >
       {" "}
@@ -119,16 +119,14 @@ const RecommendedVids = ({
                   ? {
                       uri: recc.thumbnail,
                     }
-                  : dark
-                  ? require("../../assets/icons/videolecture-net-dark.png")
-                  : require("../../assets/icons/videolecture-net-light.png")
+                  : require("../../assets/icons/video-thumbnail.png")
               }
               style={{
                 height: 60,
                 maxWidth: (60 / 9) * 16,
                 flex: 2,
                 borderRadius: 8,
-                resizeMode: recc.thumbnail ? "cover" : "contain",
+                resizeMode: "cover",
               }}
             />
             <View
