@@ -2,11 +2,18 @@ from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
 from api.models import Lecture, Author, Event, Category
 
+from elasticsearch_dsl import analyzer, tokenizer
+
+# for other languages
+eng_analyzer = analyzer('eng_analyzer',
+    tokenizer=tokenizer('trigram', 'ngram', min_gram=3, max_gram=3),
+    filter=['lowercase', 'asciifolding'] # New filter added
+)
 
 @registry.register_document
 class LectureDocument(Document):
     author = fields.ObjectField(properties={
-        'name': fields.TextField(),
+        'name': fields.TextField(analyzer=eng_analyzer,),
         'views': fields.IntegerField(),
         'id': fields.IntegerField(),
     })
@@ -17,10 +24,17 @@ class LectureDocument(Document):
     }))
 
     event = fields.ObjectField(properties={
-        'title': fields.TextField(),
-        'description': fields.TextField(),
-        'caption': fields.TextField(),
+        'title': fields.TextField(analyzer=eng_analyzer,),
+        'description': fields.TextField(analyzer=eng_analyzer,),
+        'caption': fields.TextField(analyzer=eng_analyzer,),
     })
+
+    title = fields.TextField(
+        analyzer=eng_analyzer,
+    )
+    description = fields.TextField(
+        analyzer=eng_analyzer,
+    )
 
     class Index:
         # Name of the Elasticsearch index
@@ -34,8 +48,8 @@ class LectureDocument(Document):
 
         # The fields of the model you want to be indexed in Elasticsearch
         fields = [
-            'title',
-            'description',
+            #'title',
+            #'description',
             'views',
             'published',
             'video',
@@ -78,6 +92,9 @@ class LectureDocument(Document):
 
 @registry.register_document
 class AuthorDocument(Document):
+    name = fields.TextField(
+        analyzer=eng_analyzer,
+    )
 
     class Index:
         # Name of the Elasticsearch index
@@ -93,7 +110,7 @@ class AuthorDocument(Document):
         fields = [
             'views',
             'id',
-            'name',
+            #'name',
         ]
 
 
@@ -119,6 +136,15 @@ class CategoryDocument(Document):
 
 @registry.register_document
 class EventDocument(Document):
+    title = fields.TextField(
+        analyzer=eng_analyzer,
+    )
+    description = fields.TextField(
+        analyzer=eng_analyzer,
+    )
+    caption = fields.TextField(
+        analyzer=eng_analyzer,
+    )
     class Index:
         # Name of the Elasticsearch index
         name = 'events'
@@ -132,9 +158,9 @@ class EventDocument(Document):
         # The fields of the model you want to be indexed in Elasticsearch
         fields = [
             'id',
-            'title',
-            'description',
-            'caption',
+            #'title',
+            #'description',
+            #'caption',
             'image',
             'date'
         ]
