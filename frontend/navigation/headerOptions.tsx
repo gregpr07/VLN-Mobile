@@ -9,11 +9,6 @@ const headerOptions = (colors: any) => {
       shadowColor: "transparent",
       elevation: 0,
       borderBottomWidth: 0,
-      transform: [
-        {
-          translateY: Platform.OS === "web" ? 70 : 0,
-        },
-      ],
     },
     //headerTintColor: themeIsDark ? colors.dark : colors.darkGreyBlue,
     headerTitleStyle: {

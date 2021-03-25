@@ -20,6 +20,8 @@ import {
   formatDate,
 } from "../services/functions";
 
+import defaultStyles from "../constants/DefaultStyleSheet";
+
 import Constants from "expo-constants";
 
 import { Feather } from "@expo/vector-icons";
@@ -140,7 +142,7 @@ const SearchScreen = ({
   const Separator = () => (
     <Text
       style={{
-        color: "#5468fe",
+        color: colors.secondary,
       }}
     >
       {" "}
@@ -161,18 +163,18 @@ const SearchScreen = ({
               ? {
                   uri: item.thumbnail,
                 }
-              : dark
-              ? require("../assets/icons/videolecture-net-dark.png")
-              : require("../assets/icons/videolecture-net-light.png")
+              : require("../assets/icons/video-thumbnail.png")
           }
           style={{
-            height: 80,
+            flex: 1,
+            minHeight: 80,
+            maxHeight: 90,
             maxWidth: (80 / 9) * 16,
             flex: 3,
 
             borderBottomLeftRadius: 12,
             borderTopLeftRadius: 12,
-            resizeMode: item.thumbnail ? "cover" : "contain",
+            resizeMode: "cover",
           }}
         />
         <View style={{ flex: 4, padding: 6, alignContent: "center" }}>
@@ -274,13 +276,7 @@ const SearchScreen = ({
 
       marginHorizontal: padding,
 
-      shadowColor: colors.shadow,
-      shadowOffset: {
-        width: 0,
-        height: 12,
-      },
-      shadowRadius: 15,
-      shadowOpacity: 1,
+      ...defaultStyles.shadow,
 
       flexDirection: "row",
 
@@ -303,8 +299,8 @@ const SearchScreen = ({
       width: 50,
       height: 50,
       borderRadius: 9,
-      backgroundColor: "#5468ff",
-      shadowColor: "rgba(84, 104, 255, 0.3)",
+      backgroundColor: colors.button,
+      shadowColor: colors.hardShadow,
       shadowOffset: {
         width: 0,
         height: 10,
@@ -315,13 +311,7 @@ const SearchScreen = ({
       justifyContent: "center",
     },
     default_card: {
-      shadowColor: colors.shadow,
-      shadowOffset: {
-        width: 0,
-        height: 12,
-      },
-      shadowRadius: 19,
-      shadowOpacity: 1,
+      ...defaultStyles.shadow,
 
       marginBottom: padding,
       backgroundColor: colors.card,

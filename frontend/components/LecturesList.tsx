@@ -11,6 +11,8 @@ const { width, height } = Dimensions.get("window");
 
 import { noHeadFetcher } from "../services/fetcher";
 
+import defaultStyles from "../constants/DefaultStyleSheet";
+
 import { useTheme } from "@react-navigation/native";
 
 import {
@@ -72,7 +74,7 @@ const Lectures = ({
   const Separator = () => (
     <Text
       style={{
-        color: "#5468fe",
+        color: colors.secondary,
       }}
     >
       {" "}
@@ -82,13 +84,7 @@ const Lectures = ({
   const RenderItem = ({ item }: any) => (
     <View
       style={{
-        shadowColor: colors.shadow,
-        shadowOffset: {
-          width: 0,
-          height: 12,
-        },
-        shadowRadius: 19,
-        shadowOpacity: 1,
+        ...defaultStyles.shadow,
 
         marginTop: padding,
         backgroundColor: colors.card,
@@ -115,18 +111,18 @@ const Lectures = ({
               ? {
                   uri: item.thumbnail,
                 }
-              : dark
-              ? require("../assets/icons/videolecture-net-dark.png")
-              : require("../assets/icons/videolecture-net-light.png")
+              : require("../assets/icons/video-thumbnail.png")
           }
           style={{
-            height: 80,
+            flex: 1,
+            minHeight: 80,
+            maxHeight: 90,
             maxWidth: (80 / 9) * 16,
             flex: 3,
 
             borderBottomLeftRadius: 12,
             borderTopLeftRadius: 12,
-            resizeMode: item.thumbnail ? "cover" : "contain",
+            resizeMode: "cover",
           }}
         />
         <View style={{ flex: 4, padding: 6, alignContent: "center" }}>

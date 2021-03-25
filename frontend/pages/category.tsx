@@ -9,6 +9,8 @@ import {
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
 
+import defaultStyles from "../constants/DefaultStyleSheet";
+
 import { noHeadFetcher } from "../services/fetcher";
 
 import { ActivityView } from "../components/Components";
@@ -53,13 +55,7 @@ const Category = ({ navigation, route }: any) => {
       alignItems: "center",
     },
     default_card: {
-      shadowColor: colors.shadow,
-      shadowOffset: {
-        width: 0,
-        height: 12,
-      },
-      shadowRadius: 19,
-      shadowOpacity: 1,
+      ...defaultStyles.shadow,
 
       backgroundColor: colors.card,
 

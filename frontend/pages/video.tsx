@@ -15,6 +15,8 @@ import {
   Dimensions,
 } from "react-native";
 
+import defaultStyles from "../constants/DefaultStyleSheet";
+
 import Modal from "react-native-modal";
 
 import { Audio } from "expo-av";
@@ -292,7 +294,7 @@ function VideoScreen({
 
   const Description = () =>
     lecture.author ? (
-      <View style={styles.default_card}>
+      <View style={[styles.default_card, { marginBottom: padding }]}>
         <View style={{ flex: 1, flexDirection: "row" }}>
           <View>
             <TouchableOpacity
@@ -308,11 +310,13 @@ function VideoScreen({
               <Image
                 //? Shows author image otherwise thumbhnail of the video
                 //? --> good because video thumbnails are mostly author heads
-                source={{
-                  uri: lecture.author.image
-                    ? lecture.author.image
-                    : lecture.thumbnail,
-                }}
+                source={
+                  lecture.author.image
+                    ? {
+                        uri: lecture.author.image,
+                      }
+                    : require("../assets/icons/profile_image.png")
+                }
                 style={{
                   height: 75,
                   width: 75,
@@ -320,13 +324,7 @@ function VideoScreen({
 
                   marginRight: 15,
 
-                  shadowColor: colors.shadow,
-                  shadowOffset: {
-                    width: 0,
-                    height: 10,
-                  },
-                  shadowRadius: 25,
-                  shadowOpacity: 1,
+                  ...defaultStyles.shadow,
                 }}
               />
             </TouchableOpacity>
@@ -406,14 +404,8 @@ function VideoScreen({
             paddingHorizontal: 14,
             paddingVertical: 12,
             borderRadius: 14,
-            backgroundColor: "#5468ff",
-            shadowColor: colors.shadow,
-            shadowOffset: {
-              width: 0,
-              height: 10,
-            },
-            shadowRadius: 25,
-            shadowOpacity: 1,
+            backgroundColor: colors.button,
+            ...defaultStyles.shadow,
           }}
           onPress={handleSwitch}
         >
@@ -479,17 +471,11 @@ function VideoScreen({
       color: colors.text,
     },
     default_card: {
-      shadowColor: colors.shadow,
-      shadowOffset: {
-        width: 0,
-        height: 12,
-      },
-      shadowRadius: 19,
-      shadowOpacity: 1,
+      ...defaultStyles.shadow,
 
       backgroundColor: colors.card,
 
-      marginTop: padding,
+      //marginTop: padding,
 
       padding: padding,
       borderRadius: 12,
@@ -537,7 +523,10 @@ function VideoScreen({
         ) : null}
 
         {/* VideoAudio */}
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardDismissMode="on-drag"
+        >
           <VideoAudioComponent
             //initPager={initPager}
             videoHeight={videoHeight}

@@ -8,6 +8,8 @@ import {
   FlatList,
 } from "react-native";
 
+import defaultStyles from "../constants/DefaultStyleSheet";
+
 import { useTheme } from "@react-navigation/native";
 
 const Authors = ({ padding, navigation, authors, HeaderPadding = 0 }) => {
@@ -33,13 +35,7 @@ const Authors = ({ padding, navigation, authors, HeaderPadding = 0 }) => {
     >
       <View
         style={{
-          shadowColor: colors.shadow,
-          shadowOffset: {
-            width: 0,
-            height: 12,
-          },
-          shadowRadius: 19,
-          shadowOpacity: 1,
+          ...defaultStyles.shadow,
 
           borderRadius: AUTHOR_WIDTH,
         }}

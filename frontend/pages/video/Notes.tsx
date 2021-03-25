@@ -14,6 +14,7 @@ import {
 } from "react-native";
 
 import { connect } from "react-redux";
+import defaultStyles from "../../constants/DefaultStyleSheet";
 
 import { setVideoID, setVideoRef } from "../../services/storage/actions";
 
@@ -208,17 +209,11 @@ const Notes = ({
                 paddingVertical: 10,
                 marginBottom: 6,
                 borderRadius: 10,
-                backgroundColor: "#5468fe",
+                backgroundColor: colors.button,
 
                 width: 200,
 
                 shadowColor: colors.shadow,
-                shadowOffset: {
-                  width: 0,
-                  height: 10,
-                },
-                shadowRadius: 25,
-                shadowOpacity: 1,
               }}
               onPress={handleNoteSubmit}
               accessible={false}

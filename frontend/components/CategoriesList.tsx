@@ -3,6 +3,8 @@ import { Text, View, TouchableOpacity, FlatList } from "react-native";
 
 import { useTheme } from "@react-navigation/native";
 
+import defaultStyles from "../constants/DefaultStyleSheet";
+
 const Categories = ({ cats, navigation, padding, HeaderPadding = 0 }: any) => {
   const { colors, dark } = useTheme();
   const Cat = ({ item }) => (
@@ -19,17 +21,12 @@ const Categories = ({ cats, navigation, padding, HeaderPadding = 0 }: any) => {
       <View
         style={{
           flex: 1,
-          shadowColor: colors.shadow,
-          shadowOffset: {
-            width: 0,
-            height: 12,
-          },
-          shadowRadius: 19,
-          shadowOpacity: 1,
+          ...defaultStyles.shadow,
 
           backgroundColor: colors.card,
 
           marginTop: padding,
+          marginBottom: padding,
 
           padding: padding,
           borderRadius: 12,

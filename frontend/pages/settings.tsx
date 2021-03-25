@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { connect } from "react-redux";
 import { removeUserToken } from "../services/storage/actions";
-import Constants from "expo-constants";
+import defaultStyles from "../constants/DefaultStyleSheet";
 
 import { API } from "../services/fetcher";
 
@@ -70,13 +70,7 @@ const SignOutScreen = ({ token, removeUserToken }: any) => {
       width: "100%",
       borderRadius: 15,
       backgroundColor: colors.card,
-      shadowColor: "rgba(60, 128, 209, 0.09)",
-      shadowOffset: {
-        width: 0,
-        height: 12,
-      },
-      shadowRadius: 19,
-      shadowOpacity: 1,
+      ...defaultStyles.shadow,
 
       paddingHorizontal: 20,
       paddingVertical: 26,

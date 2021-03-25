@@ -12,6 +12,8 @@ import Lectures from "../components/LecturesList";
 import AuthorList from "../components/AuthorList";
 import Container from "../components/Container";
 
+import defaultStyles from "../constants/DefaultStyleSheet";
+
 const padding = 12;
 
 const Event = ({ navigation, route }: any) => {
@@ -40,13 +42,7 @@ const Event = ({ navigation, route }: any) => {
       padding: padding,
     },
     default_card: {
-      shadowColor: colors.shadow,
-      shadowOffset: {
-        width: 0,
-        height: 12,
-      },
-      shadowRadius: 19,
-      shadowOpacity: 1,
+      ...defaultStyles.shadow,
 
       marginBottom: padding,
       backgroundColor: colors.card,

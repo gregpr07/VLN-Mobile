@@ -15,6 +15,8 @@ import {
 const { width, height } = Dimensions.get("window");
 import Constants from "expo-constants";
 
+import defaultStyles from "../constants/DefaultStyleSheet";
+
 import {
   shorterText,
   numberWithCommas,
@@ -67,13 +69,13 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
   };
 
   const Videos = ({ videos, section }: any) => {
-    const VID_HEIGHT = 90;
+    const VID_HEIGHT = 100;
     const VID_WIDTH = 200;
 
     const Separator = () => (
       <Text
         style={{
-          color: "#5468fe",
+          color: colors.secondary,
         }}
       >
         {" "}
@@ -87,13 +89,8 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
           width: VID_WIDTH,
           borderRadius: 8,
           backgroundColor: colors.card,
-          shadowColor: colors.shadow,
-          shadowOffset: {
-            width: 0,
-            height: 0,
-          },
-          shadowRadius: 19,
-          shadowOpacity: 1,
+
+          ...defaultStyles.shadow,
 
           marginTop: 10,
           marginBottom: padding,
@@ -101,9 +98,13 @@ const VideosScreen = ({ navigation, setVidID, videoRef, audioRef }: any) => {
       >
         <TouchableOpacity onPress={() => _handleResultsClick(item)}>
           <Image
-            source={{
-              uri: item.thumbnail,
-            }}
+            source={
+              item.thumbnail
+                ? {
+                    uri: item.thumbnail,
+                  }
+                : require("../assets/icons/video-thumbnail.png")
+            }
             style={{
               width: "100%",
               height: VID_HEIGHT,

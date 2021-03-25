@@ -7,11 +7,11 @@ import {
   TouchableHighlight,
   Dimensions,
   ActivityIndicator,
-  Button,
+  Image,
 } from "react-native";
 import { connect } from "react-redux";
 import { saveUserToken } from "../services/storage/actions";
-import Constants from "expo-constants";
+import defaultStyles from "../constants/DefaultStyleSheet";
 
 import { Feather } from "@expo/vector-icons";
 
@@ -20,7 +20,7 @@ import * as WebBrowser from "expo-web-browser";
 import { API } from "../services/fetcher";
 
 import { useTheme } from "@react-navigation/native";
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import Container from "../components/Container";
 
 const { width, height } = Dimensions.get("window");
@@ -96,13 +96,7 @@ const SignInScreen = ({ token, saveToken }: any) => {
       width: 315,
       height: 70,
       backgroundColor: colors.card,
-      shadowColor: colors.shadow,
-      shadowOffset: {
-        width: 0,
-        height: 12,
-      },
-      shadowRadius: 19,
-      shadowOpacity: 1,
+      ...defaultStyles.shadow,
       paddingHorizontal: 35,
       fontFamily: "SF-UI-semibold",
 
@@ -113,6 +107,26 @@ const SignInScreen = ({ token, saveToken }: any) => {
   return (
     <Container>
       <ScrollView keyboardDismissMode="on-drag">
+        <View
+          style={{
+            alignItems: "center",
+          }}
+        >
+          <View
+            style={{
+              paddingTop: 16,
+            }}
+          >
+            <Image
+              source={require("../assets/logo.png")}
+              style={{
+                height: 150,
+                width: 150,
+                resizeMode: "contain",
+              }}
+            />
+          </View>
+        </View>
         <View style={styles.container}>
           <Text
             style={[
@@ -190,14 +204,8 @@ const SignInScreen = ({ token, saveToken }: any) => {
               width: 315,
               height: 58,
               borderRadius: 15,
-              backgroundColor: "#5468ff",
-              shadowColor: "rgba(84, 104, 255, 0.3)",
-              shadowOffset: {
-                width: 0,
-                height: 10,
-              },
-              shadowRadius: 25,
-              shadowOpacity: 1,
+              backgroundColor: colors.button,
+              ...defaultStyles.shadow,
               justifyContent: "center",
             }}
           >
@@ -226,7 +234,7 @@ const SignInScreen = ({ token, saveToken }: any) => {
             </Text>
           </TouchableHighlight>
         </View>
-        <TouchableHighlight
+        <TouchableOpacity
           onPress={_handlePressButtonAsync}
           style={{ flex: 1, alignContent: "center" }}
         >
@@ -260,7 +268,7 @@ const SignInScreen = ({ token, saveToken }: any) => {
               color={colors.text}
             />
           </View>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </ScrollView>
     </Container>
   );
