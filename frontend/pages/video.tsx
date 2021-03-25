@@ -294,7 +294,13 @@ function VideoScreen({
 
   const Description = () =>
     lecture.author ? (
-      <View style={[styles.default_card, { marginVertical: padding }]}>
+      <View
+        style={[
+          styles.default_card,
+          { marginBottom: padding },
+          lecture.categories.length ? null : { marginTop: padding },
+        ]}
+      >
         <View style={{ flex: 1, flexDirection: "row" }}>
           <View>
             <TouchableOpacity

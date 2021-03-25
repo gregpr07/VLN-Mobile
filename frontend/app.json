@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "VideoLectures",
+    "name": "Video Lectures",
     "slug": "videolectures-NET",
     "version": "1.0.4",
     "orientation": "portrait",
@@ -32,6 +32,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "description": "This is a videolectures mobile application"
+    "description": "VideoLectures.NET is an award-winning free and open access educational video lectures repository. The lectures are given by distinguished scholars and scientists at the most important and prominent events like conferences, summer schools, workshops and science promotional events from many fields of Science. The portal is aimed at promoting science, exchanging ideas and fostering knowledge sharing by providing high quality didactic contents not only to the scientific community but also to the general public. All lectures, accompanying documents, information and links are systematically selected and classified through the editorial process taking into account also users' comments."
   }
 }
