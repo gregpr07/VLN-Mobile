@@ -42,7 +42,7 @@ export interface theme {
 export const LightTheme: theme = {
   dark: false,
   colors: {
-    primary: "#0f0f4c",
+    primary: "#ff0035",
     secondary: "rgb(154, 156, 157)",
     third: "rgb(97, 98, 100)",
     background: colors.whiteBackground,
