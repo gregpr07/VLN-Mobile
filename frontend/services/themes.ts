@@ -1,8 +1,8 @@
 export const colors = {
   darkGreyBlue: "#344356",
   //dark: "#171531",
-  dark: "rgb(19, 18, 18)",
-  darkBlueGrey: "#232048",
+  dark: "rgb(19, 18, 30)",
+  darkBlueGrey: "#101119",
   twilight: "#555093",
   darkGreyBlueTwo: "#2e2a5d",
   backCloseButtonStyle2: "#5468ff",
@@ -17,7 +17,7 @@ export const colors = {
   lightPeriwinkle: "#d4dce7",
   pastelBlue: "#aeb8ff",
   iconBaseOfCta22: "#01c6bb",
-  whiteBackground: "rgb(242, 242, 242)",
+  whiteBackground: "rgb(242, 242, 246)",
 };
 
 export interface theme {
@@ -60,7 +60,7 @@ export const DarkTheme: theme = {
   dark: true,
   colors: {
     primary: "#ff0035",
-    secondary: "rgb(154, 156, 157)",
+    secondary: "#b1b3b5",
     third: "rgb(97, 98, 100)",
     background: "black", //colors.dark,
     card: colors.dark,
