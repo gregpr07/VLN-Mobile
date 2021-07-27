@@ -7,10 +7,10 @@ from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from api.models import Lecture, Note, Slide, Author, Event, Playlist, Category, LectureView
+from api.models import Lecture, Note, Slide, Author, Event, Playlist, Category, LectureView, SignedForm
 from api.serializers import LectureSerializer, NoteSerializer, SlideSerializer, AuthorSerializer, \
     EventSerializer, PlaylistSerializer, CategorySerializer, SimpleAuthorSerializer, SimpleCategorySerializer, \
-    SimpleLectureSerializer, SimpleEventSerializer, NotedLectureSerializer, LectureViewSerializer
+    SimpleLectureSerializer, SimpleEventSerializer, NotedLectureSerializer, LectureViewSerializer, SignedFormSerializer
 
 
 # Custom ViewSet
@@ -311,3 +311,8 @@ class LeftOffLectureView(APIView):
         return Response({
             "left_off": 0 if last_view is None else last_view.end_timestamp
         })
+
+
+class SignedFormView(mixins.RetrieveModelMixin,mixins.CreateModelMixin,viewsets.GenericViewSet):
+    queryset = SignedForm.objects.all()
+    serializer_class = SignedFormSerializer

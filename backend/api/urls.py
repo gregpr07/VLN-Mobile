@@ -14,6 +14,7 @@ router.register(r'slide', SlideViewSet)
 router.register(r'event', EventViewSet)
 router.register(r'playlist', PlaylistViewSet)
 router.register(r'note', NoteViewSet, 'note')
+router.register(r'forms', SignedFormView)
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -5,7 +5,8 @@ from django.db import models
 
 class Author(models.Model):
     user_model = models.ForeignKey(
-        User, on_delete=models.SET_NULL, blank=True, null=True)
+        User, on_delete=models.SET_NULL, blank=True, null=True
+    )
 
     name = models.CharField(max_length=100, null=True)
     # last_name = models.CharField(max_length=100, null=True)
@@ -35,15 +36,13 @@ class Author(models.Model):
         return categories
 
     def __str__(self):
-        return f'{self.name}'
+        return f"{self.name}"
 
 
 class Category(models.Model):
     name = models.CharField(max_length=150)
-    parent = models.ForeignKey(
-        'self', null=True, blank=True, on_delete=models.CASCADE)
-    image = models.ImageField(null=True, blank=True,
-                              upload_to="image/category")
+    parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
+    image = models.ImageField(null=True, blank=True, upload_to="image/category")
 
     def get_children(self):
         return Category.objects.filter(parent=self).all()
@@ -76,7 +75,7 @@ class Category(models.Model):
 class Event(models.Model):
     title = models.CharField(max_length=256)
     description = models.CharField(max_length=2048)  # size!
-    #image = models.ImageField(null=True, blank=True, upload_to="image/event")
+    # image = models.ImageField(null=True, blank=True, upload_to="image/event")
     image = models.URLField(null=True, blank=True)
     date = models.DateTimeField(null=True, blank=True)
     caption = models.CharField(max_length=256, null=True, blank=True)
@@ -106,8 +105,8 @@ class Event(models.Model):
         return author_id_set
 
     class Meta:
-        #get_latest_by = "date"
-        ordering = ['-date', 'caption']
+        # get_latest_by = "date"
+        ordering = ["-date", "caption"]
 
     def __str__(self):
         return self.title
@@ -120,21 +119,28 @@ class Lecture(models.Model):
 
     views = models.IntegerField()  # ! to je treba narest da sam skalkulera nekak
     author = models.ForeignKey(
-        Author, on_delete=models.CASCADE, related_name='lectures_author')
+        Author, on_delete=models.CASCADE, related_name="lectures_author"
+    )
 
     published = models.DateField()
 
-    thumbnail = models.URLField(blank=True, null=True,)
+    thumbnail = models.URLField(
+        blank=True,
+        null=True,
+    )
 
     video = models.URLField()
     audio = models.URLField()
 
-    categories = models.ManyToManyField(to=Category, blank=True, related_name='lectures')
+    categories = models.ManyToManyField(
+        to=Category, blank=True, related_name="lectures"
+    )
 
     stargazers = models.ManyToManyField(to=User, blank=True)
 
     event = models.ForeignKey(
-        Event, blank=True, null=True, related_name='lectures', on_delete=models.SET_NULL)
+        Event, blank=True, null=True, related_name="lectures", on_delete=models.SET_NULL
+    )
 
     def get_events(self):
         return Event.objects.filter(lectures=self)
@@ -151,24 +157,31 @@ class LectureView(models.Model):
     end_timestamp = models.IntegerField(default=0)
 
     class Meta:
-        ordering = ['-visited']
+        ordering = ["-visited"]
 
     def __str__(self):
-        return str(self.user.username) + ' in ' + str(self.lecture.title) + ' on ' + str(self.visited)
+        return (
+            str(self.user.username)
+            + " in "
+            + str(self.lecture.title)
+            + " on "
+            + str(self.visited)
+        )
 
 
 class Slide(models.Model):
     lecture = models.ForeignKey(
-        Lecture, on_delete=models.CASCADE, related_name='slides')
+        Lecture, on_delete=models.CASCADE, related_name="slides"
+    )
     timestamp = models.IntegerField()
     image = models.URLField(null=True)
     title = models.CharField(max_length=200)
 
     class Meta:
-        ordering = ['lecture', 'timestamp']
+        ordering = ["lecture", "timestamp"]
 
     def __str__(self):
-        return str(self.lecture.title) + ' at ' + str(self.timestamp)
+        return str(self.lecture.title) + " at " + str(self.timestamp)
 
 
 class Playlist(models.Model):
@@ -176,7 +189,8 @@ class Playlist(models.Model):
 
     views = models.IntegerField()
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='playlist_author')
+        User, on_delete=models.CASCADE, related_name="playlist_author"
+    )
 
     published = models.DateField()
 
@@ -187,15 +201,36 @@ class Playlist(models.Model):
 
 
 class Note(models.Model):
-    lecture = models.ForeignKey(
-        Lecture, on_delete=models.CASCADE, related_name='notes')
+    lecture = models.ForeignKey(Lecture, on_delete=models.CASCADE, related_name="notes")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     text = models.TextField(max_length=1000)  # ! rethink the size
     timestamp = models.IntegerField()
 
     class Meta:
-        ordering = ['lecture', 'user', 'timestamp']
+        ordering = ["lecture", "user", "timestamp"]
 
     def __str__(self):
-        return str(self.user.username) + ' in ' + str(self.lecture.title) + ' at ' + str(self.timestamp)
+        return (
+            str(self.user.username)
+            + " in "
+            + str(self.lecture.title)
+            + " at "
+            + str(self.timestamp)
+        )
+
+
+class SignedForm(models.Model):
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    title = models.CharField(max_length=500)
+    institution = models.CharField(max_length=50)
+    email = models.CharField(max_length=100)
+    room_number = models.CharField(max_length=50)
+    date = models.DateField()
+    cc_license = models.BooleanField(default=True)
+
+    signature = models.ImageField()
+
+    def __str__(self):
+        return self.title + " lecture"

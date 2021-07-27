@@ -2,7 +2,9 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from api.models import Lecture, Slide, Note, Author, Event, Playlist, Category, LectureView
+from api.models import Lecture, Slide, Note, Author, Event, Playlist, Category, LectureView, SignedForm
+
+from drf_extra_fields.fields import Base64ImageField
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -196,3 +198,10 @@ class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Note
         fields = ['lecture', 'text', 'timestamp']
+
+class SignedFormSerializer(serializers.ModelSerializer):
+    signature = Base64ImageField()
+
+    class Meta:
+        model = SignedForm
+        fields = ["first_name","last_name","title","institution","email","room_number","date","cc_license","signature"]
