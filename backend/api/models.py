@@ -234,4 +234,4 @@ class SignedForm(models.Model):
     signature = models.ImageField()
 
     def __str__(self):
-        return self.event + ':' +  self.title + " lecture"
+        return self.event + ': ' +  self.title + " lecture"
