@@ -227,6 +227,7 @@ class SignedForm(models.Model):
     institution = models.CharField(max_length=50)
     email = models.CharField(max_length=100)
     room_number = models.CharField(max_length=50)
+    event = models.CharField(max_length=100, blank=True)
     date = models.DateField()
     cc_license = models.BooleanField(default=True)
 
